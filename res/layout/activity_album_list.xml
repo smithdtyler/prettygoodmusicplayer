@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="#FFFFFF"
+	android:orientation="vertical">
+	
+	<ListView android:id="@+id/albumListView"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_weight="4"
+		android:layout_gravity="top"
+		android:divider="#7070FF"
+		android:dividerHeight="2px"
+	/>
+	
+</LinearLayout>
