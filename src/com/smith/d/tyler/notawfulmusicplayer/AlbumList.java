@@ -11,7 +11,6 @@ import java.util.Map;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,13 +27,11 @@ public class AlbumList extends Activity {
 	private List<Map<String,String>> albums;
 	private SimpleAdapter simpleAdpt;
 	
-	private void populateAlbums(String artistName){
+	private void populateAlbums(String artistName, String artistPath){
 		albums = new ArrayList<Map<String,String>>();
 		
-		File sdcard = Environment.getExternalStorageDirectory();
-		File music = new File(sdcard, "music");
-		File artist = new File(music, artistName);
-		Log.d(TAG, "external storage directory = " + artist);
+		File artist = new File(artistPath);
+		Log.d(TAG, "storage directory = " + artist);
 		// TODO add 'all' 
 		
 		List<File> albumFiles = new ArrayList<File>();
@@ -72,7 +69,8 @@ public class AlbumList extends Activity {
 	    final String artist = intent.getStringExtra(ArtistList.ARTIST_NAME);
 	    Log.i(TAG, "Getting albums for " + artist);
 	    
-	    populateAlbums(artist);
+	    final String artistPath = intent.getStringExtra(ArtistList.ARTIST_PATH);
+	    populateAlbums(artist, artistPath);
         
         simpleAdpt = new SimpleAdapter(this, albums, android.R.layout.simple_list_item_1, new String[] {"album"}, new int[] {android.R.id.text1});
         ListView lv = (ListView) findViewById(R.id.albumListView);
@@ -87,6 +85,7 @@ public class AlbumList extends Activity {
             	 Intent intent = new Intent(AlbumList.this, SongList.class);
             	 intent.putExtra(ALBUM_NAME, clickedView.getText());
             	 intent.putExtra(ArtistList.ARTIST_NAME, artist);
+            	 intent.putExtra(ArtistList.ARTIST_PATH, artistPath);
             	 startActivity(intent);
              }
         });

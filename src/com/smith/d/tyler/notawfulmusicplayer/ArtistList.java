@@ -2,6 +2,8 @@ package com.smith.d.tyler.notawfulmusicplayer;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +15,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -27,14 +28,38 @@ import android.widget.TextView;
 public class ArtistList extends Activity {
 	private static final String TAG = "Artist List";
 	public static final String ARTIST_NAME = "ARTIST_NAME";
+	public static final String ARTISTS_DIR = "ARTIST_DIRECTORY";
+	public static final String ARTIST_PATH = "ARTIST_PATH";
 
 	private List<Map<String,String>> artists;
 	private SimpleAdapter simpleAdpt;
+	private String baseDir;
 	
 	private void populateArtists(String baseDir){
 		artists = new ArrayList<Map<String,String>>();
 		File f = new File(baseDir);
-		for(String artist : f.list()){
+		if(!f.exists()){
+			Log.e(TAG, "Storage directory " + f + " does not exist!");
+			return;
+		}
+		
+		List<String> artistDirs = new ArrayList<String>();
+		for(File dir : f.listFiles()){
+			if(dir.isDirectory()){
+				artistDirs.add(dir.getName());
+			}
+		}
+		
+		Collections.sort(artistDirs, new Comparator<String>(){
+
+			@Override
+			public int compare(String arg0, String arg1) {
+				return(arg0.toUpperCase().compareTo(arg1.toUpperCase()));
+			}
+			
+		});
+		
+		for(String artist : artistDirs){
 			Log.v(TAG, "Adding artist " + artist);
 			Map<String,String> map = new HashMap<String, String>();
 			map.put("artist", artist);			
@@ -43,12 +68,31 @@ public class ArtistList extends Activity {
 	}
 	
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artist_list);
+	protected void onResume() {
+		super.onResume();
+        SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
+        prefs.edit();
+        //String prefDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
+        String prefDir = prefs.getString(ARTISTS_DIR, "peanuts");
+        if(!prefDir.equals(baseDir)){
+        	baseDir = prefDir;
+        	populateArtists(baseDir);
+            
+            simpleAdpt = new SimpleAdapter(this, artists, android.R.layout.simple_list_item_1, new String[] {"artist"}, new int[] {android.R.id.text1});
+            ListView lv = (ListView) findViewById(R.id.artistListView);
+            lv.setAdapter(simpleAdpt);
+        }
+	}
 
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        String baseDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "music").getAbsolutePath());
+
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+        SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
+        Log.i(TAG, "Preferences " + prefs + " " + ((Object)prefs));
+//        baseDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
+        baseDir = prefs.getString(ARTISTS_DIR, "cashews");
         Log.d(TAG, "Got configured base directory of " + baseDir);
 
         populateArtists(baseDir);
@@ -56,6 +100,24 @@ public class ArtistList extends Activity {
         simpleAdpt = new SimpleAdapter(this, artists, android.R.layout.simple_list_item_1, new String[] {"artist"}, new int[] {android.R.id.text1});
         ListView lv = (ListView) findViewById(R.id.artistListView);
         lv.setAdapter(simpleAdpt);
+    }
+
+
+
+	@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_artist_list);
+
+//        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+//        String baseDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
+//        Log.d(TAG, "Got configured base directory of " + baseDir);
+//
+//        populateArtists(baseDir);
+//        
+//        simpleAdpt = new SimpleAdapter(this, artists, android.R.layout.simple_list_item_1, new String[] {"artist"}, new int[] {android.R.id.text1});
+        ListView lv = (ListView) findViewById(R.id.artistListView);
+//        lv.setAdapter(simpleAdpt);
         
         // React to user clicks on item
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -65,6 +127,7 @@ public class ArtistList extends Activity {
             	 TextView clickedView = (TextView) view;
             	 Intent intent = new Intent(ArtistList.this, AlbumList.class);
             	 intent.putExtra(ARTIST_NAME, clickedView.getText());
+            	 intent.putExtra(ARTIST_PATH, baseDir + File.separator + clickedView.getText());
             	 startActivity(intent);
              }
         });
@@ -86,6 +149,7 @@ public class ArtistList extends Activity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
         	Intent intent = new Intent(ArtistList.this, SettingsActivity.class);
+//        	Intent intent = new Intent(ArtistList.this, FileExplore.class);
         	startActivity(intent);
             return true;
         }

@@ -11,7 +11,6 @@ import java.util.Map;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 public class SongList extends Activity {
 	public static final String SONG_LIST = "SONG_LIST";
@@ -29,13 +27,11 @@ public class SongList extends Activity {
 	private SimpleAdapter simpleAdpt;
 	private List<String> songList;
 	
-	private void populateSongs(String artistName, String albumName){
+	private void populateSongs(String artistName, String albumName, String artistDirName){
 		songs = new ArrayList<Map<String,String>>();
 		
-		File sdcard = Environment.getExternalStorageDirectory();
-		File music = new File(sdcard, "music");
-		File artist = new File(music, artistName);
-		File album = new File(artist, albumName);
+		File artistDir = new File(artistDirName);
+		File album = new File(artistDir, albumName);
 
 		List<File> songFiles = new ArrayList<File>();
 		if(album.exists()){
@@ -47,7 +43,7 @@ public class SongList extends Activity {
 		} else {
 			// Assume we don't need full recursion
 			Log.d(TAG, "Adding all songs...");
-			for(File albumFile : artist.listFiles()){
+			for(File albumFile : artistDir.listFiles()){
 				if(albumFile.isDirectory()){
 					for(File song : albumFile.listFiles()){
 						songFiles.add(song);
@@ -65,9 +61,11 @@ public class SongList extends Activity {
 			
 		});
 		
+		// TODO filter songs which don't have the proper file extensions
 		for(File song : songFiles){
 			Log.v(TAG, "Adding song " + song);
 			Map<String,String> map = new HashMap<String, String>();
+			
 			map.put("song", song.getName().replaceAll("\\d\\d\\s", "").replaceAll("(\\.mp3)|(\\.m4p)|(\\.m4a)", ""));			
 			songs.add(map);
 		}
@@ -86,9 +84,10 @@ public class SongList extends Activity {
 	    Intent intent = getIntent();
 	    final String artist = intent.getStringExtra(ArtistList.ARTIST_NAME);
 	    final String album = intent.getStringExtra(AlbumList.ALBUM_NAME);
+	    final String artistDir = intent.getStringExtra(ArtistList.ARTIST_PATH);
 	    Log.i(TAG, "Getting songs for " + album);
 	    
-	    populateSongs(artist, album);
+	    populateSongs(artist, album, artistDir);
 	    
         simpleAdpt = new SimpleAdapter(this, songs, android.R.layout.simple_list_item_1, new String[] {"song"}, new int[] {android.R.id.text1});
         ListView lv = (ListView) findViewById(R.id.songListView);
@@ -111,6 +110,7 @@ public class SongList extends Activity {
         });
 	}
 
+	// TODO remove this?
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

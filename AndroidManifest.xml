@@ -41,6 +41,12 @@
             android:name=".NowPlaying"
             android:label="@string/title_activity_now_playing" >
         </activity>
+        <activity android:name="com.mburman.fileexplore.FileExplore">
+            <intent-filter>
+                <action android:name="com.smith.d.tyler.notawfulmusicplayer.PICK_DIRECTORY"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
