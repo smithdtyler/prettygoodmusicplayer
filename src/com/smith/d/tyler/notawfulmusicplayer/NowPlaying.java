@@ -58,7 +58,6 @@ public class NowPlaying extends Activity {
 		// Need to start the service so it won't be stopped when this activity is destroyed.
 		// https://developer.android.com/guide/components/bound-services.html
 		startService(new Intent(this, MusicPlaybackService.class));
-		// textStatus.setText("Binding.");
 	}
 
 	void doUnbindService() {
@@ -77,10 +76,10 @@ public class NowPlaying extends Activity {
 					// crashed.
 				}
 			}
+			
 			// Detach our existing connection.
 			unbindService(mConnection);
 			mIsBound = false;
-			// textStatus.setText("Unbinding.");
 		}
 	}
 
@@ -133,7 +132,7 @@ public class NowPlaying extends Activity {
 		public void onServiceDisconnected(ComponentName className) {
 			// This is called when the connection with the service has been
 			// unexpectedly disconnected - process crashed.
-			mService = null;
+			mService = null; // TODO need to do some null checks
 		}
 	};
 
@@ -174,32 +173,12 @@ public class NowPlaying extends Activity {
 		et = (TextView) findViewById(R.id.songName);
 		et.setText(songName);
 
-		IntentFilter filter = new IntentFilter();
-		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY - 1);
-		filter.addAction("android.intent.action.MEDIA_BUTTON");
-
-		receiver = new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				Log.i(TAG, "received a broadcast: " + intent);
-				// do something based on the intent's action
-			}
-		};
-		registerReceiver(receiver, filter);
-
 		final Button pause = (Button) findViewById(R.id.playPause);
 		pause.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "Play/Pause clicked...");
-                Message msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
-                try {
-                	Log.i(TAG, "SEnding a request to start playing!");
-					mService.send(msg);
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}
+				playPause();
 			}
 
 		});
@@ -209,14 +188,7 @@ public class NowPlaying extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "Previous clicked...");
-                Message msg = Message.obtain(null, MusicPlaybackService.MSG_PREVIOUS);
-                try {
-                	Log.i(TAG, "SEnding a request to go to previous!");
-					mService.send(msg);
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}
+				previous();
 			}
 
 		});
@@ -226,14 +198,8 @@ public class NowPlaying extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "next clicked...");
-                Message msg = Message.obtain(null, MusicPlaybackService.MSG_NEXT);
-                try {
-                	Log.i(TAG, "SEnding a request to go to next!");
-					mService.send(msg);
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}			}
+				next();
+			}
 
 		});
 		
@@ -249,22 +215,22 @@ public class NowPlaying extends Activity {
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
 			// code for next
 			Log.i(TAG, "key pressed KEYCODE_MEDIA_NEXT");
-//			next();
+			next();
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 			// code for play/pause
 			Log.i(TAG, "key pressed KEYCODE_MEDIA_PLAY_PAUSE");
-//			playPause();
+			playPause();
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PAUSE:
 			// code for play/pause
 			Log.i(TAG, "key pressed KEYCODE_MEDIA_PAUSE");
-//			playPause();
+			playPause();
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 			Log.i(TAG, "key pressed KEYCODE_MEDIA_PREVIOUS");
 			// code for previous
-//			previous();
+			previous();
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_REWIND:
 			Log.i(TAG, "key pressed KEYCODE_MEDIA_REWIND");
@@ -278,6 +244,39 @@ public class NowPlaying extends Activity {
 			Log.i(TAG, "key pressed " + keyCode);
 			// code for stop
 			return super.onKeyDown(keyCode, event);
+		}
+	}
+	
+	private void playPause(){
+		Log.d(TAG, "Play/Pause clicked...");
+        Message msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
+        try {
+        	Log.i(TAG, "SEnding a request to start playing!");
+			mService.send(msg);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void next(){
+		Log.d(TAG, "next...");
+        Message msg = Message.obtain(null, MusicPlaybackService.MSG_NEXT);
+        try {
+        	Log.i(TAG, "SEnding a request to go to next!");
+			mService.send(msg);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void previous(){
+		Log.d(TAG, "Previous clicked...");
+        Message msg = Message.obtain(null, MusicPlaybackService.MSG_PREVIOUS);
+        try {
+        	Log.i(TAG, "SEnding a request to go to previous!");
+			mService.send(msg);
+		} catch (RemoteException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -303,7 +302,6 @@ public class NowPlaying extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		unregisterReceiver(receiver);
 		unbindService(mConnection);
 	}
 
