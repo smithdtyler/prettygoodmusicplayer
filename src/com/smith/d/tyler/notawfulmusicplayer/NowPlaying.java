@@ -7,13 +7,20 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -30,24 +37,122 @@ public class NowPlaying extends Activity {
 	private static final String TAG = "Now Playing";
 
 	// Stuff from the Android API and listeners
-	private MediaPlayer mp = new MediaPlayer();
+	private MediaPlayer mp;
 	private BroadcastReceiver receiver;
-	private NotAwfulAudioFocusChangeListener audioFocusListener;
-	private AudioManager am;
 
 	// State information
 	private String artistName;
 	private String albumName;
 	private String[] songNames;
 	private int songNamesPosition;
-	private FileInputStream fis;
-	private File song;
+	private Messenger mService;
+	boolean mIsBound;
+	
+	final Messenger mMessenger = new Messenger(new IncomingHandler());
+
+	void doBindService() {
+		Log.i(TAG, "Binding to the service!");
+		bindService(new Intent(this, MusicPlaybackService.class), mConnection,
+				Context.BIND_IMPORTANT | Context.BIND_AUTO_CREATE);
+		mIsBound = true;
+		// Need to start the service so it won't be stopped when this activity is destroyed.
+		// https://developer.android.com/guide/components/bound-services.html
+		startService(new Intent(this, MusicPlaybackService.class));
+		// textStatus.setText("Binding.");
+	}
+
+	void doUnbindService() {
+		Log.i(TAG, "Unbinding the service!");
+		if (mIsBound) {
+			// If we have received the service, and hence registered with it,
+			// then now is the time to unregister.
+			if (mService != null) {
+				try {
+					Message msg = Message.obtain(null,
+							MusicPlaybackService.MSG_UNREGISTER_CLIENT);
+					msg.replyTo = mMessenger;
+					mService.send(msg);
+				} catch (RemoteException e) {
+					// There is nothing special we need to do if the service has
+					// crashed.
+				}
+			}
+			// Detach our existing connection.
+			unbindService(mConnection);
+			mIsBound = false;
+			// textStatus.setText("Unbinding.");
+		}
+	}
+
+	private static class IncomingHandler extends Handler {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			default:
+				super.handleMessage(msg);
+			}
+		}
+	}
+
+	private ServiceConnection mConnection = new ServiceConnection() {
+
+		public void onServiceConnected(ComponentName className, IBinder service) {
+			mService = new Messenger(service);
+			// textStatus.setText("Attached.");
+			try {
+				Message msg = Message.obtain(null,
+						MusicPlaybackService.MSG_REGISTER_CLIENT);
+				msg.replyTo = mMessenger;
+				mService.send(msg);
+			} catch (RemoteException e) {
+				// In this case the service has crashed before we could even do
+				// anything with it
+			}
+			
+			// set the playlist
+	        Message msg = Message.obtain(null, MusicPlaybackService.MSG_SET_PLAYLIST);
+	        msg.getData().putStringArray(SongList.SONG_LIST, songNames);
+	        msg.getData().putInt(SongList.SONG_LIST_POSITION, songNamesPosition);
+	        try {
+	        	Log.i(TAG, "Sending a playlist!");
+				mService.send(msg);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+	        
+			// start playing!
+	        msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
+	        try {
+	        	Log.i(TAG, "Sending a playlist!");
+				mService.send(msg);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void onServiceDisconnected(ComponentName className) {
+			// This is called when the connection with the service has been
+			// unexpectedly disconnected - process crashed.
+			mService = null;
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_now_playing);
+		
+		doBindService();
 
+		// Trying this approach to register for media button presses...
+		// https://stackoverflow.com/questions/10154118/listen-to-volume-buttons-in-background-service
+		// AudioManager mAudioManager = (AudioManager)
+		// getSystemService(Context.AUDIO_SERVICE);
+		// ComponentName rec = new ComponentName(getPackageName(),
+		// NowPlaying.class.getName());
+		// mAudioManager.registerMediaButtonEventReceiver(rec);
+
+		mp = new MediaPlayer();
 		// Get the message from the intent
 		Intent intent = getIntent();
 		artistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
@@ -58,9 +163,7 @@ public class NowPlaying extends Activity {
 		Log.d(TAG, "Got song names " + songNames + " position "
 				+ songNamesPosition);
 
-		song = new File(songNames[songNamesPosition]);
-		String songName = song.getName().replaceAll("\\d\\d\\s", "").replaceAll("(\\.mp3)|(\\.m4p)|(\\.m4a)", "");
-		Log.i(TAG, "Getting file for " + songName);
+		String songName = songNames[songNamesPosition];
 
 		TextView et = (TextView) findViewById(R.id.artistName);
 		et.setText(artistName);
@@ -71,16 +174,6 @@ public class NowPlaying extends Activity {
 		et = (TextView) findViewById(R.id.songName);
 		et.setText(songName);
 
-		mp.setOnCompletionListener(new OnCompletionListener() {
-
-			@Override
-			public void onCompletion(MediaPlayer mp) {
-				Log.i(TAG, "Song complete");
-				next();
-			}
-
-		});
-		
 		IntentFilter filter = new IntentFilter();
 		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY - 1);
 		filter.addAction("android.intent.action.MEDIA_BUTTON");
@@ -93,51 +186,20 @@ public class NowPlaying extends Activity {
 			}
 		};
 		registerReceiver(receiver, filter);
-		
-		//https://developer.android.com/training/managing-audio/audio-focus.html
-		audioFocusListener = new NotAwfulAudioFocusChangeListener();
-		
-		// Get permission to play audio
-		am = (AudioManager) getBaseContext().getSystemService(Context.AUDIO_SERVICE);
 
-		// Request audio focus for playback
-		int result = am.requestAudioFocus(this.audioFocusListener,
-		                                 // Use the music stream.
-		                                 AudioManager.STREAM_MUSIC,
-		                                 // Request permanent focus.
-		                                 AudioManager.AUDIOFOCUS_GAIN);
-		Log.d(TAG, "requestAudioFocus result = " + result);
-		   
-		if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-			Log.d(TAG, "We got audio focus!");
-		    //am.registerMediaButtonEventReceiver(receiver); // TODO do I need this?
-		    // Start playback.
-			try {
-				fis = new FileInputStream(song);
-				Log.i(TAG, "About to play " + song);
-				mp.setDataSource(fis.getFD());
-				mp.prepare();
-				mp.start();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			Log.e(TAG, "Unable to get audio focus");
-		}
-		
 		final Button pause = (Button) findViewById(R.id.playPause);
 		pause.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "Play/Pause clicked...");
-				playPause();
+                Message msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
+                try {
+                	Log.i(TAG, "SEnding a request to start playing!");
+					mService.send(msg);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
 			}
 
 		});
@@ -148,73 +210,35 @@ public class NowPlaying extends Activity {
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "Previous clicked...");
-				previous();
+                Message msg = Message.obtain(null, MusicPlaybackService.MSG_PREVIOUS);
+                try {
+                	Log.i(TAG, "SEnding a request to go to previous!");
+					mService.send(msg);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
 			}
 
 		});
-		
+
 		Button next = (Button) findViewById(R.id.next);
 		next.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "next clicked...");
-				next();
-			}
+                Message msg = Message.obtain(null, MusicPlaybackService.MSG_NEXT);
+                try {
+                	Log.i(TAG, "SEnding a request to go to next!");
+					mService.send(msg);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}			}
 
 		});
 		
 	}
-
-	// On stop is called when we get a phone call.
-	@Override
-	protected void onStop() {
-		super.onPause();
-		Log.i(TAG, "onStop()");
-		pause();
-		mp.stop();
-		mp.reset();
-		try {
-			fis.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		super.onStop();
-		Log.i(TAG, "Releasing audio focus");
-		this.am.abandonAudioFocus(this.audioFocusListener);
-	}
-
-	@Override
-	protected void onRestart() {
-		super.onRestart();
-		// When onStop was called, we closed the file handle and stopped the media player
-		// Don't start playing on restart, but get everything ready
-		try {
-			fis = new FileInputStream(song);
-			mp.setDataSource(fis.getFD());
-			mp.prepare();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	// On pause is called when the screen is put to sleep.
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
+	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		switch (keyCode) {
@@ -225,22 +249,22 @@ public class NowPlaying extends Activity {
 		case KeyEvent.KEYCODE_MEDIA_NEXT:
 			// code for next
 			Log.i(TAG, "key pressed KEYCODE_MEDIA_NEXT");
-			next();
+//			next();
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 			// code for play/pause
 			Log.i(TAG, "key pressed KEYCODE_MEDIA_PLAY_PAUSE");
-			playPause();
+//			playPause();
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PAUSE:
 			// code for play/pause
 			Log.i(TAG, "key pressed KEYCODE_MEDIA_PAUSE");
-			playPause();
+//			playPause();
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 			Log.i(TAG, "key pressed KEYCODE_MEDIA_PREVIOUS");
 			// code for previous
-			previous();
+//			previous();
 			return true;
 		case KeyEvent.KEYCODE_MEDIA_REWIND:
 			Log.i(TAG, "key pressed KEYCODE_MEDIA_REWIND");
@@ -251,7 +275,7 @@ public class NowPlaying extends Activity {
 			// code for stop
 			return true;
 		default:
-			Log.i(TAG, "key pressed "+ keyCode);
+			Log.i(TAG, "key pressed " + keyCode);
 			// code for stop
 			return super.onKeyDown(keyCode, event);
 		}
@@ -280,121 +304,8 @@ public class NowPlaying extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(receiver);
+		unbindService(mConnection);
 	}
-	
-	private void previous(){
-		mp.stop();
-		mp.reset();
-		try {
-			fis.close();
-			songNamesPosition = songNamesPosition - 1;
-			if(songNamesPosition < 0){
-				songNamesPosition = songNames.length - 1;
-			}
-			String next = songNames[songNamesPosition];
-			song = new File(next);
-			fis = new FileInputStream(song);
-			mp.setDataSource(fis.getFD());
-			mp.prepare();
-			mp.start();
-			TextView et = (TextView) findViewById(R.id.songName);
-			et.setText(song.getName().replaceAll("\\d\\d\\s", "").replaceAll("(\\.mp3)|(\\.m4p)|(\\.m4a)", ""));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private void playPause(){
-		Button pause = (Button) findViewById(R.id.playPause);
-		Log.i(TAG, "Play pause button = " + pause);
-		if (mp.isPlaying()) {
-			mp.pause();
-			if(pause != null){
-				pause.setText("Play");
-			}
-		} else {
-			mp.start();
-			if(pause != null){
-				pause.setText("Pause");
-			}
-		}
-	}
-	
-	private void play(){
-		Button pause = (Button) findViewById(R.id.playPause);
-		Log.i(TAG, "Play pause button = " + pause);
-		if (mp.isPlaying()) {
-			// do nothing
-		} else {
-			mp.start();
-			if(pause != null){
-				pause.setText("Pause");
-			}
-		}
-	}
-	
-	private void pause(){
-		Button pause = (Button) findViewById(R.id.playPause);
-		Log.i(TAG, "Play pause button = " + pause);
-		if (mp.isPlaying()) {
-			mp.pause();
-			if(pause != null){
-				pause.setText("Play");
-			}
-		} else {
-			// do nothing
-		}
-	}
-	
-	private void next(){
-		mp.stop();
-		mp.reset();
-		try {
-			fis.close();
-			songNamesPosition = (songNamesPosition + 1)
-					% songNames.length;
-			String next = songNames[songNamesPosition];
-			song = new File(next);
-			fis = new FileInputStream(song);
-			mp.setDataSource(fis.getFD());
-			mp.prepare();
-			mp.start();
-			TextView et = (TextView) findViewById(R.id.songName);
-			et.setText(song.getName().replaceAll("\\d\\d\\s", "").replaceAll("(\\.mp3)|(\\.m4p)|(\\.m4a)", ""));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private class NotAwfulAudioFocusChangeListener implements AudioManager.OnAudioFocusChangeListener{
 
-	    public void onAudioFocusChange(int focusChange) {
-	    	Log.w(TAG, "Focus change received " + focusChange);
-	        if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT){
-	        	Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT");
-	        	pause();
-	            // Pause playback
-	        } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-	        	Log.i(TAG, "AUDIOFOCUS_GAIN");
-	        	// It bugs the crap out of me when things just start playing on their own.
-	        	// Don't start playing again till someone pushes a friggin' button.
-//	        	play();
-	            // Resume playback 
-	        } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-	            //am.unregisterMediaButtonEventReceiver(RemoteControlReceiver);
-	        	Log.i(TAG, "AUDIOFOCUS_LOSS");
-	            am.abandonAudioFocus(this);
-	            pause();
-	            // Stop playback
-	        } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK){
-	        	Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
-	        	pause();
-	        } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK){
-	        	Log.i(TAG, "AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK");
-	        	play();
-	        }
-	    }
-	}
+
 }

@@ -1,1 +1,4 @@
 *.class
+*.apk
+/bin/*
+gen/com/smith/d/tyler/notawfulmusicplayer/R.java
