@@ -1,20 +1,10 @@
 package com.smith.d.tyler.notawfulmusicplayer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,7 +12,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,10 +24,6 @@ import android.widget.TextView;
 public class NowPlaying extends Activity {
 
 	private static final String TAG = "Now Playing";
-
-	// Stuff from the Android API and listeners
-	private MediaPlayer mp;
-	private BroadcastReceiver receiver;
 
 	// State information
 	private String artistName;
@@ -151,7 +136,6 @@ public class NowPlaying extends Activity {
 		// NowPlaying.class.getName());
 		// mAudioManager.registerMediaButtonEventReceiver(rec);
 
-		mp = new MediaPlayer();
 		// Get the message from the intent
 		Intent intent = getIntent();
 		artistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
@@ -205,47 +189,47 @@ public class NowPlaying extends Activity {
 		
 	}
 	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		switch (keyCode) {
-		case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-			// code for fast forward
-			Log.i(TAG, "key pressed KEYCODE_MEDIA_FAST_FORWARD");
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_NEXT:
-			// code for next
-			Log.i(TAG, "key pressed KEYCODE_MEDIA_NEXT");
-			next();
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-			// code for play/pause
-			Log.i(TAG, "key pressed KEYCODE_MEDIA_PLAY_PAUSE");
-			playPause();
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_PAUSE:
-			// code for play/pause
-			Log.i(TAG, "key pressed KEYCODE_MEDIA_PAUSE");
-			playPause();
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-			Log.i(TAG, "key pressed KEYCODE_MEDIA_PREVIOUS");
-			// code for previous
-			previous();
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_REWIND:
-			Log.i(TAG, "key pressed KEYCODE_MEDIA_REWIND");
-			// code for rewind
-			return true;
-		case KeyEvent.KEYCODE_MEDIA_STOP:
-			Log.i(TAG, "key pressed KEYCODE_MEDIA_STOP");
-			// code for stop
-			return true;
-		default:
-			Log.i(TAG, "key pressed " + keyCode);
-			// code for stop
-			return super.onKeyDown(keyCode, event);
-		}
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		switch (keyCode) {
+//		case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
+//			// code for fast forward
+//			Log.i(TAG, "key pressed KEYCODE_MEDIA_FAST_FORWARD");
+//			return true;
+//		case KeyEvent.KEYCODE_MEDIA_NEXT:
+//			// code for next
+//			Log.i(TAG, "key pressed KEYCODE_MEDIA_NEXT");
+//			next();
+//			return true;
+//		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+//			// code for play/pause
+//			Log.i(TAG, "key pressed KEYCODE_MEDIA_PLAY_PAUSE");
+//			playPause();
+//			return true;
+//		case KeyEvent.KEYCODE_MEDIA_PAUSE:
+//			// code for play/pause
+//			Log.i(TAG, "key pressed KEYCODE_MEDIA_PAUSE");
+//			playPause();
+//			return true;
+//		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+//			Log.i(TAG, "key pressed KEYCODE_MEDIA_PREVIOUS");
+//			// code for previous
+//			previous();
+//			return true;
+//		case KeyEvent.KEYCODE_MEDIA_REWIND:
+//			Log.i(TAG, "key pressed KEYCODE_MEDIA_REWIND");
+//			// code for rewind
+//			return true;
+//		case KeyEvent.KEYCODE_MEDIA_STOP:
+//			Log.i(TAG, "key pressed KEYCODE_MEDIA_STOP");
+//			// code for stop
+//			return true;
+//		default:
+//			Log.i(TAG, "key pressed " + keyCode);
+//			// code for stop
+//			return super.onKeyDown(keyCode, event);
+//		}
+//	}
 	
 	private void playPause(){
 		Log.d(TAG, "Play/Pause clicked...");

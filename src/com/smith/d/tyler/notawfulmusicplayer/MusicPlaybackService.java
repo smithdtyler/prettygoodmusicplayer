@@ -9,11 +9,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -21,22 +21,22 @@ import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
 /**
- * @author tyler TODO register for broadcast media button messages
+ * TODO make foreground
  */
 public class MusicPlaybackService extends Service {
 
+	// Idea - let's set up a timer task 
+	
 	private FileInputStream fis;
 	private File songFile;
 	private String[] songAbsoluteFileNames;
@@ -49,6 +49,9 @@ public class MusicPlaybackService extends Service {
 	private static final String TAG = "MusicPlaybackService";
 	private NotificationManager nm;
 	private static boolean isRunning = false;
+	
+	public AudioManager mAudioManager;
+	public ComponentName mComponentName;
 
 	private OnAudioFocusChangeListener audioFocusListener = new NotAwfulAudioFocusChangeListener();
 
@@ -151,13 +154,33 @@ public class MusicPlaybackService extends Service {
             }
         };
         registerReceiver(receiver, filter);
+        
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mComponentName = new ComponentName(getPackageName(), MusicBroadcastReceiver.class.getName());
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
 		Log.i("MyService", "Received start id " + startId + ": " + intent);
-
+		int command = intent.getIntExtra("Message", -1);
+		if(command != -1){
+			Log.i(TAG, "I got a message! " + command);
+			if(command == MSG_PLAYPAUSE){
+				Log.i(TAG, "I got a playpause message");
+				playPause();
+			} else if(command == MSG_NEXT){
+				Log.i(TAG, "I got a next message");
+				next();
+			} else if(command == MSG_PREVIOUS){
+				Log.i(TAG, "I got a previous message");
+				previous();
+			}
+			return START_STICKY;
+		}
+		Log.d(TAG, "registerMediaButtonReceiver()");
+        mAudioManager.registerMediaButtonEventReceiver(mComponentName);
+		
 		// For each start request, send a message to start a job and deliver the
 		// start ID so we know which request we're stopping when we finish the
 		// job
@@ -346,7 +369,6 @@ public class MusicPlaybackService extends Service {
 	}
 
 	private void play() {
-
 		if (mp.isPlaying()) {
 			// do nothing
 		} else {
@@ -373,13 +395,8 @@ public class MusicPlaybackService extends Service {
 	}
 
 	private void pause() {
-		// Button pause = (Button) findViewById(R.id.playPause);
-		// Log.i(TAG, "Play pause button = " + pause);
 		if (mp.isPlaying()) {
 			mp.pause();
-			// if (pause != null) {
-			// pause.setText("Play");
-			// }
 		} else {
 			// do nothing
 		}
@@ -446,6 +463,5 @@ public class MusicPlaybackService extends Service {
 			// do something based on the intent's action
 		}
 	}
-//	registerReceiver(receiver, filter);
 
 }
