@@ -68,6 +68,9 @@ public class MusicPlaybackService extends Service {
 	static final int MSG_NEXT = 4;
 	static final int MSG_PREVIOUS = 5;
 	static final int MSG_SET_PLAYLIST = 6;
+	
+	// State management
+	static final int MSG_REQUEST_STATE = 7;
 
 	final Messenger mMessenger = new Messenger(new IncomingHandler());
 	// Target we publish for clients to send messages to IncomingHandler.
@@ -242,6 +245,9 @@ public class MusicPlaybackService extends Service {
 						.replaceAll("(\\.mp3)|(\\.m4p)|(\\.m4a)", "");
 				Log.i(TAG, "The song is " + songName);
 				setPlaylist();
+				break;
+			case MSG_REQUEST_STATE:
+				Log.i(TAG, "Got a state request message!");
 				break;
 			default:
 				super.handleMessage(msg);
