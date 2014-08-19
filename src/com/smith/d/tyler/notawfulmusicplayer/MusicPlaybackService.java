@@ -34,9 +34,18 @@ import android.widget.Toast;
  * TODO make foreground
  */
 public class MusicPlaybackService extends Service {
-
-	// Idea - let's set up a timer task 
+	static final int MSG_REGISTER_CLIENT = 1;
+	static final int MSG_UNREGISTER_CLIENT = 2;
 	
+	// Playback control
+	static final int MSG_PLAYPAUSE = 3;
+	static final int MSG_NEXT = 4;
+	static final int MSG_PREVIOUS = 5;
+	static final int MSG_SET_PLAYLIST = 6;
+	
+	// State management
+	static final int MSG_REQUEST_STATE = 7;
+
 	private FileInputStream fis;
 	private File songFile;
 	private String[] songAbsoluteFileNames;
@@ -60,22 +69,10 @@ public class MusicPlaybackService extends Service {
 															// registered
 															// clients.
 	int mValue = 0; // Holds last value set by a client.
-	static final int MSG_REGISTER_CLIENT = 1;
-	static final int MSG_UNREGISTER_CLIENT = 2;
-
-	// Playback control
-	static final int MSG_PLAYPAUSE = 3;
-	static final int MSG_NEXT = 4;
-	static final int MSG_PREVIOUS = 5;
-	static final int MSG_SET_PLAYLIST = 6;
-	
-	// State management
-	static final int MSG_REQUEST_STATE = 7;
 
 	final Messenger mMessenger = new Messenger(new IncomingHandler());
 	// Target we publish for clients to send messages to IncomingHandler.
-	private int unique;
-	private BroadcastReceiver receiver;
+	private int unique; // TODO handle this better
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -140,23 +137,6 @@ public class MusicPlaybackService extends Service {
 		// Get the HandlerThread's Looper and use it for our Handler
 		mServiceLooper = thread.getLooper();
 		mServiceHandler = new ServiceHandler(mServiceLooper);
-
-		// I think we have to do this via manifest
-		IntentFilter filter = new IntentFilter();
-		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY - 1);
-		filter.addAction("android.intent.action.MEDIA_BUTTON");
-		
-		receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-            	Log.i(TAG, "Received a thing!");
-                String action = intent.getAction();
-                if(action.equals("android.intent.action.MEDIA_BUTTON")){
-                    Log.e("test", "ok");
-                }
-            }
-        };
-        registerReceiver(receiver, filter);
         
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mComponentName = new ComponentName(getPackageName(), MusicBroadcastReceiver.class.getName());
@@ -352,16 +332,12 @@ public class MusicPlaybackService extends Service {
 			mp.setDataSource(fis.getFD());
 			mp.prepare();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -458,15 +434,6 @@ public class MusicPlaybackService extends Service {
 				Log.i(TAG, "AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK");
 				play();
 			}
-		}
-	}
-	
-	public static class MusicPlaybackReceiver extends BroadcastReceiver {
-		
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			Log.i(TAG, "received a broadcast: " + intent);
-			// do something based on the intent's action
 		}
 	}
 
