@@ -12,15 +12,12 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
 // TODO track progress in the song.
-// TODO organize this source code so it's in some kind of reasonable order
 public class NowPlaying extends Activity {
 
 	private static final String TAG = "Now Playing";
@@ -30,111 +27,26 @@ public class NowPlaying extends Activity {
 	private String albumName;
 	private String[] songNames;
 	private int songNamesPosition;
-	private Messenger mService;
+
+	// Messaging and service stuff
 	boolean mIsBound;
-	
+	private Messenger mService;
 	final Messenger mMessenger = new Messenger(new IncomingHandler());
-
-	void doBindService() {
-		Log.i(TAG, "Binding to the service!");
-		bindService(new Intent(this, MusicPlaybackService.class), mConnection,
-				Context.BIND_IMPORTANT | Context.BIND_AUTO_CREATE);
-		mIsBound = true;
-		// Need to start the service so it won't be stopped when this activity is destroyed.
-		// https://developer.android.com/guide/components/bound-services.html
-		startService(new Intent(this, MusicPlaybackService.class));
-	}
-
-	void doUnbindService() {
-		Log.i(TAG, "Unbinding the service!");
-		if (mIsBound) {
-			// If we have received the service, and hence registered with it,
-			// then now is the time to unregister.
-			if (mService != null) {
-				try {
-					Message msg = Message.obtain(null,
-							MusicPlaybackService.MSG_UNREGISTER_CLIENT);
-					msg.replyTo = mMessenger;
-					mService.send(msg);
-				} catch (RemoteException e) {
-					// There is nothing special we need to do if the service has
-					// crashed.
-				}
-			}
-			
-			// Detach our existing connection.
-			unbindService(mConnection);
-			mIsBound = false;
-		}
-	}
-
-	private static class IncomingHandler extends Handler {
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			default:
-				super.handleMessage(msg);
-			}
-		}
-	}
-
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			mService = new Messenger(service);
-			// textStatus.setText("Attached.");
-			try {
-				Message msg = Message.obtain(null,
-						MusicPlaybackService.MSG_REGISTER_CLIENT);
-				msg.replyTo = mMessenger;
-				mService.send(msg);
-			} catch (RemoteException e) {
-				// In this case the service has crashed before we could even do
-				// anything with it
-			}
-			
-			// set the playlist
-	        Message msg = Message.obtain(null, MusicPlaybackService.MSG_SET_PLAYLIST);
-	        msg.getData().putStringArray(SongList.SONG_LIST, songNames);
-	        msg.getData().putInt(SongList.SONG_LIST_POSITION, songNamesPosition);
-	        try {
-	        	Log.i(TAG, "Sending a playlist!");
-				mService.send(msg);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-	        
-			// start playing!
-	        msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
-	        try {
-	        	Log.i(TAG, "Sending a playlist!");
-				mService.send(msg);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			// This is called when the connection with the service has been
-			// unexpectedly disconnected - process crashed.
-			mService = null; // TODO need to do some null checks
-		}
-	};
-
+	private ServiceConnection mConnection = new NowPlayingServiceConnection();
+	
+	// TODO in this class, keep track of the "desired state" and the "known state" of the system. 
+	// That means if the user presses "play" the desired state should be "play"
+	// When we get a state message from the service, we can see if the service's state matches our desired state, and update it accordingly. 
+	// Since we have multiple control vectors (remote or screen) we may need to adapt a little to handle concurrent selections (e.g. "screen takes precedence").
+	
+	// TODO whenever this activity has focus (e.g. onResume) we should create a timer task which pings the service for its state. 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_now_playing);
 		
 		doBindService();
-
-		// Trying this approach to register for media button presses...
-		// https://stackoverflow.com/questions/10154118/listen-to-volume-buttons-in-background-service
-		// AudioManager mAudioManager = (AudioManager)
-		// getSystemService(Context.AUDIO_SERVICE);
-		// ComponentName rec = new ComponentName(getPackageName(),
-		// NowPlaying.class.getName());
-		// mAudioManager.registerMediaButtonEventReceiver(rec);
 
 		// Get the message from the intent
 		Intent intent = getIntent();
@@ -188,54 +100,19 @@ public class NowPlaying extends Activity {
 		});
 		
 	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unbindService(mConnection);
+	}
 	
-//	@Override
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//		switch (keyCode) {
-//		case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-//			// code for fast forward
-//			Log.i(TAG, "key pressed KEYCODE_MEDIA_FAST_FORWARD");
-//			return true;
-//		case KeyEvent.KEYCODE_MEDIA_NEXT:
-//			// code for next
-//			Log.i(TAG, "key pressed KEYCODE_MEDIA_NEXT");
-//			next();
-//			return true;
-//		case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-//			// code for play/pause
-//			Log.i(TAG, "key pressed KEYCODE_MEDIA_PLAY_PAUSE");
-//			playPause();
-//			return true;
-//		case KeyEvent.KEYCODE_MEDIA_PAUSE:
-//			// code for play/pause
-//			Log.i(TAG, "key pressed KEYCODE_MEDIA_PAUSE");
-//			playPause();
-//			return true;
-//		case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-//			Log.i(TAG, "key pressed KEYCODE_MEDIA_PREVIOUS");
-//			// code for previous
-//			previous();
-//			return true;
-//		case KeyEvent.KEYCODE_MEDIA_REWIND:
-//			Log.i(TAG, "key pressed KEYCODE_MEDIA_REWIND");
-//			// code for rewind
-//			return true;
-//		case KeyEvent.KEYCODE_MEDIA_STOP:
-//			Log.i(TAG, "key pressed KEYCODE_MEDIA_STOP");
-//			// code for stop
-//			return true;
-//		default:
-//			Log.i(TAG, "key pressed " + keyCode);
-//			// code for stop
-//			return super.onKeyDown(keyCode, event);
-//		}
-//	}
-	
+	// Playback control methods
 	private void playPause(){
 		Log.d(TAG, "Play/Pause clicked...");
         Message msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
         try {
-        	Log.i(TAG, "SEnding a request to start playing!");
+        	Log.i(TAG, "Sending a request to start playing!");
 			mService.send(msg);
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -263,30 +140,94 @@ public class NowPlaying extends Activity {
 			e.printStackTrace();
 		}
 	}
+	
+	// Service connection management
+	private class NowPlayingServiceConnection implements ServiceConnection {
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.now_playing, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
+		public void onServiceConnected(ComponentName className, IBinder service) {
+			mService = new Messenger(service);
+			// textStatus.setText("Attached.");
+			try {
+				Message msg = Message.obtain(null,
+						MusicPlaybackService.MSG_REGISTER_CLIENT);
+				msg.replyTo = mMessenger;
+				mService.send(msg);
+			} catch (RemoteException e) {
+				// In this case the service has crashed before we could even do
+				// anything with it
+			}
+			
+			// set the playlist
+	        Message msg = Message.obtain(null, MusicPlaybackService.MSG_SET_PLAYLIST);
+	        msg.getData().putStringArray(SongList.SONG_LIST, songNames);
+	        msg.getData().putInt(SongList.SONG_LIST_POSITION, songNamesPosition);
+	        try {
+	        	Log.i(TAG, "Sending a playlist!");
+				mService.send(msg);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+	        
+			// start playing!
+	        msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
+	        try {
+	        	Log.i(TAG, "Sending a playlist!");
+				mService.send(msg);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 		}
-		return super.onOptionsItemSelected(item);
+
+		public void onServiceDisconnected(ComponentName className) {
+			// This is called when the connection with the service has been
+			// unexpectedly disconnected - process crashed.
+			mService = null; // TODO need to do some null checks
+		}
+	};
+	
+	private static class IncomingHandler extends Handler {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			// TODO handle a state message from the service (e.g. I'm playing)
+			default:
+				super.handleMessage(msg);
+			}
+		}
+	}
+	
+	// Service Management Methods
+	void doBindService() {
+		Log.i(TAG, "Binding to the service!");
+		bindService(new Intent(this, MusicPlaybackService.class), mConnection,
+				Context.BIND_IMPORTANT | Context.BIND_AUTO_CREATE);
+		mIsBound = true;
+		// Need to start the service so it won't be stopped when this activity is destroyed.
+		// https://developer.android.com/guide/components/bound-services.html
+		startService(new Intent(this, MusicPlaybackService.class));
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		unbindService(mConnection);
+	void doUnbindService() {
+		Log.i(TAG, "Unbinding the service!");
+		if (mIsBound) {
+			// If we have received the service, and hence registered with it,
+			// then now is the time to unregister.
+			if (mService != null) {
+				try {
+					Message msg = Message.obtain(null,
+							MusicPlaybackService.MSG_UNREGISTER_CLIENT);
+					msg.replyTo = mMessenger;
+					mService.send(msg);
+				} catch (RemoteException e) {
+					// There is nothing special we need to do if the service has
+					// crashed.
+				}
+			}
+			
+			// Detach our existing connection.
+			unbindService(mConnection);
+			mIsBound = false;
+		}
 	}
 
 
