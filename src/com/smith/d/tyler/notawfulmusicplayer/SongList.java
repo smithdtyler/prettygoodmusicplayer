@@ -38,20 +38,32 @@ public class SongList extends Activity {
 			Log.d(TAG, "external storage directory = " + album);
 			
 			for(File song : album.listFiles()){
-				songFiles.add(song);
+				if(Utils.isValidSongFile(song)){
+					songFiles.add(song);
+				} else {
+					Log.v(TAG, "Found invalid song file " + song);
+				}
 			}
+			
 		} else {
+			// If the album didn't exist, just list all of the songs we can find.
 			// Assume we don't need full recursion
+			// TODO for the all song view, sort albums but not all together.
 			Log.d(TAG, "Adding all songs...");
 			for(File albumFile : artistDir.listFiles()){
 				if(albumFile.isDirectory()){
 					for(File song : albumFile.listFiles()){
-						songFiles.add(song);
+						if(Utils.isValidSongFile(song)){
+							songFiles.add(song);
+						} else {
+							Log.v(TAG, "Found invalid song file " + song);
+						}
 					}
 				}
 			}
 		}
 		
+		// We assume that song files start with XX where XX is a number indicating the songs location within an album. 
 		Collections.sort(songFiles, new Comparator<File>(){
 
 			@Override
@@ -61,14 +73,13 @@ public class SongList extends Activity {
 			
 		});
 		
-		// TODO filter songs which don't have the proper file extensions
 		for(File song : songFiles){
 			Log.v(TAG, "Adding song " + song);
 			Map<String,String> map = new HashMap<String, String>();
-			
-			map.put("song", song.getName().replaceAll("\\d\\d\\s", "").replaceAll("(\\.mp3)|(\\.m4p)|(\\.m4a)", ""));			
+			map.put("song", Utils.getPrettySongName(song));			
 			songs.add(map);
 		}
+		
 		songList = new ArrayList<String>();
 		for(File song : songFiles){
 			songList.add(song.getAbsolutePath());

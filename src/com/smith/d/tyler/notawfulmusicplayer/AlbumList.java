@@ -32,11 +32,14 @@ public class AlbumList extends Activity {
 		
 		File artist = new File(artistPath);
 		Log.d(TAG, "storage directory = " + artist);
-		// TODO add 'all' 
 		
 		List<File> albumFiles = new ArrayList<File>();
 		for(File albumFile : artist.listFiles()){
-			albumFiles.add(albumFile);
+			if(Utils.isValidAlbumDirectory(albumFile)){
+				albumFiles.add(albumFile);
+			} else {
+				Log.v(TAG, "Found invalid album " + albumFile);
+			}
 		}
 		
 		Collections.sort(albumFiles, new Comparator<File>(){

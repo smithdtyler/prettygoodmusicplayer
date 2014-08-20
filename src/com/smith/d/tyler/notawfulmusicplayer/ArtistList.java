@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,6 +16,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -25,7 +27,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-public class ArtistList extends Activity {
+@SuppressLint("DefaultLocale") public class ArtistList extends Activity {
 	private static final String TAG = "Artist List";
 	public static final String ARTIST_NAME = "ARTIST_NAME";
 	public static final String ARTISTS_DIR = "ARTIST_DIRECTORY";
@@ -45,7 +47,7 @@ public class ArtistList extends Activity {
 		
 		List<String> artistDirs = new ArrayList<String>();
 		for(File dir : f.listFiles()){
-			if(dir.isDirectory()){
+			if(Utils.isValidArtistDirectory(dir)){
 				artistDirs.add(dir.getName());
 			}
 		}
@@ -61,6 +63,7 @@ public class ArtistList extends Activity {
 		
 		for(String artist : artistDirs){
 			Log.v(TAG, "Adding artist " + artist);
+			// listview requires a map
 			Map<String,String> map = new HashMap<String, String>();
 			map.put("artist", artist);			
 			artists.add(map);
@@ -72,8 +75,8 @@ public class ArtistList extends Activity {
 		super.onResume();
         SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
         prefs.edit();
-        //String prefDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
-        String prefDir = prefs.getString(ARTISTS_DIR, "peanuts");
+        String prefDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
+//        String prefDir = prefs.getString(ARTISTS_DIR, "peanuts");
         if(!prefDir.equals(baseDir)){
         	baseDir = prefDir;
         	populateArtists(baseDir);
@@ -91,8 +94,8 @@ public class ArtistList extends Activity {
 		super.onStart();
         SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
         Log.i(TAG, "Preferences " + prefs + " " + ((Object)prefs));
-//        baseDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
-        baseDir = prefs.getString(ARTISTS_DIR, "cashews");
+        baseDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
+//        baseDir = prefs.getString(ARTISTS_DIR, "cashews");
         Log.d(TAG, "Got configured base directory of " + baseDir);
 
         populateArtists(baseDir);
@@ -109,15 +112,7 @@ public class ArtistList extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_list);
 
-//        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-//        String baseDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
-//        Log.d(TAG, "Got configured base directory of " + baseDir);
-//
-//        populateArtists(baseDir);
-//        
-//        simpleAdpt = new SimpleAdapter(this, artists, android.R.layout.simple_list_item_1, new String[] {"artist"}, new int[] {android.R.id.text1});
         ListView lv = (ListView) findViewById(R.id.artistListView);
-//        lv.setAdapter(simpleAdpt);
         
         // React to user clicks on item
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -161,7 +156,6 @@ public class ArtistList extends Activity {
     // eat it.
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
     	Log.i(TAG, " handling on key down");
         switch(keyCode)
         {
