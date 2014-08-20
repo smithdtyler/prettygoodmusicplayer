@@ -47,7 +47,13 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <service android:name=".MusicPlaybackService"></service>
+        <service android:name=".MusicPlaybackService">
+        </service>
+            <receiver android:name=".MusicBroadcastReceiver" android:enabled="true">
+    			<intent-filter android:priority="2147483647" >
+        		<action android:name="android.intent.action.MEDIA_BUTTON" />
+    		</intent-filter>
+			</receiver>
     </application>
 
 </manifest>
