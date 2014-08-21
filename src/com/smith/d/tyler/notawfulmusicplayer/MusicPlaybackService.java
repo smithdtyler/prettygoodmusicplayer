@@ -10,13 +10,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
@@ -28,7 +28,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * TODO make foreground
@@ -45,6 +44,11 @@ public class MusicPlaybackService extends Service {
 	
 	// State management
 	static final int MSG_REQUEST_STATE = 7;
+	
+	public enum PlaybackState{
+		PLAYING,
+		PAUSED
+	}
 
 	private FileInputStream fis;
 	private File songFile;
@@ -59,9 +63,6 @@ public class MusicPlaybackService extends Service {
 	private NotificationManager nm;
 	private static boolean isRunning = false;
 	
-	public AudioManager mAudioManager;
-	public ComponentName mComponentName;
-
 	private OnAudioFocusChangeListener audioFocusListener = new NotAwfulAudioFocusChangeListener();
 
 	List<Messenger> mClients = new ArrayList<Messenger>(); // Keeps track of all
@@ -82,29 +83,13 @@ public class MusicPlaybackService extends Service {
 
 		@Override
 		public void handleMessage(Message msg) {
-			Log.i(TAG, "Got message!");
-			// Normally we would do some work here, like download a file.
-			// For our sample, we just sleep for 5 seconds.
-			long endTime = System.currentTimeMillis() + 5 * 1000;
-			while (System.currentTimeMillis() < endTime) {
-				synchronized (this) {
-					try {
-						wait(endTime - System.currentTimeMillis());
-					} catch (Exception e) {
-					}
-				}
-			}
-			// Stop the service using the startId, so that we don't stop
-			// the service in the middle of handling another job
-			// TODO it's not entirely clear to me why we do this.
-			// stopSelf(msg.arg1);
+			Log.i(TAG, "ServiceHandler got a message!" + msg);
 		}
 	}
 
 	@Override
 	public void onCreate() {
 		Log.i(TAG, "Music Playback Service Created!");
-		showNotification();
 		// timer.scheduleAtFixedRate(new TimerTask(){ public void run()
 		// {onTimerTick();}}, 0, 100L);
 		isRunning = true;
@@ -138,13 +123,19 @@ public class MusicPlaybackService extends Service {
 		mServiceLooper = thread.getLooper();
 		mServiceHandler = new ServiceHandler(mServiceLooper);
         
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        mComponentName = new ComponentName(getPackageName(), MusicBroadcastReceiver.class.getName());
+        // TODO fix the deprecated stuff
+        Notification notification = new Notification(R.drawable.icon, getText(R.string.ticker_text),
+                System.currentTimeMillis());
+        Intent notificationIntent = new Intent(this, MusicPlaybackService.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        notification.setLatestEventInfo(this, getText(R.string.notification_title),
+                getText(R.string.notification_message), pendingIntent);
+        String source = "Music Playback Service";
+        startForeground(source.hashCode(), notification);
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
 		Log.i("MyService", "Received start id " + startId + ": " + intent);
 		int command = intent.getIntExtra("Message", -1);
 		if(command != -1){
@@ -161,12 +152,13 @@ public class MusicPlaybackService extends Service {
 			}
 			return START_STICKY;
 		}
-		Log.d(TAG, "registerMediaButtonReceiver()");
-        mAudioManager.registerMediaButtonEventReceiver(mComponentName);
 		
 		// For each start request, send a message to start a job and deliver the
 		// start ID so we know which request we're stopping when we finish the
 		// job
+		// TODO I don't think we actually need to do this, since my ServiceHandler doesn't
+		// actually do anything - there aren't any long running tasks to handle, since the
+		// music player takes care of everything.
 		Message msg = mServiceHandler.obtainMessage();
 		msg.arg1 = startId;
 		mServiceHandler.sendMessage(msg);
@@ -257,32 +249,6 @@ public class MusicPlaybackService extends Service {
 		// mClients.remove(i);
 		// }
 		// }
-	}
-
-	private void showNotification() {
-		// TODO showing a notification requires more than just garbage text,
-		// apparently.
-		// nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		// // In this sample, we'll use the same text for the ticker and the
-		// // expanded notification
-		// CharSequence text = "Service started yo";
-		// // Set the icon, scrolling text and timestamp
-		// Notification notification = new Notification(R.drawable.icon, text,
-		// System.currentTimeMillis());
-		// // The PendingIntent to launch our activity if the user selects this
-		// // notification
-		// // PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-		// new
-		// // Intent(this, MainActivity.class), 0);
-		// // Set the info for the views that show in the notification panel.
-		// // notification.setLatestEventInfo(this,
-		// // getText(R.string.service_label), text, contentIntent);
-		// // Send the notification.
-		// // We use a layout id because it is a unique number. We use it later
-		// to
-		// // cancel.
-		// unique = (int) System.currentTimeMillis();
-		// nm.notify("started", unique, notification);
 	}
 
 	public static boolean isRunning() {

@@ -1,5 +1,7 @@
 package com.smith.d.tyler.notawfulmusicplayer;
 
+import com.smith.d.tyler.notawfulmusicplayer.MusicPlaybackService.PlaybackState;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,8 +21,14 @@ import android.widget.TextView;
 
 // TODO track progress in the song.
 public class NowPlaying extends Activity {
-
+	
 	private static final String TAG = "Now Playing";
+	
+	private PlaybackState desiredState;
+	
+	private PlaybackState serviceReportedState;
+	private String serviceReportedAlbum;
+	private String serviceReportedSong;
 
 	// State information
 	private String artistName;

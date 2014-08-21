@@ -10,5 +10,8 @@
     <string name="title_activity_album_list">AlbumList</string>
     <string name="title_activity_song_list">SongList</string>
     <string name="title_activity_now_playing">NowPlaying</string>
-
+    <string name="notification_title">Music Playback Service</string>
+    <string name="notification_message">Running the Music Playback Service</string>
+	<string name="ticker_text">Music Playback Service</string>
+    
 </resources>
