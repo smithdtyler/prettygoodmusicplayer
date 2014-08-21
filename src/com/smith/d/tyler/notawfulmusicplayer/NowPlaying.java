@@ -1,7 +1,5 @@
 package com.smith.d.tyler.notawfulmusicplayer;
 
-import com.smith.d.tyler.notawfulmusicplayer.MusicPlaybackService.PlaybackState;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -17,7 +15,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.smith.d.tyler.notawfulmusicplayer.MusicPlaybackService.PlaybackState;
 
 // TODO track progress in the song.
 public class NowPlaying extends Activity {
@@ -73,9 +74,8 @@ public class NowPlaying extends Activity {
 
 		et = (TextView) findViewById(R.id.albumName);
 		et.setText(albumName);
-
-		et = (TextView) findViewById(R.id.songName);
-		et.setText(songName);
+		
+		// The song name field will be set when we get our first update update from the service.
 
 		final Button pause = (Button) findViewById(R.id.playPause);
 		pause.setOnClickListener(new OnClickListener() {
@@ -104,9 +104,7 @@ public class NowPlaying extends Activity {
 			public void onClick(View v) {
 				next();
 			}
-
 		});
-		
 	}
 
 	@Override
@@ -154,7 +152,8 @@ public class NowPlaying extends Activity {
 
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			mService = new Messenger(service);
-			// textStatus.setText("Attached.");
+			
+			// Register with the service
 			try {
 				Message msg = Message.obtain(null,
 						MusicPlaybackService.MSG_REGISTER_CLIENT);
@@ -193,11 +192,38 @@ public class NowPlaying extends Activity {
 		}
 	};
 	
-	private static class IncomingHandler extends Handler {
+	private class IncomingHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
+			// TODO should minimize GUI access here as much as possible.
 			switch (msg.what) {
-			// TODO handle a state message from the service (e.g. I'm playing)
+			case MusicPlaybackService.MSG_SERVICE_STATUS:
+				//Log.v(TAG, "Got a status message!");
+				String currentSongName = msg.getData().getString(MusicPlaybackService.SONG_NAME);
+				TextView et = (TextView) findViewById(R.id.songName);
+				if(!et.getText().equals(currentSongName)){
+					et.setText(currentSongName);
+				}
+				
+				PlaybackState state = PlaybackState.values()[msg.getData().getInt(MusicPlaybackService.PLAYBACK_STATE, 0)];
+				Button playPause = (Button)findViewById(R.id.playPause);
+				if(playPause.getText().equals("Play")){
+					if(state == PlaybackState.PLAYING){
+						playPause.setText("Pause");
+					}
+				} else {
+					if(state == PlaybackState.PAUSED){
+						playPause.setText("Play");
+					}
+				}
+				int duration = msg.getData().getInt(MusicPlaybackService.TRACK_DURATION, -1);
+				int position = msg.getData().getInt(MusicPlaybackService.TRACK_POSITION, -1);
+				if(duration > 0){
+					SeekBar seekBar = (SeekBar)findViewById(R.id.seekBar1);
+					seekBar.setMax(duration);
+					seekBar.setProgress(position);
+				}
+				break;
 			default:
 				super.handleMessage(msg);
 			}

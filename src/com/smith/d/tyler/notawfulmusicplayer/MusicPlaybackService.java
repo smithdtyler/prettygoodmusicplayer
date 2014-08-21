@@ -9,24 +9,27 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.RemoteException;
 import android.util.Log;
 
 /**
@@ -45,15 +48,25 @@ public class MusicPlaybackService extends Service {
 	// State management
 	static final int MSG_REQUEST_STATE = 7;
 	
+	static final int MSG_SERVICE_STATUS = 8;
+
 	public enum PlaybackState{
 		PLAYING,
 		PAUSED
 	}
+	
+	static final String SONG_NAME = "SONG_NAME";
+	static final String ALBUM_NAME = "ALBUM_NAME";
+	static final String PLAYBACK_STATE = "PLAYBACK_STATE";
+	static final String TRACK_DURATION = "TRACK_DURATION";
+	static final String TRACK_POSITION = "TRACK_POSITION";
 
 	private FileInputStream fis;
 	private File songFile;
 	private String[] songAbsoluteFileNames;
 	private int songAbsoluteFileNamesPosition;
+	
+	private Timer timer;
 
 	private AudioManager am;
 	private Looper mServiceLooper;
@@ -132,6 +145,9 @@ public class MusicPlaybackService extends Service {
                 getText(R.string.notification_message), pendingIntent);
         String source = "Music Playback Service";
         startForeground(source.hashCode(), notification);
+        
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask(){ public void run() {onTimerTick();}}, 0, 500L);
 	}
 
 	@Override
@@ -227,28 +243,34 @@ public class MusicPlaybackService extends Service {
 		}
 	}
 
-	private void sendMessageToUI(int intvaluetosend) {
-		// for (int i = mClients.size() - 1; i >= 0; i--) {
-		// try {
-		// Send data as an Integer
-		// mClients.get(i).send(
-		// Message.obtain(null, MSG_SET_INT_VALUE, intvaluetosend,
-		// 0));
-		//
-		// // Send data as a String
-		// Bundle b = new Bundle();
-		// b.putString("str1", "ab" + intvaluetosend + "cd");
-		// Message msg = Message.obtain(null, MSG_SET_STRING_VALUE);
-		// msg.setData(b);
-		// mClients.get(i).send(msg);
-
-		// } catch (RemoteException e) {
-		// // The client is dead. Remove it from the list; we are going
-		// // through the list from back to front so this is safe to do
-		// // inside the loop.
-		// mClients.remove(i);
-		// }
-		// }
+	private void onTimerTick(){
+		sendUpdateToClients();
+	}
+	
+	private void sendUpdateToClients() {
+		
+		for(Messenger client : mClients){
+			Message msg = Message.obtain(null, MSG_SERVICE_STATUS);
+			Bundle b = new Bundle();
+			b.putString(SONG_NAME, songFile.getName());
+			if(mp.isPlaying()){
+				b.putInt(PLAYBACK_STATE, PlaybackState.PLAYING.ordinal());
+			} else {
+				b.putInt(PLAYBACK_STATE, PlaybackState.PAUSED.ordinal());
+			}
+			if(mp.isPlaying()){
+				b.putInt(TRACK_DURATION, mp.getDuration());
+				b.putInt(TRACK_POSITION, mp.getCurrentPosition());				
+			}
+			msg.setData(b);
+			try {
+				client.send(msg);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+				// TODO remove the client
+				// have to use a proper iterator to do this, so we don't get another exception
+			}
+		}
 	}
 
 	public static boolean isRunning() {
@@ -349,7 +371,7 @@ public class MusicPlaybackService extends Service {
 			// do nothing
 		}
 	}
-
+	
 	// TODO synchronize on these functions to avoid starting two songs at once.
 	private void next() {
 		mp.stop();
