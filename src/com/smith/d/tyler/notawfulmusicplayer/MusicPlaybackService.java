@@ -50,6 +50,8 @@ public class MusicPlaybackService extends Service {
 	
 	static final int MSG_SERVICE_STATUS = 8;
 
+	static final int MSG_STOP = 9;
+
 	public enum PlaybackState{
 		PLAYING,
 		PAUSED
@@ -75,6 +77,8 @@ public class MusicPlaybackService extends Service {
 	private static final String TAG = "MusicPlaybackService";
 	private NotificationManager nm;
 	private static boolean isRunning = false;
+	
+	private static int id = new String("Music Playback Service").hashCode();
 	
 	private OnAudioFocusChangeListener audioFocusListener = new NotAwfulAudioFocusChangeListener();
 
@@ -143,8 +147,7 @@ public class MusicPlaybackService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification.setLatestEventInfo(this, getText(R.string.notification_title),
                 getText(R.string.notification_message), pendingIntent);
-        String source = "Music Playback Service";
-        startForeground(source.hashCode(), notification);
+        startForeground(id, notification);
         
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask(){ public void run() {onTimerTick();}}, 0, 500L);
@@ -165,6 +168,13 @@ public class MusicPlaybackService extends Service {
 			} else if(command == MSG_PREVIOUS){
 				Log.i(TAG, "I got a previous message");
 				previous();
+			} else if(command == MSG_STOP){
+				Log.i(TAG, "I got a stop message");
+				mp.stop();
+				mp.reset();
+				mp.release();
+				stopForeground(true);
+				stopSelf();
 			}
 			return START_STICKY;
 		}
@@ -180,8 +190,6 @@ public class MusicPlaybackService extends Service {
 		mServiceHandler.sendMessage(msg);
 		// If we get killed, after returning from here, restart
 		return START_STICKY;
-		// TODO make this a foreground service.
-		
 	}
 
 	@Override
@@ -192,8 +200,6 @@ public class MusicPlaybackService extends Service {
 	// Receives messages from activities which want to control the jams
 	class IncomingHandler extends Handler { // Handler of incoming messages from
 											// clients.
-		private String songName;
-
 		@Override
 		public void handleMessage(Message msg) {
 			Log.i(TAG, "Music Playback service got a message!");
@@ -229,10 +235,7 @@ public class MusicPlaybackService extends Service {
 						SongList.SONG_ABS_FILE_NAME_LIST_POSITION);
 				songFile = new File(
 						songAbsoluteFileNames[songAbsoluteFileNamesPosition]);
-				songName = songFile.getName().replaceAll("\\d\\d\\s", "")
-						.replaceAll("(\\.mp3)|(\\.m4p)|(\\.m4a)", "");
-				Log.i(TAG, "The song is " + songName);
-				setPlaylist();
+				startPlayingFile();
 				break;
 			case MSG_REQUEST_STATE:
 				Log.i(TAG, "Got a state request message!");
@@ -307,8 +310,9 @@ public class MusicPlaybackService extends Service {
 		}
 	}
 
-	private void setPlaylist() {
-		if (mp.isPlaying()) {
+	private void startPlayingFile() {
+		// Have we loaded a file yet?
+		if(mp.getDuration() > 0){
 			pause();
 			mp.stop();
 			mp.reset();

@@ -76,18 +76,32 @@ import android.widget.TextView;
         SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
         prefs.edit();
         String prefDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
-//        String prefDir = prefs.getString(ARTISTS_DIR, "peanuts");
+        ListView lv = (ListView) findViewById(R.id.artistListView);
         if(!prefDir.equals(baseDir)){
         	baseDir = prefDir;
         	populateArtists(baseDir);
             
             simpleAdpt = new SimpleAdapter(this, artists, android.R.layout.simple_list_item_1, new String[] {"artist"}, new int[] {android.R.id.text1});
-            ListView lv = (ListView) findViewById(R.id.artistListView);
             lv.setAdapter(simpleAdpt);
+        }
+        int top = prefs.getInt("ARTIST_LIST_TOP", -1);
+        int index = prefs.getInt("ARTIST_LIST_INDEX", -1);
+        if(top > 0 && index > 0){
+        	lv.setSelectionFromTop(index, top);
         }
 	}
 
-
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// save index and top position
+        SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
+		ListView lv = (ListView) findViewById(R.id.artistListView);
+		int index = lv.getFirstVisiblePosition();
+		View v = lv.getChildAt(0);
+		int top = (v == null) ? 0 : v.getTop();
+		prefs.edit().putInt("ARTIST_LIST_TOP", top).putInt("ARTIST_LIST_INDEX",index).commit();
+	}
 
 	@Override
 	protected void onStart() {
@@ -95,7 +109,6 @@ import android.widget.TextView;
         SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
         Log.i(TAG, "Preferences " + prefs + " " + ((Object)prefs));
         baseDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
-//        baseDir = prefs.getString(ARTISTS_DIR, "cashews");
         Log.d(TAG, "Got configured base directory of " + baseDir);
 
         populateArtists(baseDir);
@@ -144,7 +157,6 @@ import android.widget.TextView;
         int id = item.getItemId();
         if (id == R.id.action_settings) {
         	Intent intent = new Intent(ArtistList.this, SettingsActivity.class);
-//        	Intent intent = new Intent(ArtistList.this, FileExplore.class);
         	startActivity(intent);
             return true;
         }
@@ -166,6 +178,10 @@ import android.widget.TextView;
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					Log.d(TAG, "User actually wants to quit");
+					// Kill the service
+					Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+					msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP);
+					startService(msgIntent);
 					onBackPressed();
 				}
             	

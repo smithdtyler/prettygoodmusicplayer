@@ -20,35 +20,21 @@ import android.widget.TextView;
 
 import com.smith.d.tyler.notawfulmusicplayer.MusicPlaybackService.PlaybackState;
 
-// TODO track progress in the song.
 public class NowPlaying extends Activity {
 	
 	private static final String TAG = "Now Playing";
 	
-	private PlaybackState desiredState;
-	
-	private PlaybackState serviceReportedState;
-	private String serviceReportedAlbum;
-	private String serviceReportedSong;
-
 	// State information
-	private String artistName;
-	private String albumName;
-	private String[] songNames;
-	private int songNamesPosition;
+	private String desiredArtistName;
+	private String desiredAlbumName;
+	private String[] desiredSongAbsFileNames;
+	private int desiredAbsSongFileNamesPosition;
 
 	// Messaging and service stuff
 	boolean mIsBound;
 	private Messenger mService;
 	final Messenger mMessenger = new Messenger(new IncomingHandler());
 	private ServiceConnection mConnection = new NowPlayingServiceConnection();
-	
-	// TODO in this class, keep track of the "desired state" and the "known state" of the system. 
-	// That means if the user presses "play" the desired state should be "play"
-	// When we get a state message from the service, we can see if the service's state matches our desired state, and update it accordingly. 
-	// Since we have multiple control vectors (remote or screen) we may need to adapt a little to handle concurrent selections (e.g. "screen takes precedence").
-	
-	// TODO whenever this activity has focus (e.g. onResume) we should create a timer task which pings the service for its state. 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,19 +45,19 @@ public class NowPlaying extends Activity {
 
 		// Get the message from the intent
 		Intent intent = getIntent();
-		artistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
-		albumName = intent.getStringExtra(AlbumList.ALBUM_NAME);
-		songNames = intent.getStringArrayExtra(SongList.SONG_ABS_FILE_NAME_LIST);
-		songNamesPosition = intent.getIntExtra(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, 0);
+		desiredArtistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
+		desiredAlbumName = intent.getStringExtra(AlbumList.ALBUM_NAME);
+		desiredSongAbsFileNames = intent.getStringArrayExtra(SongList.SONG_ABS_FILE_NAME_LIST);
+		desiredAbsSongFileNamesPosition = intent.getIntExtra(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, 0);
 
-		Log.d(TAG, "Got song names " + songNames + " position "
-				+ songNamesPosition);
+		Log.d(TAG, "Got song names " + desiredSongAbsFileNames + " position "
+				+ desiredAbsSongFileNamesPosition);
 		
 		TextView et = (TextView) findViewById(R.id.artistName);
-		et.setText(artistName);
+		et.setText(desiredArtistName);
 
 		et = (TextView) findViewById(R.id.albumName);
-		et.setText(albumName);
+		et.setText(desiredAlbumName);
 		
 		// The song name field will be set when we get our first update update from the service.
 
@@ -164,8 +150,8 @@ public class NowPlaying extends Activity {
 			
 			// set the playlist
 	        Message msg = Message.obtain(null, MusicPlaybackService.MSG_SET_PLAYLIST);
-	        msg.getData().putStringArray(SongList.SONG_ABS_FILE_NAME_LIST, songNames);
-	        msg.getData().putInt(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, songNamesPosition);
+	        msg.getData().putStringArray(SongList.SONG_ABS_FILE_NAME_LIST, desiredSongAbsFileNames);
+	        msg.getData().putInt(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, desiredAbsSongFileNamesPosition);
 	        try {
 	        	Log.i(TAG, "Sending a playlist!");
 				mService.send(msg);
