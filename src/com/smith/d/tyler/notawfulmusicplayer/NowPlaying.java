@@ -23,6 +23,7 @@ import com.smith.d.tyler.notawfulmusicplayer.MusicPlaybackService.PlaybackState;
 public class NowPlaying extends Activity {
 	
 	private static final String TAG = "Now Playing";
+	static final String KICKOFF_SONG = "KICKOFF_SONG";
 	
 	// State information
 	private String desiredArtistName;
@@ -45,19 +46,21 @@ public class NowPlaying extends Activity {
 
 		// Get the message from the intent
 		Intent intent = getIntent();
-		desiredArtistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
-		desiredAlbumName = intent.getStringExtra(AlbumList.ALBUM_NAME);
-		desiredSongAbsFileNames = intent.getStringArrayExtra(SongList.SONG_ABS_FILE_NAME_LIST);
-		desiredAbsSongFileNamesPosition = intent.getIntExtra(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, 0);
+		if(intent.getBooleanExtra(KICKOFF_SONG, false)){
+			desiredArtistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
+			desiredAlbumName = intent.getStringExtra(AlbumList.ALBUM_NAME);
+			desiredSongAbsFileNames = intent.getStringArrayExtra(SongList.SONG_ABS_FILE_NAME_LIST);
+			desiredAbsSongFileNamesPosition = intent.getIntExtra(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, 0);
 
-		Log.d(TAG, "Got song names " + desiredSongAbsFileNames + " position "
-				+ desiredAbsSongFileNamesPosition);
-		
-		TextView et = (TextView) findViewById(R.id.artistName);
-		et.setText(desiredArtistName);
-
-		et = (TextView) findViewById(R.id.albumName);
-		et.setText(desiredAlbumName);
+			Log.d(TAG, "Got song names " + desiredSongAbsFileNames + " position "
+					+ desiredAbsSongFileNamesPosition);
+			
+			TextView et = (TextView) findViewById(R.id.artistName);
+			et.setText(desiredArtistName);
+	
+			et = (TextView) findViewById(R.id.albumName);
+			et.setText(desiredAlbumName);
+		}
 		
 		// The song name field will be set when we get our first update update from the service.
 
@@ -148,25 +151,28 @@ public class NowPlaying extends Activity {
 				// anything with it
 			}
 			
-			// set the playlist
-	        Message msg = Message.obtain(null, MusicPlaybackService.MSG_SET_PLAYLIST);
-	        msg.getData().putStringArray(SongList.SONG_ABS_FILE_NAME_LIST, desiredSongAbsFileNames);
-	        msg.getData().putInt(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, desiredAbsSongFileNamesPosition);
-	        try {
-	        	Log.i(TAG, "Sending a playlist!");
-				mService.send(msg);
-			} catch (RemoteException e) {
-				e.printStackTrace();
+			if(desiredSongAbsFileNames != null){
+				// set the playlist
+				Message msg = Message.obtain(null, MusicPlaybackService.MSG_SET_PLAYLIST);
+				msg.getData().putStringArray(SongList.SONG_ABS_FILE_NAME_LIST, desiredSongAbsFileNames);
+				msg.getData().putInt(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, desiredAbsSongFileNamesPosition);
+				try {
+					Log.i(TAG, "Sending a playlist!");
+					mService.send(msg);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+				
+				// start playing!
+				msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
+				try {
+					Log.i(TAG, "Sending a play command!");
+					mService.send(msg);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
 			}
-	        
-			// start playing!
-	        msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
-	        try {
-	        	Log.i(TAG, "Sending a play command!");
-				mService.send(msg);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
+			
 		}
 
 		public void onServiceDisconnected(ComponentName className) {

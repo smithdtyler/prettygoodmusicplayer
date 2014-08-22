@@ -67,7 +67,10 @@ public class MusicBroadcastReceiver extends BroadcastReceiver {
 					break;
 				case KeyEvent.KEYCODE_MEDIA_STOP:
 					Log.i(TAG, "key pressed KEYCODE_MEDIA_STOP");
-					// code for stop
+					// Oddly enough, I think Android stops listening for pause after a while, so let's use
+					// stop as a "start playing if paused"
+					msgIntent.putExtra("Message", MusicPlaybackService.MSG_PLAYPAUSE);
+					context.startService(msgIntent);
 					break;
 				default:
 					Log.i(TAG, "key pressed " + keyCode);

@@ -141,10 +141,11 @@ public class MusicPlaybackService extends Service {
 		mServiceHandler = new ServiceHandler(mServiceLooper);
         
         // TODO fix the deprecated stuff
+		// TODO launch the "now playing" thingy on selection of the notification
         Notification notification = new Notification(R.drawable.icon, getText(R.string.ticker_text),
                 System.currentTimeMillis());
-        Intent notificationIntent = new Intent(this, MusicPlaybackService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Intent resultIntent = new Intent(this, NowPlaying.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
         notification.setLatestEventInfo(this, getText(R.string.notification_title),
                 getText(R.string.notification_message), pendingIntent);
         startForeground(id, notification);
