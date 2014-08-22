@@ -55,7 +55,7 @@ public class MusicPlaybackService extends Service {
 		PAUSED
 	}
 	
-	static final String SONG_NAME = "SONG_NAME";
+	static final String PRETTY_SONG_NAME = "SONG_NAME";
 	static final String ALBUM_NAME = "ALBUM_NAME";
 	static final String PLAYBACK_STATE = "PLAYBACK_STATE";
 	static final String TRACK_DURATION = "TRACK_DURATION";
@@ -121,7 +121,7 @@ public class MusicPlaybackService extends Service {
 			}
 
 		});
-
+		
 		// https://developer.android.com/training/managing-audio/audio-focus.html
 		audioFocusListener = new NotAwfulAudioFocusChangeListener();
 
@@ -224,9 +224,9 @@ public class MusicPlaybackService extends Service {
 			case MSG_SET_PLAYLIST:
 				Log.i(TAG, "Got a set playlist message!");
 				songAbsoluteFileNames = msg.getData().getStringArray(
-						SongList.SONG_LIST);
+						SongList.SONG_ABS_FILE_NAME_LIST);
 				songAbsoluteFileNamesPosition = msg.getData().getInt(
-						SongList.SONG_LIST_POSITION);
+						SongList.SONG_ABS_FILE_NAME_LIST_POSITION);
 				songFile = new File(
 						songAbsoluteFileNames[songAbsoluteFileNamesPosition]);
 				songName = songFile.getName().replaceAll("\\d\\d\\s", "")
@@ -252,7 +252,7 @@ public class MusicPlaybackService extends Service {
 		for(Messenger client : mClients){
 			Message msg = Message.obtain(null, MSG_SERVICE_STATUS);
 			Bundle b = new Bundle();
-			b.putString(SONG_NAME, songFile.getName());
+			b.putString(PRETTY_SONG_NAME, Utils.getPrettySongName(songFile));
 			if(mp.isPlaying()){
 				b.putInt(PLAYBACK_STATE, PlaybackState.PLAYING.ordinal());
 			} else {

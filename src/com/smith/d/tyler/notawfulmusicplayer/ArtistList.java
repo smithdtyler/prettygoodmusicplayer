@@ -31,7 +31,7 @@ import android.widget.TextView;
 	private static final String TAG = "Artist List";
 	public static final String ARTIST_NAME = "ARTIST_NAME";
 	public static final String ARTISTS_DIR = "ARTIST_DIRECTORY";
-	public static final String ARTIST_PATH = "ARTIST_PATH";
+	public static final String ARTIST_ABS_PATH_NAME = "ARTIST_PATH";
 
 	private List<Map<String,String>> artists;
 	private SimpleAdapter simpleAdpt;
@@ -122,7 +122,7 @@ import android.widget.TextView;
             	 TextView clickedView = (TextView) view;
             	 Intent intent = new Intent(ArtistList.this, AlbumList.class);
             	 intent.putExtra(ARTIST_NAME, clickedView.getText());
-            	 intent.putExtra(ARTIST_PATH, baseDir + File.separator + clickedView.getText());
+            	 intent.putExtra(ARTIST_ABS_PATH_NAME, baseDir + File.separator + clickedView.getText());
             	 startActivity(intent);
              }
         });

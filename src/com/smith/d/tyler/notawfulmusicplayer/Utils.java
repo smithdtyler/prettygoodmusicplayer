@@ -1,8 +1,10 @@
 package com.smith.d.tyler.notawfulmusicplayer;
 
 import java.io.File;
+import java.util.Comparator;
 
 public class Utils {
+	public static final Comparator<File> songFileComparator = new SongFileComparator();
 
 	static boolean isValidArtistDirectory(File dir){
 		if(dir == null){
@@ -60,6 +62,24 @@ public class Utils {
 	}
 	
 	static String getPrettySongName(File songFile){
-		return songFile.getName().replaceAll("\\d\\d\\s", "").replaceAll("(\\.mp3)|(\\.m4p)|(\\.m4a)", "");
+		return getPrettySongName(songFile.getName());
+	}
+	
+	static String getPrettySongName(String songName){
+		if(songName.matches("^\\d+\\s.*")){
+			return songName.replaceAll("^\\d+\\s", "").replaceAll("(\\.mp3)|(\\.m4p)|(\\.m4a)", "");
+		}
+		return songName;
+	}
+	
+	private static class SongFileComparator implements Comparator<File>{
+
+		@Override
+		public int compare(File arg0, File arg1) {
+			String name0 = arg0.getName().toUpperCase();
+			String name1 = arg1.getName().toUpperCase();
+			return name0.compareTo(name1);
+		}
+		
 	}
 }

@@ -72,7 +72,7 @@ public class AlbumList extends Activity {
 	    final String artist = intent.getStringExtra(ArtistList.ARTIST_NAME);
 	    Log.i(TAG, "Getting albums for " + artist);
 	    
-	    final String artistPath = intent.getStringExtra(ArtistList.ARTIST_PATH);
+	    final String artistPath = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
 	    populateAlbums(artist, artistPath);
         
         simpleAdpt = new SimpleAdapter(this, albums, android.R.layout.simple_list_item_1, new String[] {"album"}, new int[] {android.R.id.text1});
@@ -88,7 +88,7 @@ public class AlbumList extends Activity {
             	 Intent intent = new Intent(AlbumList.this, SongList.class);
             	 intent.putExtra(ALBUM_NAME, clickedView.getText());
             	 intent.putExtra(ArtistList.ARTIST_NAME, artist);
-            	 intent.putExtra(ArtistList.ARTIST_PATH, artistPath);
+            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistPath);
             	 startActivity(intent);
              }
         });

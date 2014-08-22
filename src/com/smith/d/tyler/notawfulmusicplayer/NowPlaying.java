@@ -61,14 +61,12 @@ public class NowPlaying extends Activity {
 		Intent intent = getIntent();
 		artistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
 		albumName = intent.getStringExtra(AlbumList.ALBUM_NAME);
-		songNames = intent.getStringArrayExtra(SongList.SONG_LIST);
-		songNamesPosition = intent.getIntExtra(SongList.SONG_LIST_POSITION, 0);
+		songNames = intent.getStringArrayExtra(SongList.SONG_ABS_FILE_NAME_LIST);
+		songNamesPosition = intent.getIntExtra(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, 0);
 
 		Log.d(TAG, "Got song names " + songNames + " position "
 				+ songNamesPosition);
-
-		String songName = songNames[songNamesPosition];
-
+		
 		TextView et = (TextView) findViewById(R.id.artistName);
 		et.setText(artistName);
 
@@ -166,8 +164,8 @@ public class NowPlaying extends Activity {
 			
 			// set the playlist
 	        Message msg = Message.obtain(null, MusicPlaybackService.MSG_SET_PLAYLIST);
-	        msg.getData().putStringArray(SongList.SONG_LIST, songNames);
-	        msg.getData().putInt(SongList.SONG_LIST_POSITION, songNamesPosition);
+	        msg.getData().putStringArray(SongList.SONG_ABS_FILE_NAME_LIST, songNames);
+	        msg.getData().putInt(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, songNamesPosition);
 	        try {
 	        	Log.i(TAG, "Sending a playlist!");
 				mService.send(msg);
@@ -178,7 +176,7 @@ public class NowPlaying extends Activity {
 			// start playing!
 	        msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
 	        try {
-	        	Log.i(TAG, "Sending a playlist!");
+	        	Log.i(TAG, "Sending a play command!");
 				mService.send(msg);
 			} catch (RemoteException e) {
 				e.printStackTrace();
@@ -198,11 +196,10 @@ public class NowPlaying extends Activity {
 			// TODO should minimize GUI access here as much as possible.
 			switch (msg.what) {
 			case MusicPlaybackService.MSG_SERVICE_STATUS:
-				//Log.v(TAG, "Got a status message!");
-				String currentSongName = msg.getData().getString(MusicPlaybackService.SONG_NAME);
-				TextView et = (TextView) findViewById(R.id.songName);
-				if(!et.getText().equals(currentSongName)){
-					et.setText(currentSongName);
+				String currentSongName = msg.getData().getString(MusicPlaybackService.PRETTY_SONG_NAME);
+				TextView tv = (TextView) findViewById(R.id.songName);
+				if(!tv.getText().equals(currentSongName)){
+					tv.setText(currentSongName);
 				}
 				
 				PlaybackState state = PlaybackState.values()[msg.getData().getInt(MusicPlaybackService.PLAYBACK_STATE, 0)];
