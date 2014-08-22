@@ -170,6 +170,7 @@ public class MusicPlaybackService extends Service {
 				previous();
 			} else if(command == MSG_STOP){
 				Log.i(TAG, "I got a stop message");
+				timer.cancel();
 				mp.stop();
 				mp.reset();
 				mp.release();

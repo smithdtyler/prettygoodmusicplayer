@@ -213,7 +213,7 @@ public class FileExplore extends Activity {
 				        Log.i(TAG, "Preferences " + prefs + " " + ((Object)prefs));
 				        Log.i(TAG, "Preferences update success: " + prefs.edit().putString("ARTIST_DIRECTORY", path.getAbsolutePath()).commit());
 						// reset the positions in the artist list, since we've changed lists
-				        prefs.edit().putInt("ARTIST_LIST_TOP", -1).putInt("ARTIST_LIST_INDEX",-1).commit();
+				        prefs.edit().putInt("ARTIST_LIST_TOP", Integer.MIN_VALUE).putInt("ARTIST_LIST_INDEX",Integer.MIN_VALUE).commit();
 				        onBackPressed();
 					}
 					// File picked

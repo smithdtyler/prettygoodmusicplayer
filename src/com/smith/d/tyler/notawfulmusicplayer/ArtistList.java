@@ -84,10 +84,13 @@ import android.widget.TextView;
             simpleAdpt = new SimpleAdapter(this, artists, android.R.layout.simple_list_item_1, new String[] {"artist"}, new int[] {android.R.id.text1});
             lv.setAdapter(simpleAdpt);
         }
-        int top = prefs.getInt("ARTIST_LIST_TOP", -1);
-        int index = prefs.getInt("ARTIST_LIST_INDEX", -1);
-        if(top > 0 && index > 0){
+        int top = prefs.getInt("ARTIST_LIST_TOP", Integer.MIN_VALUE);
+        int index = prefs.getInt("ARTIST_LIST_INDEX", Integer.MIN_VALUE);
+        if(top > Integer.MIN_VALUE && index > Integer.MIN_VALUE){
+        	Log.i(TAG, "Setting position from saved preferences");
         	lv.setSelectionFromTop(index, top);
+        } else {
+        	Log.i(TAG, "No saved position found");
         }
 	}
 
@@ -101,6 +104,7 @@ import android.widget.TextView;
 		View v = lv.getChildAt(0);
 		int top = (v == null) ? 0 : v.getTop();
 		prefs.edit().putInt("ARTIST_LIST_TOP", top).putInt("ARTIST_LIST_INDEX",index).commit();
+		Log.i(TAG, "Saving position top " + top + " index " + index);
 	}
 
 	@Override
