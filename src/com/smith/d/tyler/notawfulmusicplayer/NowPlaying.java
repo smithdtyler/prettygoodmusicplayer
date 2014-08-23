@@ -52,7 +52,7 @@ public class NowPlaying extends Activity {
 	// Messaging and service stuff
 	boolean mIsBound;
 	private Messenger mService;
-	final Messenger mMessenger = new Messenger(new IncomingHandler());
+	final Messenger mMessenger = new Messenger(new IncomingHandler(this));
 	private ServiceConnection mConnection = new NowPlayingServiceConnection();
 	
 	@Override
@@ -145,7 +145,7 @@ public class NowPlaying extends Activity {
 		Log.d(TAG, "Previous clicked...");
         Message msg = Message.obtain(null, MusicPlaybackService.MSG_PREVIOUS);
         try {
-        	Log.i(TAG, "SEnding a request to go to previous!");
+        	Log.i(TAG, "Sending a request to go to previous!");
 			mService.send(msg);
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -200,32 +200,38 @@ public class NowPlaying extends Activity {
 		}
 	};
 	
-	private class IncomingHandler extends Handler {
+	private static class IncomingHandler extends Handler {
+		
+		private NowPlaying _activity;
+		
+		private IncomingHandler(NowPlaying nowPlaying){
+			_activity = nowPlaying;
+		}
+		
 		@Override
 		public void handleMessage(Message msg) {
-			// TODO should minimize GUI access here as much as possible.
 			switch (msg.what) {
 			case MusicPlaybackService.MSG_SERVICE_STATUS:
 				String currentSongName = msg.getData().getString(MusicPlaybackService.PRETTY_SONG_NAME);
-				TextView tv = (TextView) findViewById(R.id.songName);
+				TextView tv = (TextView) _activity.findViewById(R.id.songName);
 				if(!tv.getText().equals(currentSongName)){
 					tv.setText(currentSongName);
 				}
 				
 				String currentAlbumName = msg.getData().getString(MusicPlaybackService.PRETTY_ALBUM_NAME);
-				tv = (TextView) findViewById(R.id.albumName);
+				tv = (TextView) _activity.findViewById(R.id.albumName);
 				if(!tv.getText().equals(currentAlbumName)){
 					tv.setText(currentAlbumName);
 				}
 				
 				String currentArtistName = msg.getData().getString(MusicPlaybackService.PRETTY_ARTIST_NAME);
-				tv = (TextView) findViewById(R.id.artistName);
+				tv = (TextView) _activity.findViewById(R.id.artistName);
 				if(!tv.getText().equals(currentArtistName)){
 					tv.setText(currentArtistName);
 				}
 				
 				PlaybackState state = PlaybackState.values()[msg.getData().getInt(MusicPlaybackService.PLAYBACK_STATE, 0)];
-				Button playPause = (Button)findViewById(R.id.playPause);
+				Button playPause = (Button)_activity.findViewById(R.id.playPause);
 				if(playPause.getText().equals("Play")){
 					if(state == PlaybackState.PLAYING){
 						playPause.setText("Pause");
@@ -238,7 +244,7 @@ public class NowPlaying extends Activity {
 				int duration = msg.getData().getInt(MusicPlaybackService.TRACK_DURATION, -1);
 				int position = msg.getData().getInt(MusicPlaybackService.TRACK_POSITION, -1);
 				if(duration > 0){
-					SeekBar seekBar = (SeekBar)findViewById(R.id.seekBar1);
+					SeekBar seekBar = (SeekBar)_activity.findViewById(R.id.seekBar1);
 					seekBar.setMax(duration);
 					seekBar.setProgress(position);
 				}
