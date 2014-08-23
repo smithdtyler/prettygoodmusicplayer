@@ -215,7 +215,7 @@ public class FileExplore extends Activity {
 
 					} else if (chosenFile.equalsIgnoreCase("Here") && !sel.exists()) {
 						Log.d(TAG, "User picked " + path.getAbsolutePath());
-				        SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
+				        SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
 				        Log.i(TAG, "Preferences " + prefs + " " + ((Object)prefs));
 				        Log.i(TAG, "Preferences update success: " + prefs.edit().putString("ARTIST_DIRECTORY", path.getAbsolutePath()).commit());
 						// reset the positions in the artist list, since we've changed lists

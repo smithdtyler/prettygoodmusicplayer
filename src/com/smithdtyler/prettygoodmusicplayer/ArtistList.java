@@ -93,7 +93,7 @@ import android.widget.TextView;
     @Override
 	protected void onResume() {
 		super.onResume();
-        SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
         prefs.edit();
         String prefDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
         ListView lv = (ListView) findViewById(R.id.artistListView);
@@ -118,7 +118,7 @@ import android.widget.TextView;
 	protected void onPause() {
 		super.onPause();
 		// save index and top position
-        SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
 		ListView lv = (ListView) findViewById(R.id.artistListView);
 		int index = lv.getFirstVisiblePosition();
 		View v = lv.getChildAt(0);
@@ -130,7 +130,7 @@ import android.widget.TextView;
 	@Override
 	protected void onStart() {
 		super.onStart();
-        SharedPreferences prefs = getSharedPreferences("NotAwfulMusicPlayer", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
         Log.i(TAG, "Preferences " + prefs + " " + ((Object)prefs));
         baseDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
         Log.d(TAG, "Got configured base directory of " + baseDir);

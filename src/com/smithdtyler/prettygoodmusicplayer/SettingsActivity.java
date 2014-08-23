@@ -81,7 +81,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 		// Add 'general' preferences.
 		// TODO this is deprecated, what's the new standard approach?
-		addPreferencesFromResource(R.xml.not_awful_preferences);
+		addPreferencesFromResource(R.xml.pretty_good_preferences);
 
 	}
 
