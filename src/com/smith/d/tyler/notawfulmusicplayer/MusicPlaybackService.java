@@ -28,6 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -148,26 +149,29 @@ public class MusicPlaybackService extends Service {
 		// https://stackoverflow.com/questions/19474116/the-constructor-notification-is-deprecated
 		// https://stackoverflow.com/questions/6406730/updating-an-ongoing-notification-quietly/15538209#15538209
 		Intent resultIntent = new Intent(this, NowPlaying.class);
+		// Use the FLAG_ACTIVITY_CLEAR_TOP to prevent launching a second
+		// NowPlaying if one already exists.
 		resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
 				resultIntent, 0);
 
 		Builder builder = new NotificationCompat.Builder(
 				this.getApplicationContext());
+		
+		String contentText = getResources().getString(R.string.ticker_text);
+		if(songFile != null){
+			contentText = Utils.getPrettySongName(songFile);
+		}
+		
 		Notification notification = builder
-				.setContentText(getResources().getString(R.string.ticker_text))
+				.setContentText(contentText)
 				.setSmallIcon(R.drawable.icon)
 				.setWhen(System.currentTimeMillis())
 				.setContentIntent(pendingIntent)
+				.setContentTitle(
+						getResources().getString(R.string.notification_title))
 				.build();
-
-		// TODO does this do anything?
-		builder.setContentText(getResources().getString(
-				R.string.notification_message));
-		builder.setContentTitle(getResources().getString(
-				R.string.notification_title));
-		builder.setContentIntent(pendingIntent);
-
+		
 		startForeground(uniqueid, notification);
 
 		timer = new Timer();
@@ -258,6 +262,7 @@ public class MusicPlaybackService extends Service {
 				_service.songFile = new File(
 						_service.songAbsoluteFileNames[_service.songAbsoluteFileNamesPosition]);
 				_service.startPlayingFile();
+				_service.updateNotification();
 				break;
 			case MSG_REQUEST_STATE:
 				Log.i(TAG, "Got a state request message!");
@@ -274,7 +279,7 @@ public class MusicPlaybackService extends Service {
 
 	private void sendUpdateToClients() {
 		List<Messenger> toRemove = new ArrayList<Messenger>();
-		for(Messenger client : mClients){
+		for (Messenger client : mClients) {
 			Message msg = Message.obtain(null, MSG_SERVICE_STATUS);
 			Bundle b = new Bundle();
 			b.putString(PRETTY_SONG_NAME, Utils.getPrettySongName(songFile));
@@ -298,8 +303,8 @@ public class MusicPlaybackService extends Service {
 				toRemove.add(client);
 			}
 		}
-		
-		for(Messenger remove : toRemove){
+
+		for (Messenger remove : toRemove) {
 			mClients.remove(remove);
 		}
 	}
@@ -323,8 +328,8 @@ public class MusicPlaybackService extends Service {
 		mp.reset();
 		try {
 			fis.close();
-		} catch (IOException e){
-			Log.w(TAG,"Failed to close the file");
+		} catch (IOException e) {
+			Log.w(TAG, "Failed to close the file");
 			e.printStackTrace();
 		}
 		songAbsoluteFileNamesPosition = songAbsoluteFileNamesPosition - 1;
@@ -332,7 +337,7 @@ public class MusicPlaybackService extends Service {
 			songAbsoluteFileNamesPosition = songAbsoluteFileNames.length - 1;
 		}
 		String next = songAbsoluteFileNames[songAbsoluteFileNamesPosition];
-		try{
+		try {
 			songFile = new File(next);
 			fis = new FileInputStream(songFile);
 			mp.setDataSource(fis.getFD());
@@ -433,6 +438,37 @@ public class MusicPlaybackService extends Service {
 			// I think our best chance is to go to the next song
 			next();
 		}
+		updateNotification();
+	}
+	
+	private void updateNotification(){
+		// https://stackoverflow.com/questions/5528288/how-do-i-update-the-notification-text-for-a-foreground-service-in-android
+		Intent resultIntent = new Intent(this, NowPlaying.class);
+		// Use the FLAG_ACTIVITY_CLEAR_TOP to prevent launching a second
+		// NowPlaying if one already exists.
+		resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+				resultIntent, 0);
+		
+		Builder builder = new NotificationCompat.Builder(
+				this.getApplicationContext());
+		
+		String contentText = getResources().getString(R.string.ticker_text);
+		if(songFile != null){
+			contentText = Utils.getPrettySongName(songFile);
+		}
+		
+		Notification notification = builder
+				.setContentText(contentText)
+				.setSmallIcon(R.drawable.icon)
+				.setWhen(System.currentTimeMillis())
+				.setContentIntent(pendingIntent)
+				.setContentTitle(
+						getResources().getString(R.string.notification_title))
+				.build();
+		
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(uniqueid, notification);
 	}
 
 	private class NotAwfulAudioFocusChangeListener implements
