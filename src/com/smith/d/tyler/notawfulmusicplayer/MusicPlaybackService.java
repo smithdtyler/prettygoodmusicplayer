@@ -1,6 +1,21 @@
 /**
- * 
+   The Pretty Good Music Player
+   Copyright (C) 2014  Tyler Smith
+ 
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.smith.d.tyler.notawfulmusicplayer;
 
 import java.io.File;
@@ -57,7 +72,9 @@ public class MusicPlaybackService extends Service {
 		PAUSED
 	}
 	
-	static final String PRETTY_SONG_NAME = "SONG_NAME";
+	static final String PRETTY_SONG_NAME = "PRETTY_SONG_NAME";
+	static final String PRETTY_ARTIST_NAME = "PRETTY_ARTIST_NAME";
+	static final String PRETTY_ALBUM_NAME = "PRETTY_ALBUM_NAME";
 	static final String ALBUM_NAME = "ALBUM_NAME";
 	static final String PLAYBACK_STATE = "PLAYBACK_STATE";
 	static final String TRACK_DURATION = "TRACK_DURATION";
@@ -258,6 +275,8 @@ public class MusicPlaybackService extends Service {
 			Message msg = Message.obtain(null, MSG_SERVICE_STATUS);
 			Bundle b = new Bundle();
 			b.putString(PRETTY_SONG_NAME, Utils.getPrettySongName(songFile));
+			b.putString(PRETTY_ALBUM_NAME, songFile.getParent());
+			b.putString(PRETTY_ARTIST_NAME, songFile.getParentFile().getParent());
 			if(mp.isPlaying()){
 				b.putInt(PLAYBACK_STATE, PlaybackState.PLAYING.ordinal());
 			} else {

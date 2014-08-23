@@ -1,3 +1,10 @@
+/**
+ * This code was made available from 
+ * https://github.com/mburman/Android-File-Explore
+ * 
+ * Modified by Tyler Smith
+ */
+
 package com.mburman.fileexplore;
 
 import java.io.File;
@@ -5,7 +12,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import com.smith.d.tyler.notawfulmusicplayer.R;
-import com.smith.d.tyler.notawfulmusicplayer.ArtistList;
 
 import android.app.Activity;
 import android.app.AlertDialog;

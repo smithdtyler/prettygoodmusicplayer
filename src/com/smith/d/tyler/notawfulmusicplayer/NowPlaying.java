@@ -1,3 +1,21 @@
+/**
+   The Pretty Good Music Player
+   Copyright (C) 2014  Tyler Smith
+ 
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.smith.d.tyler.notawfulmusicplayer;
 
 import android.app.Activity;
@@ -192,6 +210,18 @@ public class NowPlaying extends Activity {
 				TextView tv = (TextView) findViewById(R.id.songName);
 				if(!tv.getText().equals(currentSongName)){
 					tv.setText(currentSongName);
+				}
+				
+				String currentAlbumName = msg.getData().getString(MusicPlaybackService.PRETTY_ALBUM_NAME);
+				tv = (TextView) findViewById(R.id.albumName);
+				if(!tv.getText().equals(currentAlbumName)){
+					tv.setText(currentAlbumName);
+				}
+				
+				String currentArtistName = msg.getData().getString(MusicPlaybackService.PRETTY_ARTIST_NAME);
+				tv = (TextView) findViewById(R.id.artistName);
+				if(!tv.getText().equals(currentArtistName)){
+					tv.setText(currentArtistName);
 				}
 				
 				PlaybackState state = PlaybackState.values()[msg.getData().getInt(MusicPlaybackService.PLAYBACK_STATE, 0)];
