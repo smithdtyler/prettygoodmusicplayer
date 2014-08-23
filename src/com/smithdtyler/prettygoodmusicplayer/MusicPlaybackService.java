@@ -33,6 +33,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -77,6 +78,8 @@ public class MusicPlaybackService extends Service {
 	static final String PLAYBACK_STATE = "PLAYBACK_STATE";
 	static final String TRACK_DURATION = "TRACK_DURATION";
 	static final String TRACK_POSITION = "TRACK_POSITION";
+	
+	private static final ComponentName cn = new ComponentName(MusicBroadcastReceiver.class.getPackage().getName(), MusicBroadcastReceiver.class.getName());
 
 	private FileInputStream fis;
 	private File songFile;
@@ -95,7 +98,7 @@ public class MusicPlaybackService extends Service {
 	private static int uniqueid = new String("Music Playback Service")
 			.hashCode();
 
-	private OnAudioFocusChangeListener audioFocusListener = new NotAwfulAudioFocusChangeListener();
+	private OnAudioFocusChangeListener audioFocusListener = new PrettyGoodAudioFocusChangeListener();
 
 	List<Messenger> mClients = new ArrayList<Messenger>(); // Keeps track of all
 															// current
@@ -104,6 +107,8 @@ public class MusicPlaybackService extends Service {
 	int mValue = 0; // Holds last value set by a client.
 
 	final Messenger mMessenger = new Messenger(new IncomingHandler(this));
+	
+	public AudioManager mAudioManager;
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -135,7 +140,7 @@ public class MusicPlaybackService extends Service {
 		});
 
 		// https://developer.android.com/training/managing-audio/audio-focus.html
-		audioFocusListener = new NotAwfulAudioFocusChangeListener();
+		audioFocusListener = new PrettyGoodAudioFocusChangeListener();
 
 		// Get permission to play audio
 		am = (AudioManager) getBaseContext().getSystemService(
@@ -182,6 +187,11 @@ public class MusicPlaybackService extends Service {
 				onTimerTick();
 			}
 		}, 0, 500L);
+		
+		Log.i(TAG, "Registering event receiver");
+		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		// Apparently audio registration is persistent across lots of things... restarts, installs, etc. 
+		mAudioManager.registerMediaButtonEventReceiver(cn);
 	}
 
 	@Override
@@ -318,6 +328,7 @@ public class MusicPlaybackService extends Service {
 	@Override
 	public synchronized void onDestroy() {
 		super.onDestroy();
+		mAudioManager.unregisterMediaButtonEventReceiver(cn);
 		mp.stop();
 		mp.reset();
 		mp.release();
@@ -473,7 +484,7 @@ public class MusicPlaybackService extends Service {
         mNotificationManager.notify(uniqueid, notification);
 	}
 
-	private class NotAwfulAudioFocusChangeListener implements
+	private class PrettyGoodAudioFocusChangeListener implements
 			AudioManager.OnAudioFocusChangeListener {
 
 		public void onAudioFocusChange(int focusChange) {

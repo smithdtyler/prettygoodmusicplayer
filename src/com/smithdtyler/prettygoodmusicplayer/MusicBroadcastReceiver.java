@@ -73,6 +73,12 @@ public class MusicBroadcastReceiver extends BroadcastReceiver {
 					msgIntent.putExtra("Message", MusicPlaybackService.MSG_PLAYPAUSE);
 					context.startService(msgIntent);
 					break;
+				case KeyEvent.KEYCODE_MEDIA_PLAY:
+					// code for play/pause
+					Log.i(TAG, "key pressed KEYCODE_MEDIA_PLAY");
+					msgIntent.putExtra("Message", MusicPlaybackService.MSG_PLAYPAUSE);
+					context.startService(msgIntent);
+					break;
 				case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 					Log.i(TAG, "key pressed KEYCODE_MEDIA_PREVIOUS");
 					msgIntent.putExtra("Message", MusicPlaybackService.MSG_PREVIOUS);
