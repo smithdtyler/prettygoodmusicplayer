@@ -23,7 +23,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -148,16 +147,21 @@ public class MusicPlaybackService extends Service {
 
 		// https://stackoverflow.com/questions/19474116/the-constructor-notification-is-deprecated
 		// https://stackoverflow.com/questions/6406730/updating-an-ongoing-notification-quietly/15538209#15538209
+		Intent resultIntent = new Intent(this, NowPlaying.class);
+		resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+				resultIntent, 0);
+
 		Builder builder = new NotificationCompat.Builder(
 				this.getApplicationContext());
 		Notification notification = builder
 				.setContentText(getResources().getString(R.string.ticker_text))
 				.setSmallIcon(R.drawable.icon)
-				.setWhen(System.currentTimeMillis()).build();
+				.setWhen(System.currentTimeMillis())
+				.setContentIntent(pendingIntent)
+				.build();
 
-		Intent resultIntent = new Intent(this, NowPlaying.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-				resultIntent, 0);
+		// TODO does this do anything?
 		builder.setContentText(getResources().getString(
 				R.string.notification_message));
 		builder.setContentTitle(getResources().getString(
@@ -269,9 +273,8 @@ public class MusicPlaybackService extends Service {
 	}
 
 	private void sendUpdateToClients() {
-		Iterator<Messenger> iterator = mClients.iterator();
-		while (iterator.hasNext()) {
-			Messenger client = iterator.next();
+		List<Messenger> toRemove = new ArrayList<Messenger>();
+		for(Messenger client : mClients){
 			Message msg = Message.obtain(null, MSG_SERVICE_STATUS);
 			Bundle b = new Bundle();
 			b.putString(PRETTY_SONG_NAME, Utils.getPrettySongName(songFile));
@@ -292,8 +295,12 @@ public class MusicPlaybackService extends Service {
 				client.send(msg);
 			} catch (RemoteException e) {
 				e.printStackTrace();
-				iterator.remove();
+				toRemove.add(client);
 			}
+		}
+		
+		for(Messenger remove : toRemove){
+			mClients.remove(remove);
 		}
 	}
 
