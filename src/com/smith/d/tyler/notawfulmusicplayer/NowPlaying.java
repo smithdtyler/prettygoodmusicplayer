@@ -30,8 +30,10 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnDragListener;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -110,6 +112,9 @@ public class NowPlaying extends Activity {
 				next();
 			}
 		});
+		
+		SeekBar seekBar = (SeekBar)findViewById(R.id.seekBar1);
+		seekBar.setEnabled(false);
 	}
 
 	@Override
