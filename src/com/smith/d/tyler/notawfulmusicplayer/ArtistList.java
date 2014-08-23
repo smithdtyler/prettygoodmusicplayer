@@ -202,7 +202,7 @@ import android.widget.TextView;
 					Log.d(TAG, "User actually wants to quit");
 					// Kill the service
 					Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
-					msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP);
+					msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
 					startService(msgIntent);
 					onBackPressed();
 				}
