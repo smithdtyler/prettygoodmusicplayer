@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
-import com.smith.d.tyler.notawfulmusicplayer.R;
+import com.smithdtyler.prettygoodmusicplayer.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

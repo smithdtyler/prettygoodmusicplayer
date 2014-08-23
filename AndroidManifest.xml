@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.smith.d.tyler.notawfulmusicplayer"
+    package="com.smithdtyler.prettygoodmusicplayer"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ArtistList"
+            android:name="com.smithdtyler.prettygoodmusicplayer.ArtistList"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,19 +26,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.smithdtyler.prettygoodmusicplayer.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name=".AlbumList"
+            android:name="com.smithdtyler.prettygoodmusicplayer.AlbumList"
             android:label="@string/title_activity_album_list" >
         </activity>
         <activity
-            android:name=".SongList"
+            android:name="com.smithdtyler.prettygoodmusicplayer.SongList"
             android:label="@string/title_activity_song_list" >
         </activity>
         <activity
-            android:name=".NowPlaying"
+            android:name="com.smithdtyler.prettygoodmusicplayer.NowPlaying"
             android:label="@string/title_activity_now_playing" >
         </activity>
         <activity android:name="com.mburman.fileexplore.FileExplore">
@@ -47,9 +47,9 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <service android:name=".MusicPlaybackService">
+        <service android:name="com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService">
         </service>
-            <receiver android:name=".MusicBroadcastReceiver" android:enabled="true">
+            <receiver android:name="com.smithdtyler.prettygoodmusicplayer.MusicBroadcastReceiver" android:enabled="true">
     			<intent-filter android:priority="2147483647" >
         		<action android:name="android.intent.action.MEDIA_BUTTON" />
     		</intent-filter>

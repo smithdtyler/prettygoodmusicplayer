@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.smith.d.tyler.notawfulmusicplayer.ArtistList" >
+    tools:context="com.smithdtyler.prettygoodmusicplayer.ArtistList" >
 
     <item
         android:id="@+id/action_settings"

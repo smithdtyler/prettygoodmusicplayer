@@ -5,7 +5,7 @@
     <Preference
         android:title="Choose Music Directory" 
         android:summary="Pick a base directory for the player to search for music">
-        <intent android:action="com.smith.d.tyler.notawfulmusicplayer.PICK_DIRECTORY"/>
+        <intent android:action="com.smithdtyler.prettygoodmusicplayer.PICK_DIRECTORY"/>
     </Preference>
     </PreferenceCategory>
 
