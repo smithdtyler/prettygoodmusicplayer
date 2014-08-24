@@ -109,6 +109,8 @@ public class MusicPlaybackService extends Service {
 	final Messenger mMessenger = new Messenger(new IncomingHandler(this));
 	
 	public AudioManager mAudioManager;
+	private int lastDuration = 0;
+	private int lastPosition = 0;
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -303,10 +305,14 @@ public class MusicPlaybackService extends Service {
 			} else {
 				b.putInt(PLAYBACK_STATE, PlaybackState.PAUSED.ordinal());
 			}
+			// We might not be able to send the position right away if mp is still being created
+			// so instead let's send the last position we knew about.
 			if (mp.isPlaying()) {
-				b.putInt(TRACK_DURATION, mp.getDuration());
-				b.putInt(TRACK_POSITION, mp.getCurrentPosition());
+				lastDuration = mp.getDuration();
+				lastPosition = mp.getCurrentPosition();
 			}
+			b.putInt(TRACK_DURATION, lastDuration);
+			b.putInt(TRACK_POSITION, lastPosition);
 			msg.setData(b);
 			try {
 				client.send(msg);
@@ -328,6 +334,7 @@ public class MusicPlaybackService extends Service {
 	@Override
 	public synchronized void onDestroy() {
 		super.onDestroy();
+		am.abandonAudioFocus(MusicPlaybackService.this.audioFocusListener);
 		mAudioManager.unregisterMediaButtonEventReceiver(cn);
 		mp.stop();
 		mp.reset();
@@ -422,6 +429,7 @@ public class MusicPlaybackService extends Service {
 	private synchronized void pause() {
 		if (mp.isPlaying()) {
 			mp.pause();
+			am.abandonAudioFocus(MusicPlaybackService.this.audioFocusListener);
 		} else {
 			// do nothing
 		}
