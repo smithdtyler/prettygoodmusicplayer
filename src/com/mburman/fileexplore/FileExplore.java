@@ -106,10 +106,10 @@ public class FileExplore extends Activity {
 				// Tyler's edits
 				Item temp[] = new Item[fileList.length + 2];
 				for (int i = 0; i < fileList.length; i++) {
-					temp[i + 1] = fileList[i];
+					temp[i + 2] = fileList[i];
 				}
-				temp[0] = new Item("Up", R.drawable.directory_up);
-				temp[temp.length - 1] = new Item("Here", R.drawable.icon);
+				temp[0] = new Item("Here", R.drawable.icon);
+				temp[1] = new Item("Up", R.drawable.directory_up);
 				fileList = temp;
 			}
 		} else {
