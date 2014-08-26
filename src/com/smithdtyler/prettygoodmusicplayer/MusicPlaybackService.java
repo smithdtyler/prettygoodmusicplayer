@@ -347,6 +347,16 @@ public class MusicPlaybackService extends Service {
 	}
 
 	private synchronized void previous() {
+		// if we're playing, and we're more than 3 seconds into the file, then just 
+		// start the song over
+		if(mp.isPlaying()){
+			int progressMillis = mp.getCurrentPosition();
+			if(progressMillis > 3000){
+				mp.seekTo(0);
+				return;
+			}
+		}
+		
 		mp.stop();
 		mp.reset();
 		try {
