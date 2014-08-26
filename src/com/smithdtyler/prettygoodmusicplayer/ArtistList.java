@@ -95,7 +95,8 @@ import android.widget.TextView;
 		super.onResume();
         SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
         prefs.edit();
-        String prefDir = prefs.getString("ARTIST_DIRECTORY", new File(Environment.getExternalStorageDirectory(), "Music").getAbsolutePath());
+        File bestGuessMusicDir = Utils.getBestGuessMusicDirectory();
+        String prefDir = prefs.getString("ARTIST_DIRECTORY", bestGuessMusicDir.getAbsolutePath());
         ListView lv = (ListView) findViewById(R.id.artistListView);
         if(!prefDir.equals(baseDir)){
         	baseDir = prefDir;
