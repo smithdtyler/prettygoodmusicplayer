@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.Comparator;
 import java.util.Locale;
 
+import android.content.SharedPreferences;
 import android.os.Environment;
 
 public class Utils {
@@ -93,8 +94,11 @@ public class Utils {
 		return songName;
 	}
 	
-	static String getArtistName(File songFile){
-		// TODO check for songs without an album
+	static String getArtistName(File songFile, String musicRoot){
+		File albumDir = songFile.getParentFile().getParentFile();
+		if(albumDir.getAbsolutePath().equals(musicRoot)){
+			return songFile.getParentFile().getName();
+		}
 		return songFile.getParentFile().getParentFile().getName();
 	}
 	

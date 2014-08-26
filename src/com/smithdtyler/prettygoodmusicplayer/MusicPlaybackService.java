@@ -34,6 +34,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
@@ -478,7 +479,11 @@ public class MusicPlaybackService extends Service {
 
 		String contentText = getResources().getString(R.string.ticker_text);
 		if (songFile != null) {
-			contentText = Utils.getArtistName(songFile)
+			SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
+	        prefs.edit();
+	        File bestGuessMusicDir = Utils.getBestGuessMusicDirectory();
+	        String musicRoot = prefs.getString("ARTIST_DIRECTORY", bestGuessMusicDir.getAbsolutePath());
+			contentText = Utils.getArtistName(songFile, musicRoot)
 					+ ": " + Utils.getPrettySongName(songFile);
 		}
 

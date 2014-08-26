@@ -69,7 +69,6 @@ public class SongList extends Activity {
 		} else {
 			// If the album didn't exist, just list all of the songs we can find.
 			// Assume we don't need full recursion
-			// TODO for the all song view, sort albums but not all together.
 			Log.d(TAG, "Adding all songs...");
 			for(File albumFile : artistDir.listFiles()){
 				if(Utils.isValidAlbumDirectory(albumFile)){
@@ -87,6 +86,18 @@ public class SongList extends Activity {
 				}
 			}
 			
+			if(songFiles.isEmpty()){
+				// if there aren't any albums, check directly under the artist directory
+				File[] songFilesInArtist = artistDir.listFiles();
+				List<File> songFilesInArtistList = new ArrayList<File>();
+				for(File songFile : songFilesInArtist){
+					if(Utils.isValidSongFile(songFile)){
+						songFilesInArtistList.add(songFile);
+					}
+				}
+				Collections.sort(songFilesInArtistList, Utils.songFileComparator);
+				songFiles.addAll(songFilesInArtistList);
+			}
 		}
 		
 		for(File song : songFiles){
