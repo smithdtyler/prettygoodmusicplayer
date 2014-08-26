@@ -52,6 +52,8 @@ import android.widget.TextView;
 	public static final String ARTIST_NAME = "ARTIST_NAME";
 	public static final String ARTISTS_DIR = "ARTIST_DIRECTORY";
 	public static final String ARTIST_ABS_PATH_NAME = "ARTIST_PATH";
+	
+	private static final String PICK_DIR_TEXT = "Click to configure...";
 
 	private List<Map<String,String>> artists;
 	private SimpleAdapter simpleAdpt;
@@ -86,6 +88,12 @@ import android.widget.TextView;
 			// listview requires a map
 			Map<String,String> map = new HashMap<String, String>();
 			map.put("artist", artist);			
+			artists.add(map);
+		}
+		
+		if(!f.exists() || artistDirs.isEmpty()){
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("artist", PICK_DIR_TEXT);
 			artists.add(map);
 		}
 	}
@@ -158,10 +166,15 @@ import android.widget.TextView;
              public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                      long id) {
             	 TextView clickedView = (TextView) view;
-            	 Intent intent = new Intent(ArtistList.this, AlbumList.class);
-            	 intent.putExtra(ARTIST_NAME, clickedView.getText());
-            	 intent.putExtra(ARTIST_ABS_PATH_NAME, baseDir + File.separator + clickedView.getText());
-            	 startActivity(intent);
+            	 if(!clickedView.getText().equals(PICK_DIR_TEXT)){
+	            	 Intent intent = new Intent(ArtistList.this, AlbumList.class);
+	            	 intent.putExtra(ARTIST_NAME, clickedView.getText());
+	            	 intent.putExtra(ARTIST_ABS_PATH_NAME, baseDir + File.separator + clickedView.getText());
+	            	 startActivity(intent);
+            	 } else {
+            		 Intent intent = new Intent(ArtistList.this, SettingsActivity.class);
+            		 startActivity(intent);
+            	 }
              }
         });
     }
