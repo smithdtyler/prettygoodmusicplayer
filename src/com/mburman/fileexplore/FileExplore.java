@@ -169,7 +169,7 @@ public class FileExplore extends Activity {
 
 		switch (id) {
 		case DIALOG_LOAD_FILE:
-			builder.setTitle("Choose your file");
+			builder.setTitle("Choose your music directory");
 			builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
