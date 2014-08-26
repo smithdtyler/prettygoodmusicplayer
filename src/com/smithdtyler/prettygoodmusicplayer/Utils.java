@@ -90,6 +90,11 @@ public class Utils {
 		return songName;
 	}
 	
+	static String getArtistName(File songFile){
+		// TODO check for songs without an album
+		return songFile.getParentFile().getParentFile().getName();
+	}
+	
 	private static class SongFileComparator implements Comparator<File>{
 
 		@Override

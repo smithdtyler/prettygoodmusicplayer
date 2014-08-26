@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.smithdtyler.prettygoodmusicplayer.R;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -78,8 +76,10 @@ public class MusicPlaybackService extends Service {
 	static final String PLAYBACK_STATE = "PLAYBACK_STATE";
 	static final String TRACK_DURATION = "TRACK_DURATION";
 	static final String TRACK_POSITION = "TRACK_POSITION";
-	
-	private static final ComponentName cn = new ComponentName(MusicBroadcastReceiver.class.getPackage().getName(), MusicBroadcastReceiver.class.getName());
+
+	private static final ComponentName cn = new ComponentName(
+			MusicBroadcastReceiver.class.getPackage().getName(),
+			MusicBroadcastReceiver.class.getName());
 
 	private FileInputStream fis;
 	private File songFile;
@@ -107,7 +107,7 @@ public class MusicPlaybackService extends Service {
 	int mValue = 0; // Holds last value set by a client.
 
 	final Messenger mMessenger = new Messenger(new IncomingHandler(this));
-	
+
 	public AudioManager mAudioManager;
 	private int lastDuration = 0;
 	private int lastPosition = 0;
@@ -166,12 +166,12 @@ public class MusicPlaybackService extends Service {
 
 		Builder builder = new NotificationCompat.Builder(
 				this.getApplicationContext());
-		
+
 		String contentText = getResources().getString(R.string.ticker_text);
-		if(songFile != null){
+		if (songFile != null) {
 			contentText = Utils.getPrettySongName(songFile);
 		}
-		
+
 		Notification notification = builder
 				.setContentText(contentText)
 				.setSmallIcon(R.drawable.icon)
@@ -180,7 +180,7 @@ public class MusicPlaybackService extends Service {
 				.setContentTitle(
 						getResources().getString(R.string.notification_title))
 				.build();
-		
+
 		startForeground(uniqueid, notification);
 
 		timer = new Timer();
@@ -189,10 +189,11 @@ public class MusicPlaybackService extends Service {
 				onTimerTick();
 			}
 		}, 0, 500L);
-		
+
 		Log.i(TAG, "Registering event receiver");
 		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		// Apparently audio registration is persistent across lots of things... restarts, installs, etc. 
+		// Apparently audio registration is persistent across lots of things...
+		// restarts, installs, etc.
 		mAudioManager.registerMediaButtonEventReceiver(cn);
 	}
 
@@ -305,7 +306,8 @@ public class MusicPlaybackService extends Service {
 			} else {
 				b.putInt(PLAYBACK_STATE, PlaybackState.PAUSED.ordinal());
 			}
-			// We might not be able to send the position right away if mp is still being created
+			// We might not be able to send the position right away if mp is
+			// still being created
 			// so instead let's send the last position we knew about.
 			if (mp.isPlaying()) {
 				lastDuration = mp.getDuration();
@@ -461,8 +463,8 @@ public class MusicPlaybackService extends Service {
 		}
 		updateNotification();
 	}
-	
-	private void updateNotification(){
+
+	private void updateNotification() {
 		// https://stackoverflow.com/questions/5528288/how-do-i-update-the-notification-text-for-a-foreground-service-in-android
 		Intent resultIntent = new Intent(this, NowPlaying.class);
 		// Use the FLAG_ACTIVITY_CLEAR_TOP to prevent launching a second
@@ -470,15 +472,16 @@ public class MusicPlaybackService extends Service {
 		resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
 				resultIntent, 0);
-		
+
 		Builder builder = new NotificationCompat.Builder(
 				this.getApplicationContext());
-		
+
 		String contentText = getResources().getString(R.string.ticker_text);
-		if(songFile != null){
-			contentText = Utils.getPrettySongName(songFile);
+		if (songFile != null) {
+			contentText = Utils.getArtistName(songFile)
+					+ ": " + Utils.getPrettySongName(songFile);
 		}
-		
+
 		Notification notification = builder
 				.setContentText(contentText)
 				.setSmallIcon(R.drawable.icon)
@@ -487,9 +490,9 @@ public class MusicPlaybackService extends Service {
 				.setContentTitle(
 						getResources().getString(R.string.notification_title))
 				.build();
-		
+
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(uniqueid, notification);
+		mNotificationManager.notify(uniqueid, notification);
 	}
 
 	private class PrettyGoodAudioFocusChangeListener implements
