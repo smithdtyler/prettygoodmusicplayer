@@ -22,12 +22,27 @@ import java.io.File;
 import java.util.Comparator;
 import java.util.Locale;
 
-import android.content.SharedPreferences;
 import android.os.Environment;
 
 public class Utils {
 	public static final Comparator<File> songFileComparator = new SongFileComparator();
 
+	//https://developer.android.com/guide/appendix/media-formats.html
+	private static final String[] legalFormatExtensions = {"mp3", "m4p", "m4a", "wav", "ogg", "mkv", "3gp", "aac"};
+	
+	private static String mediaFileEndingRegex = "";
+	static{
+		boolean first = true;
+		for(String ending : legalFormatExtensions){
+			if(!first){
+				mediaFileEndingRegex += "|" + "(\\." + ending + ")";
+			} else {
+				mediaFileEndingRegex += "(\\." + ending + ")";
+				first = false;
+			}
+		}
+	}
+	
 	static boolean isValidArtistDirectory(File dir){
 		if(dir == null){
 			return false;
@@ -72,15 +87,19 @@ public class Utils {
 		}
 		
 		String name = song.getName();
+		// needs to start with a letter or number
 		if(!name.matches("^([A-Z]|[a-z]|[0-9]).+")){
 			return false;
 		}
 		
-		if(!(name.endsWith(".mp3") || name.endsWith(".m4p")|| name.endsWith(".m4a"))){
-			return false;
+		// Needs to end with one of the legal formats
+		for(String ending : legalFormatExtensions){
+			if(name.endsWith("." + ending)){
+				return true;
+			}
 		}
 		
-		return true;
+		return false;
 	}
 	
 	static String getPrettySongName(File songFile){
@@ -89,7 +108,7 @@ public class Utils {
 	
 	static String getPrettySongName(String songName){
 		if(songName.matches("^\\d+\\s.*")){
-			return songName.replaceAll("^\\d+\\s", "").replaceAll("(\\.mp3)|(\\.m4p)|(\\.m4a)", "");
+			return songName.replaceAll("^\\d+\\s", "").replaceAll(mediaFileEndingRegex, "");
 		}
 		return songName;
 	}
