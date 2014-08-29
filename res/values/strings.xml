@@ -5,12 +5,11 @@
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_album_list">AlbumList</string>
-    <string name="title_activity_song_list">SongList</string>
-    <string name="title_activity_now_playing">NowPlaying</string>
-    <string name="notification_title">Music Playback Service</string>
+    <string name="title_activity_album_list">Albums</string>
+    <string name="title_activity_song_list">Songs</string>
+    <string name="title_activity_now_playing">Now Playing</string>
+    <string name="notification_title">Pretty Good Music Player Service</string>
     <string name="notification_message">Running the Music Playback Service</string>
 	<string name="ticker_text">Music Playback Service</string>
     
