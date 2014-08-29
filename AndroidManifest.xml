@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.smithdtyler.prettygoodmusicplayer"
+<manifest package="com.smithdtyler.prettygoodmusicplayer"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -49,9 +48,13 @@
         </activity>
         <service android:name="com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService">
         </service>
-        <receiver android:name="com.smithdtyler.prettygoodmusicplayer.MusicBroadcastReceiver" android:enabled="true">
+        <receiver android:name="com.smithdtyler.prettygoodmusicplayer.MusicBroadcastReceiver" 
+            android:enabled="true">
             <intent-filter android:priority="2147483647" >
                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+            <intent-filter android:priority="2147483647" >
+               <action android:name="android.intent.action.HEADSET_PLUG" />
             </intent-filter>
         </receiver>
     </application>

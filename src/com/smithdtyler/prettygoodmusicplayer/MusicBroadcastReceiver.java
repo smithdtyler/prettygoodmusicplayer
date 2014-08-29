@@ -18,6 +18,7 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,8 +34,24 @@ public class MusicBroadcastReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.i(TAG, "got a thingy!");
-
-		if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
+		if(Intent.ACTION_HEADSET_PLUG.equals(intent.getAction())){
+			Log.i(TAG, "Got headset plug action");
+			/*
+			 * state - 0 for unplugged, 1 for plugged.
+			 * name - Headset type, human readable string
+			 * microphone - 1 if headset has a microphone, 0 otherwise
+			 */
+			if(intent.getIntExtra("state", -1) == 0){
+				Intent msgIntent = new Intent(context, MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_PAUSE);
+				context.startService(msgIntent);
+			}
+		} else if(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(intent.getAction()) || BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(intent.getAction())){
+			Log.i(TAG, "Got bluetooth disconnect action");
+			Intent msgIntent = new Intent(context, MusicPlaybackService.class);
+			msgIntent.putExtra("Message", MusicPlaybackService.MSG_PAUSE);
+			context.startService(msgIntent);
+		} else if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
 			Log.i(TAG, "Media Button Receiver: received media button intent: " + intent);
 
 			KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);

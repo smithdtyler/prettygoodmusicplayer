@@ -31,9 +31,11 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
@@ -60,11 +62,12 @@ public class MusicPlaybackService extends Service {
 	static final int MSG_NEXT = 4;
 	static final int MSG_PREVIOUS = 5;
 	static final int MSG_SET_PLAYLIST = 6;
-
+	static final int MSG_PAUSE = 7;
+	
 	// State management
-	static final int MSG_REQUEST_STATE = 7;
-	static final int MSG_SERVICE_STATUS = 8;
-	static final int MSG_STOP_SERVICE = 9;
+	static final int MSG_REQUEST_STATE = 17;
+	static final int MSG_SERVICE_STATUS = 18;
+	static final int MSG_STOP_SERVICE = 19;
 
 	public enum PlaybackState {
 		PLAYING, PAUSED
@@ -101,6 +104,14 @@ public class MusicPlaybackService extends Service {
 
 	private OnAudioFocusChangeListener audioFocusListener = new PrettyGoodAudioFocusChangeListener();
 
+	private static IntentFilter filter = new IntentFilter();
+	static{
+		filter.addAction("android.intent.action.HEADSET_PLUG");
+		filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+		filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+	}
+	private static MusicBroadcastReceiver receiver = new MusicBroadcastReceiver();
+	
 	List<Messenger> mClients = new ArrayList<Messenger>(); // Keeps track of all
 															// current
 															// registered
@@ -196,6 +207,8 @@ public class MusicPlaybackService extends Service {
 		// Apparently audio registration is persistent across lots of things...
 		// restarts, installs, etc.
 		mAudioManager.registerMediaButtonEventReceiver(cn);
+		// I tried to register this in the manifest, but it doesn't seen to accept it, so I'll do it this way.
+		getApplicationContext().registerReceiver(receiver, filter);
 	}
 
 	@Override
@@ -207,6 +220,9 @@ public class MusicPlaybackService extends Service {
 			if (command == MSG_PLAYPAUSE) {
 				Log.i(TAG, "I got a playpause message");
 				playPause();
+			} else if (command == MSG_PAUSE) {
+				Log.i(TAG, "I got a pause message");
+				pause();
 			} else if (command == MSG_NEXT) {
 				Log.i(TAG, "I got a next message");
 				next();
@@ -339,6 +355,7 @@ public class MusicPlaybackService extends Service {
 		super.onDestroy();
 		am.abandonAudioFocus(MusicPlaybackService.this.audioFocusListener);
 		mAudioManager.unregisterMediaButtonEventReceiver(cn);
+		getApplicationContext().unregisterReceiver(receiver);
 		mp.stop();
 		mp.reset();
 		mp.release();
