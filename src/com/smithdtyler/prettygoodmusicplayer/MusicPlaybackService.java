@@ -186,7 +186,7 @@ public class MusicPlaybackService extends Service {
 
 		Notification notification = builder
 				.setContentText(contentText)
-				.setSmallIcon(R.drawable.icon)
+				.setSmallIcon(R.drawable.ic_action_volume_on)
 				.setWhen(System.currentTimeMillis())
 				.setContentIntent(pendingIntent)
 				.setContentTitle(
@@ -516,7 +516,7 @@ public class MusicPlaybackService extends Service {
 
 		Notification notification = builder
 				.setContentText(contentText)
-				.setSmallIcon(R.drawable.icon)
+				.setSmallIcon(R.drawable.ic_action_volume_on)
 				.setWhen(System.currentTimeMillis())
 				.setContentIntent(pendingIntent)
 				.setContentTitle(

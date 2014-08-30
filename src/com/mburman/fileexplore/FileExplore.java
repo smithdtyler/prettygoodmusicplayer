@@ -110,7 +110,7 @@ public class FileExplore extends Activity {
 				for (int i = 0; i < fileList.length; i++) {
 					temp[i + 2] = fileList[i];
 				}
-				temp[0] = new Item("Here", R.drawable.icon);
+				temp[0] = new Item("Here", R.drawable.ic_pgmp_launcher);
 				temp[1] = new Item("Up", R.drawable.directory_up);
 				fileList = temp;
 			}
