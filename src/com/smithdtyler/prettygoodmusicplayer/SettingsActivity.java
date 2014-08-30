@@ -18,7 +18,14 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
+import java.io.File;
+import java.util.List;
+
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -26,6 +33,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.util.Log;
 
 /**
@@ -40,7 +48,7 @@ import android.util.Log;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends PreferenceActivity {
-	private static final String TAG ="SettingsActivity";
+	private static final String TAG = "SettingsActivity";
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -61,8 +69,112 @@ public class SettingsActivity extends PreferenceActivity {
 		// use the older PreferenceActivity APIs.
 
 		// Add 'general' preferences.
-		// TODO this is deprecated, what's the new standard approach?
+		// TODO this is deprecated, update to use fragments I guess?
 		addPreferencesFromResource(R.xml.pretty_good_preferences);
+	}
+
+	@Override
+	@Deprecated
+	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
+			Preference preference) {
+		// TODO clean this up a bunch.
+		Log.i(TAG, "User clicked " + preference.getTitle());
+		if (preference.getTitle().equals("Choose Music Directory")) {
+			final File path = Utils.getRootStorageDirectory();
+			DirectoryPickerOnClickListener picker = new DirectoryPickerOnClickListener(
+					this, path);
+			picker.showDirectoryPicker();
+			Log.i(TAG, "User selected " + picker.path);
+			return true;
+		}
+		return super.onPreferenceTreeClick(preferenceScreen, preference);
+	}
+
+	// TODO add icons
+	// btn_check_buttonless_on
+	// https://stackoverflow.com/questions/3920640/how-to-add-icon-in-alert-dialog-before-each-item
+	private static class DirectoryPickerOnClickListener implements
+			OnClickListener {
+		private SettingsActivity activity;
+		private File path;
+		private List<File> files;
+
+		private DirectoryPickerOnClickListener(SettingsActivity activity,
+				File root) {
+			this.path = root;
+			files = Utils.getPotentialSubDirectories(root);
+			this.activity = activity;
+		}
+
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			if (which == 0) {
+				dialog.dismiss();
+				// TODO generally fix this up so the displayed path updates
+//				SharedPreferences prefs = activity.getPreferenceManager()
+//						.getSharedPreferences();
+		        SharedPreferences prefs = activity.getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
+
+				Log.i(TAG,
+						"Preferences update success: "
+								+ prefs.edit()
+										.putString("ARTIST_DIRECTORY",
+												path.getAbsolutePath())
+										.commit());
+				// reset the positions in the artist list, since we've changed
+				// lists
+				prefs.edit().putInt("ARTIST_LIST_TOP", Integer.MIN_VALUE)
+						.putInt("ARTIST_LIST_INDEX", Integer.MIN_VALUE)
+						.commit();
+				return;
+			}
+			if (which == 1) {
+				dialog.dismiss(); // TODO use cancel instead? What's the
+									// difference?
+				if (path.getParentFile() != null) {
+					path = path.getParentFile();
+				}
+				files = Utils.getPotentialSubDirectories(path);
+				CharSequence[] names = new CharSequence[files.size() + 2];
+				for (int i = 0; i < files.size(); i++) {
+					names[i + 2] = files.get(i).getName();
+				}
+				names[0] = "Here!"; // do an "ok" instead?
+				names[1] = "Up";
+				new AlertDialog.Builder(activity).setTitle("Music Directory")
+						.setIcon(android.R.drawable.ic_menu_zoom)
+						.setItems(names, this).show();
+			} else {
+				dialog.dismiss(); // TODO use cancel instead? What's the
+									// difference?
+				File f = files.get(which - 2);
+				path = new File(path, f.getName());
+				files = Utils.getPotentialSubDirectories(path);
+				CharSequence[] names = new CharSequence[files.size() + 2];
+				for (int i = 0; i < files.size(); i++) {
+					names[i + 2] = files.get(i).getName();
+				}
+				names[0] = "Here!"; // do an "ok" instead?
+				names[1] = "Up";
+				new AlertDialog.Builder(activity).setTitle("Music Directory")
+						.setIcon(android.R.drawable.ic_menu_zoom)
+						.setItems(names, this).show();
+			}
+
+			// TODO Auto-generated method stub
+		}
+
+		private void showDirectoryPicker() {
+			CharSequence[] names = new CharSequence[files.size() + 2];
+			for (int i = 0; i < files.size(); i++) {
+				names[i + 2] = files.get(i).getName();
+			}
+			names[0] = "Here!"; // do an "ok" instead?
+			names[1] = "Up";
+			new AlertDialog.Builder(activity).setTitle("Music Directory")
+					.setIcon(android.R.drawable.ic_menu_zoom)
+					.setItems(names, this).show();
+		}
 
 	}
 
@@ -86,7 +198,9 @@ public class SettingsActivity extends PreferenceActivity {
 						.setSummary(index >= 0 ? listPreference.getEntries()[index]
 								: null);
 			} else {
-				Log.i(TAG, "Preferences updated, preference type = other. New value: " + stringValue);
+				Log.i(TAG,
+						"Preferences updated, preference type = other. New value: "
+								+ stringValue);
 				// For all other preferences, set the summary to the value's
 				// simple string representation.
 				preference.setSummary(stringValue);
@@ -167,13 +281,18 @@ public class SettingsActivity extends PreferenceActivity {
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
+			getPreferenceManager()
+			.setSharedPreferencesName("PrettyGoodMusicPlayer");
+			
 			addPreferencesFromResource(R.xml.pref_data_sync);
 
 			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
 			// to their values. When their values change, their summaries are
 			// updated to reflect the new value, per the Android Design
 			// guidelines.
-			bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+			bindPreferenceSummaryToValue(findPreference("ARTIST_DIRECTORY"));
 		}
 	}
+	
+	
 }
