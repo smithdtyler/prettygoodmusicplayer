@@ -110,7 +110,7 @@ public class Utils {
 		if(songName.matches("^\\d+\\s.*")){
 			return songName.replaceAll("^\\d+\\s", "").replaceAll(mediaFileEndingRegex, "");
 		}
-		return songName;
+		return songName.replaceAll(mediaFileEndingRegex, "");
 	}
 	
 	static String getArtistName(File songFile, String musicRoot){
