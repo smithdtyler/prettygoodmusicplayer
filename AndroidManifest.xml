@@ -12,7 +12,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_pgmp_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -46,7 +46,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-        <service android:name="com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService">
+        <service android:name="com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService" android:icon="@drawable/ic_pgmp_launcher">
         </service>
         <receiver android:name="com.smithdtyler.prettygoodmusicplayer.MusicBroadcastReceiver" 
             android:enabled="true">
