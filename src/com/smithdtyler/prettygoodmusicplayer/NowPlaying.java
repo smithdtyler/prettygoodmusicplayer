@@ -112,7 +112,7 @@ public class NowPlaying extends Activity {
 			}
 		});
 		
-		SeekBar seekBar = (SeekBar)findViewById(R.id.seekBar1);
+		SeekBar seekBar = (SeekBar)findViewById(R.id.songProgressBar);
 		seekBar.setEnabled(false);
 	}
 
@@ -248,7 +248,7 @@ public class NowPlaying extends Activity {
 				int duration = msg.getData().getInt(MusicPlaybackService.TRACK_DURATION, -1);
 				int position = msg.getData().getInt(MusicPlaybackService.TRACK_POSITION, -1);
 				if(duration > 0){
-					SeekBar seekBar = (SeekBar)_activity.findViewById(R.id.seekBar1);
+					SeekBar seekBar = (SeekBar)_activity.findViewById(R.id.songProgressBar);
 					seekBar.setMax(duration);
 					seekBar.setProgress(position);
 				}

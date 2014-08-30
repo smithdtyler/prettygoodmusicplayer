@@ -112,15 +112,16 @@ public class MusicPlaybackService extends Service {
 	}
 	private static MusicBroadcastReceiver receiver = new MusicBroadcastReceiver();
 	
-	List<Messenger> mClients = new ArrayList<Messenger>(); // Keeps track of all
-															// current
-															// registered
-															// clients.
-	int mValue = 0; // Holds last value set by a client.
+	/**
+	 * Keeps track of all current registered clients.
+	 */
+	List<Messenger> mClients = new ArrayList<Messenger>(); 
 
 	final Messenger mMessenger = new Messenger(new IncomingHandler(this));
 
 	public AudioManager mAudioManager;
+	
+	// These are used to report song progress when the song isn't started yet. 
 	private int lastDuration = 0;
 	private int lastPosition = 0;
 
@@ -427,7 +428,7 @@ public class MusicPlaybackService extends Service {
 
 	private synchronized void playPause() {
 		if (mp.isPlaying()) {
-			mp.pause();
+			pause();
 		} else {
 			play();
 		}
@@ -450,6 +451,7 @@ public class MusicPlaybackService extends Service {
 			if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
 				Log.d(TAG, "We got audio focus!");
 				mp.start();
+				updateNotification();
 			} else {
 				Log.e(TAG, "Unable to get audio focus");
 			}
@@ -463,6 +465,7 @@ public class MusicPlaybackService extends Service {
 		} else {
 			// do nothing
 		}
+		updateNotification();
 	}
 
 	private synchronized void next() {
@@ -503,7 +506,7 @@ public class MusicPlaybackService extends Service {
 
 		Builder builder = new NotificationCompat.Builder(
 				this.getApplicationContext());
-
+		int icon = R.drawable.ic_action_volume_muted;
 		String contentText = getResources().getString(R.string.ticker_text);
 		if (songFile != null) {
 			SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
@@ -512,11 +515,16 @@ public class MusicPlaybackService extends Service {
 	        String musicRoot = prefs.getString("ARTIST_DIRECTORY", bestGuessMusicDir.getAbsolutePath());
 			contentText = Utils.getArtistName(songFile, musicRoot)
 					+ ": " + Utils.getPrettySongName(songFile);
+			if(mp != null){
+				if(mp.isPlaying()){
+					icon = R.drawable.ic_action_volume_on;
+				}
+			}
 		}
 
 		Notification notification = builder
 				.setContentText(contentText)
-				.setSmallIcon(R.drawable.ic_action_volume_on)
+				.setSmallIcon(icon)
 				.setWhen(System.currentTimeMillis())
 				.setContentIntent(pendingIntent)
 				.setContentTitle(

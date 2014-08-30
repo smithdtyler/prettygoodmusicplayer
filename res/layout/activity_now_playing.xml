@@ -30,7 +30,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <SeekBar
-        android:id="@+id/seekBar1"
+        android:id="@+id/songProgressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -45,7 +45,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="44dp"
         android:layout_marginLeft="15dp"
-        android:text="Previous" />
+        android:text="@string/previous" />
 
     <Button
         android:id="@+id/playPause"
@@ -54,7 +54,7 @@
         android:layout_alignBaseline="@+id/previous"
         android:layout_alignBottom="@+id/previous"
         android:layout_centerHorizontal="true"
-        android:text="Play" />
+        android:text="@string/play" />
 
     <Button
         android:id="@+id/next"
@@ -63,6 +63,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/previous"
         android:layout_marginRight="15dp"
-        android:text="Next" />
+        android:text="@string/next" />
 
 </RelativeLayout>
