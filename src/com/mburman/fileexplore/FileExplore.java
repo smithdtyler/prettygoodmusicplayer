@@ -52,10 +52,7 @@ public class FileExplore extends Activity {
 
 		super.onCreate(savedInstanceState);
 		
-		path = new File("/storage/sdcard1");
-		if(!path.exists()){
-			path = Environment.getExternalStorageDirectory();
-		}
+		path = Environment.getExternalStorageDirectory().getParentFile();
 
 		loadFileList();
 
@@ -79,8 +76,13 @@ public class FileExplore extends Activity {
 				public boolean accept(File dir, String filename) {
 					File sel = new File(dir, filename);
 					// Filters based on whether the file is hidden or not
-					return (sel.isFile() || sel.isDirectory())
-							&& !sel.isHidden();
+					if(sel.isDirectory() && !sel.isHidden()){
+						if(sel.listFiles() != null && sel.listFiles().length > 0){
+							return true;
+						}
+					}
+					return false;
+							
 
 				}
 			};
