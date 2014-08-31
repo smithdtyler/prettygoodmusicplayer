@@ -35,6 +35,11 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.TextView;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -98,7 +103,7 @@ public class SettingsActivity extends PreferenceActivity {
 		private SettingsActivity activity;
 		private File path;
 		private List<File> files;
-
+		
 		private DirectoryPickerOnClickListener(SettingsActivity activity,
 				File root) {
 			this.path = root;
@@ -135,47 +140,125 @@ public class SettingsActivity extends PreferenceActivity {
 					path = path.getParentFile();
 				}
 				files = Utils.getPotentialSubDirectories(path);
-				CharSequence[] names = new CharSequence[files.size() + 2];
-				for (int i = 0; i < files.size(); i++) {
-					names[i + 2] = files.get(i).getName();
+				
+				final Item[] items = new Item[files.size() + 2];
+				for(int i = 0;i<files.size();i++){
+					items[i + 2] = new Item(files.get(i).getName(), R.drawable.directory_icon);
 				}
-				names[0] = "Here!"; // do an "ok" instead?
-				names[1] = "Up";
-				new AlertDialog.Builder(activity).setTitle("Music Directory")
+				
+				items[0] = new Item("Here", R.drawable.ic_pgmp_launcher);
+				items[1] = new Item("Up", android.R.drawable.ic_menu_upload);
+				
+				ListAdapter adapter = new ArrayAdapter<Item>(
+					    activity,
+					    android.R.layout.select_dialog_item,
+					    android.R.id.text1, items){
+					        public View getView(int position, View convertView, ViewGroup parent) {
+					            //User super class to create the View
+					            View v = super.getView(position, convertView, parent);
+					            TextView tv = (TextView)v.findViewById(android.R.id.text1);
+
+					            //Put the image on the TextView
+					            tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0);
+
+					            //Add margin between image and text (support various screen densities)
+					            int dp5 = (int) (5 * activity.getResources().getDisplayMetrics().density + 0.5f);
+					            tv.setCompoundDrawablePadding(dp5);
+
+					            return v;
+					        }
+					    };
+				
+				new AlertDialog.Builder(activity).setTitle("Where are your artist folders?")
 						.setIcon(android.R.drawable.ic_menu_zoom)
-						.setItems(names, this).show();
+						.setAdapter(adapter, this).show();
 			} else {
 				dialog.dismiss(); // TODO use cancel instead? What's the
 									// difference?
 				File f = files.get(which - 2);
 				path = new File(path, f.getName());
 				files = Utils.getPotentialSubDirectories(path);
-				CharSequence[] names = new CharSequence[files.size() + 2];
-				for (int i = 0; i < files.size(); i++) {
-					names[i + 2] = files.get(i).getName();
+				final Item[] items = new Item[files.size() + 2];
+				for(int i = 0;i<files.size();i++){
+					items[i + 2] = new Item(files.get(i).getName(), R.drawable.directory_icon);
 				}
-				names[0] = "Here!"; // do an "ok" instead?
-				names[1] = "Up";
-				new AlertDialog.Builder(activity).setTitle("Music Directory")
+				
+				items[0] = new Item("Here", R.drawable.ic_pgmp_launcher);
+				items[1] = new Item("Up", android.R.drawable.ic_menu_upload);
+				
+				ListAdapter adapter = new ArrayAdapter<Item>(
+					    activity,
+					    android.R.layout.select_dialog_item,
+					    android.R.id.text1, items){
+					        public View getView(int position, View convertView, ViewGroup parent) {
+					            //User super class to create the View
+					            View v = super.getView(position, convertView, parent);
+					            TextView tv = (TextView)v.findViewById(android.R.id.text1);
+
+					            //Put the image on the TextView
+					            tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0);
+
+					            //Add margin between image and text (support various screen densities)
+					            int dp5 = (int) (5 * activity.getResources().getDisplayMetrics().density + 0.5f);
+					            tv.setCompoundDrawablePadding(dp5);
+
+					            return v;
+					        }
+					    };
+				new AlertDialog.Builder(activity).setTitle("Where are your artist folders?")
 						.setIcon(android.R.drawable.ic_menu_zoom)
-						.setItems(names, this).show();
+						.setAdapter(adapter, this).show();
 			}
 
-			// TODO Auto-generated method stub
 		}
 
 		private void showDirectoryPicker() {
-			CharSequence[] names = new CharSequence[files.size() + 2];
-			for (int i = 0; i < files.size(); i++) {
-				names[i + 2] = files.get(i).getName();
+			final Item[] items = new Item[files.size() + 2];
+			for(int i = 0;i<files.size();i++){
+				items[i + 2] = new Item(files.get(i).getName(), R.drawable.directory_icon);
 			}
-			names[0] = "Here!"; // do an "ok" instead?
-			names[1] = "Up";
-			new AlertDialog.Builder(activity).setTitle("Music Directory")
+			
+			items[0] = new Item("Here", R.drawable.ic_pgmp_launcher);
+			items[1] = new Item("Up", android.R.drawable.ic_menu_upload);
+			
+			ListAdapter adapter = new ArrayAdapter<Item>(
+				    activity,
+				    android.R.layout.select_dialog_item,
+				    android.R.id.text1, items){
+				        public View getView(int position, View convertView, ViewGroup parent) {
+				            //User super class to create the View
+				            View v = super.getView(position, convertView, parent);
+				            TextView tv = (TextView)v.findViewById(android.R.id.text1);
+
+				            //Put the image on the TextView
+				            tv.setCompoundDrawablesWithIntrinsicBounds(items[position].icon, 0, 0, 0);
+
+				            //Add margin between image and text (support various screen densities)
+				            int dp5 = (int) (5 * activity.getResources().getDisplayMetrics().density + 0.5f);
+				            tv.setCompoundDrawablePadding(dp5);
+
+				            return v;
+				        }
+				    };
+			new AlertDialog.Builder(activity).setTitle("Where are your artist folders?")
 					.setIcon(android.R.drawable.ic_menu_zoom)
-					.setItems(names, this).show();
+					.setAdapter(adapter, this).show();
 		}
 
+	}
+	
+	
+	public static class Item{
+	    public final String text;
+	    public final int icon;
+	    public Item(String text, Integer icon) {
+	        this.text = text;
+	        this.icon = icon;
+	    }
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
 	}
 
 	/**
