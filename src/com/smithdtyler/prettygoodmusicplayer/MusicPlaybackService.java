@@ -187,7 +187,8 @@ public class MusicPlaybackService extends Service {
 
 		Notification notification = builder
 				.setContentText(contentText)
-				.setSmallIcon(R.drawable.ic_action_volume_on)
+//				.setSmallIcon(R.drawable.ic_action_volume_on)
+				.setSmallIcon(R.drawable.ic_pgmp_launcher)
 				.setWhen(System.currentTimeMillis())
 				.setContentIntent(pendingIntent)
 				.setContentTitle(
@@ -506,7 +507,8 @@ public class MusicPlaybackService extends Service {
 
 		Builder builder = new NotificationCompat.Builder(
 				this.getApplicationContext());
-		int icon = R.drawable.ic_action_volume_muted;
+//		int icon = R.drawable.ic_action_volume_muted;
+		int icon = R.drawable.ic_pgmp_launcher;
 		String contentText = getResources().getString(R.string.ticker_text);
 		if (songFile != null) {
 			SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
@@ -517,7 +519,8 @@ public class MusicPlaybackService extends Service {
 					+ ": " + Utils.getPrettySongName(songFile);
 			if(mp != null){
 				if(mp.isPlaying()){
-					icon = R.drawable.ic_action_volume_on;
+//					icon = R.drawable.ic_action_volume_on;
+					icon = R.drawable.ic_pgmp_launcher;
 				}
 			}
 		}
