@@ -188,7 +188,6 @@ public class MusicPlaybackService extends Service {
 
 		Notification notification = builder
 				.setContentText(contentText)
-//				.setSmallIcon(R.drawable.ic_action_volume_on)
 				.setSmallIcon(R.drawable.ic_pgmp_launcher)
 				.setWhen(System.currentTimeMillis())
 				.setContentIntent(pendingIntent)
@@ -463,7 +462,6 @@ public class MusicPlaybackService extends Service {
 	private synchronized void pause() {
 		if (mp.isPlaying()) {
 			mp.pause();
-//			am.abandonAudioFocus(MusicPlaybackService.this.audioFocusListener);
 		} else {
 			// do nothing
 		}
@@ -508,7 +506,6 @@ public class MusicPlaybackService extends Service {
 
 		Builder builder = new NotificationCompat.Builder(
 				this.getApplicationContext());
-//		int icon = R.drawable.ic_action_volume_muted;
 		int icon = R.drawable.ic_pgmp_launcher;
 		String contentText = getResources().getString(R.string.ticker_text);
 		if (songFile != null) {
@@ -520,7 +517,6 @@ public class MusicPlaybackService extends Service {
 					+ ": " + Utils.getPrettySongName(songFile);
 			if(mp != null){
 				if(mp.isPlaying()){
-//					icon = R.drawable.ic_action_volume_on;
 					icon = R.drawable.ic_pgmp_launcher;
 				}
 			}
@@ -559,9 +555,7 @@ public class MusicPlaybackService extends Service {
 					Log.i(TAG, "It's been more than 30 seconds, don't auto-play");
 				}
 			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-				// am.unregisterMediaButtonEventReceiver(RemoteControlReceiver);
 				Log.i(TAG, "AUDIOFOCUS_LOSS");
-//				am.abandonAudioFocus(this);
 				pause();
 				MusicPlaybackService.this.audioFocusLossTime  = System.currentTimeMillis();
 				// Stop playback
