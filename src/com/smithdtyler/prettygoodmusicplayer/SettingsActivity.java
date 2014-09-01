@@ -158,7 +158,8 @@ public class SettingsActivity extends PreferenceActivity {
 				items[i + 2] = new Item(files.get(i).getName(), R.drawable.ic_action_collection);
 			}
 			
-			items[0] = new Item(activity.getResources().getString(R.string.directorydialoghere), R.drawable.ic_pgmp_launcher);
+			items[0] = new Item(path.getAbsolutePath(), R.drawable.ic_pgmp_launcher);
+			//items[0] = new Item(activity.getResources().getString(R.string.directorydialoghere), R.drawable.ic_pgmp_launcher);
 			items[1] = new Item(activity.getResources().getString(R.string.directorydialogup), android.R.drawable.ic_menu_upload);
 			
 			ListAdapter adapter = new ArrayAdapter<Item>(
