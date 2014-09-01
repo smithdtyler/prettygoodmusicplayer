@@ -70,7 +70,15 @@ public class SongList extends Activity {
 			// If the album didn't exist, just list all of the songs we can find.
 			// Assume we don't need full recursion
 			Log.d(TAG, "Adding all songs...");
-			for(File albumFile : artistDir.listFiles()){
+			File[] albumArray = artistDir.listFiles();
+			List<File> albums = new ArrayList<File>();
+			for(File alb : albumArray){
+				albums.add(alb);
+			}
+			
+			Collections.sort(albums, Utils.albumFileComparator);
+			
+			for(File albumFile : albums){
 				if(Utils.isValidAlbumDirectory(albumFile)){
 					// get the songs in the album, sort them, then
 					// add them to the list

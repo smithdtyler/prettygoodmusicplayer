@@ -28,6 +28,8 @@ import android.os.Environment;
 
 public class Utils {
 	public static final Comparator<File> songFileComparator = new SongFileComparator();
+	public static final Comparator<File> albumFileComparator = new AlbumFileComparator();
+	
 
 	// https://developer.android.com/guide/appendix/media-formats.html
 	private static final String[] legalFormatExtensions = { "mp3", "m4p",
@@ -136,6 +138,17 @@ public class Utils {
 
 	}
 
+	private static class AlbumFileComparator implements Comparator<File> {
+
+		@Override
+		public int compare(File arg0, File arg1) {
+			String name0 = arg0.getName().toUpperCase(Locale.getDefault());
+			String name1 = arg1.getName().toUpperCase(Locale.getDefault());
+			return name0.compareTo(name1);
+		}
+
+	}
+	
 	static File getBestGuessMusicDirectory() {
 		File ext = Environment.getExternalStorageDirectory();
 		for (File f : ext.listFiles()) {
