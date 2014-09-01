@@ -124,6 +124,7 @@ public class MusicPlaybackService extends Service {
 	// These are used to report song progress when the song isn't started yet. 
 	private int lastDuration = 0;
 	private int lastPosition = 0;
+	public long audioFocusLossTime = 0;
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -462,7 +463,7 @@ public class MusicPlaybackService extends Service {
 	private synchronized void pause() {
 		if (mp.isPlaying()) {
 			mp.pause();
-			am.abandonAudioFocus(MusicPlaybackService.this.audioFocusListener);
+//			am.abandonAudioFocus(MusicPlaybackService.this.audioFocusListener);
 		} else {
 			// do nothing
 		}
@@ -546,28 +547,36 @@ public class MusicPlaybackService extends Service {
 			if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
 				Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT");
 				pause();
+				MusicPlaybackService.this.audioFocusLossTime  = System.currentTimeMillis();
 				// Pause playback
 			} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
 				Log.i(TAG, "AUDIOFOCUS_GAIN");
-				// TODO test this
-				// It bugs the crap out of me when things just start playing on
-				// their own.
-				// Don't start playing again till someone pushes a friggin'
-				// button.
-				// play();
-				// Resume playback
+				// If it's been less than 20 seconds, resume playback
+				long curr = System.currentTimeMillis();
+				if((curr - MusicPlaybackService.this.audioFocusLossTime) < 30000){
+					play();
+				} else {
+					Log.i(TAG, "It's been more than 30 seconds, don't auto-play");
+				}
 			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
 				// am.unregisterMediaButtonEventReceiver(RemoteControlReceiver);
 				Log.i(TAG, "AUDIOFOCUS_LOSS");
-				am.abandonAudioFocus(this);
+//				am.abandonAudioFocus(this);
 				pause();
+				MusicPlaybackService.this.audioFocusLossTime  = System.currentTimeMillis();
 				// Stop playback
 			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
 				Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+				MusicPlaybackService.this.audioFocusLossTime  = System.currentTimeMillis();
 				pause();
 			} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK) {
 				Log.i(TAG, "AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK");
-				play();
+				long curr = System.currentTimeMillis();
+				if((curr - MusicPlaybackService.this.audioFocusLossTime) < 30000){
+					play();
+				} else {
+					Log.i(TAG, "It's been more than 30 seconds, don't auto-play");
+				}
 			}
 		}
 	}
