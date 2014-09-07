@@ -220,7 +220,7 @@ import android.widget.TextView;
 					Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
 					msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
 					startService(msgIntent);
-					onBackPressed();
+					finish();
 				}
             	
             })
