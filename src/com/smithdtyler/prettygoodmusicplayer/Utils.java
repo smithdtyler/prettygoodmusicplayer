@@ -151,16 +151,23 @@ public class Utils {
 	
 	static File getBestGuessMusicDirectory() {
 		File ext = Environment.getExternalStorageDirectory();
-		for (File f : ext.listFiles()) {
-			if (f.getName().toLowerCase(Locale.getDefault()).contains("music")) {
-				return f;
+		if(ext != null){
+			for (File f : ext.listFiles()) {
+				if (f.getName().toLowerCase(Locale.getDefault()).contains("music")) {
+					return f;
+				}
 			}
+			return new File(ext, "music");
 		}
-		return new File(ext, "music");
+		return new File("music");
 	}
 
 	static File getRootStorageDirectory() {
 		File ext = Environment.getExternalStorageDirectory();
+		if(ext == null){
+			ext = Environment.getRootDirectory();
+			return ext;
+		}
 		File parent = ext.getParentFile();
 		if (parent != null) {
 			return parent;
