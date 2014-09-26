@@ -18,6 +18,9 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,6 +33,24 @@ public class MusicBroadcastReceiver extends BroadcastReceiver {
 	private static final String TAG = "MusicBroadcastReceiver";
 
 	boolean mIsBound;
+	Timer disconnectTimer = null;
+	
+	private static class DisconnectTask extends TimerTask{
+
+		private Context context;
+
+		private DisconnectTask(Context context){
+			this.context = context;
+		}
+		
+		@Override
+		public void run() {
+			Intent msgIntent = new Intent(context, MusicPlaybackService.class);
+			msgIntent.putExtra("Message", MusicPlaybackService.MSG_PAUSE);
+			context.startService(msgIntent);
+		}
+		
+	}
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -42,9 +63,16 @@ public class MusicBroadcastReceiver extends BroadcastReceiver {
 			 * microphone - 1 if headset has a microphone, 0 otherwise
 			 */
 			if(intent.getIntExtra("state", -1) == 0){
-				Intent msgIntent = new Intent(context, MusicPlaybackService.class);
-				msgIntent.putExtra("Message", MusicPlaybackService.MSG_PAUSE);
-				context.startService(msgIntent);
+				if(disconnectTimer == null){
+					disconnectTimer = new Timer();
+					disconnectTimer.schedule(new DisconnectTask(context), 2500);
+				}
+				// If the headphone is plugged back in quickly after being unplugged, keep playing
+			} else if(intent.getIntExtra("state", -1) == 0){
+				if(disconnectTimer != null){
+					disconnectTimer.cancel();
+					disconnectTimer = null;
+				}
 			}
 		} else if(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(intent.getAction()) || BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(intent.getAction())){
 			Log.i(TAG, "Got bluetooth disconnect action");
