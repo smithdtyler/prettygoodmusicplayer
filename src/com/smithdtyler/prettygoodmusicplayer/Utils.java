@@ -151,7 +151,7 @@ public class Utils {
 	
 	static File getBestGuessMusicDirectory() {
 		File ext = Environment.getExternalStorageDirectory();
-		if(ext != null){
+		if(ext != null && (ext.listFiles() != null)){
 			for (File f : ext.listFiles()) {
 				if (f.getName().toLowerCase(Locale.getDefault()).contains("music")) {
 					return f;
