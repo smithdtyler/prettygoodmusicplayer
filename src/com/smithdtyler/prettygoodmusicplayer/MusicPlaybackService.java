@@ -63,6 +63,8 @@ public class MusicPlaybackService extends Service {
 	static final int MSG_PREVIOUS = 5;
 	static final int MSG_SET_PLAYLIST = 6;
 	static final int MSG_PAUSE = 7;
+	static final int MSG_PAUSE_IN_ONE_SEC = 8;
+	static final int MSG_CANCEL_PAUSE_IN_ONE_SEC = 9;
 	
 	// State management
 	static final int MSG_REQUEST_STATE = 17;
@@ -125,6 +127,7 @@ public class MusicPlaybackService extends Service {
 	private int lastDuration = 0;
 	private int lastPosition = 0;
 	public long audioFocusLossTime = 0;
+	private long pauseTime = Long.MAX_VALUE;
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -236,6 +239,10 @@ public class MusicPlaybackService extends Service {
 				timer.cancel();
 				stopForeground(true);
 				stopSelf();
+			} else if (command == MSG_PAUSE_IN_ONE_SEC) {
+				pauseTime  = System.currentTimeMillis() + 1000;
+			} else if (command == MSG_CANCEL_PAUSE_IN_ONE_SEC) {
+				pauseTime = Long.MAX_VALUE;
 			}
 			return START_STICKY;
 		}
@@ -308,6 +315,10 @@ public class MusicPlaybackService extends Service {
 	}
 
 	private void onTimerTick() {
+		long currentTime = System.currentTimeMillis();
+		if(pauseTime < currentTime){
+			pause();
+		}
 		sendUpdateToClients();
 	}
 
@@ -431,6 +442,7 @@ public class MusicPlaybackService extends Service {
 		if (mp.isPlaying()) {
 			pause();
 		} else {
+			pauseTime = Long.MAX_VALUE;
 			play();
 		}
 	}

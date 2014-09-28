@@ -18,9 +18,6 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,69 +29,57 @@ import android.view.KeyEvent;
 public class MusicBroadcastReceiver extends BroadcastReceiver {
 	private static final String TAG = "MusicBroadcastReceiver";
 
-	boolean mIsBound;
-	Timer disconnectTimer = null;
-	
-	private static class DisconnectTask extends TimerTask{
-
-		private Context context;
-
-		private DisconnectTask(Context context){
-			this.context = context;
-		}
-		
-		@Override
-		public void run() {
-			Intent msgIntent = new Intent(context, MusicPlaybackService.class);
-			msgIntent.putExtra("Message", MusicPlaybackService.MSG_PAUSE);
-			context.startService(msgIntent);
-		}
-		
-	}
-
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.i(TAG, "got a thingy!");
-		if(Intent.ACTION_HEADSET_PLUG.equals(intent.getAction())){
+		if (Intent.ACTION_HEADSET_PLUG.equals(intent.getAction())) {
 			Log.i(TAG, "Got headset plug action");
 			/*
-			 * state - 0 for unplugged, 1 for plugged.
-			 * name - Headset type, human readable string
-			 * microphone - 1 if headset has a microphone, 0 otherwise
+			 * state - 0 for unplugged, 1 for plugged. name - Headset type,
+			 * human readable string microphone - 1 if headset has a microphone,
+			 * 0 otherwise
 			 */
-			if(intent.getIntExtra("state", -1) == 0){
-				if(disconnectTimer == null){
-					disconnectTimer = new Timer();
-					disconnectTimer.schedule(new DisconnectTask(context), 2500);
-				}
-				// If the headphone is plugged back in quickly after being unplugged, keep playing
-			} else if(intent.getIntExtra("state", -1) == 0){
-				if(disconnectTimer != null){
-					disconnectTimer.cancel();
-					disconnectTimer = null;
-				}
+			if (intent.getIntExtra("state", -1) == 0) {
+				Log.i(TAG, "headphones disconnected, pausing in 1 seconds");
+				Intent msgIntent = new Intent(context, MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_PAUSE_IN_ONE_SEC);
+				context.startService(msgIntent);
+				// If the headphone is plugged back in quickly after being
+				// unplugged, keep playing
+			} else if (intent.getIntExtra("state", -1) == 1) {
+				Log.i(TAG, "headphones plugged back in, cancelling disconnect");
+				Intent msgIntent = new Intent(context, MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_CANCEL_PAUSE_IN_ONE_SEC);
+				context.startService(msgIntent);
 			}
-		} else if(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(intent.getAction()) || BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(intent.getAction())){
+		} else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED
+				.equals(intent.getAction())
+				|| BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(intent
+						.getAction())) {
 			Log.i(TAG, "Got bluetooth disconnect action");
 			Intent msgIntent = new Intent(context, MusicPlaybackService.class);
 			msgIntent.putExtra("Message", MusicPlaybackService.MSG_PAUSE);
 			context.startService(msgIntent);
 		} else if (Intent.ACTION_MEDIA_BUTTON.equals(intent.getAction())) {
-			Log.i(TAG, "Media Button Receiver: received media button intent: " + intent);
+			Log.i(TAG, "Media Button Receiver: received media button intent: "
+					+ intent);
 
-			KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(Intent.EXTRA_KEY_EVENT);
+			KeyEvent keyEvent = (KeyEvent) intent.getExtras().get(
+					Intent.EXTRA_KEY_EVENT);
 			Log.i(TAG, "Got a key event");
 			if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
 				Log.i(TAG, "Got a key up event");
 				// connect to the service
 				// send a message
-				// Create an intent with the message type, then send it to "start service"
+				// Create an intent with the message type, then send it to
+				// "start service"
 				// Looks like it's OK to call this multiple times
-				//https://stackoverflow.com/questions/13124115/starting-android-service-already-running
-				
+				// https://stackoverflow.com/questions/13124115/starting-android-service-already-running
+
 				int keyCode = keyEvent.getKeyCode();
-				Intent msgIntent = new Intent(context, MusicPlaybackService.class);
-				
+				Intent msgIntent = new Intent(context,
+						MusicPlaybackService.class);
+
 				switch (keyCode) {
 				case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
 					// code for fast forward
@@ -103,30 +88,35 @@ public class MusicBroadcastReceiver extends BroadcastReceiver {
 				case KeyEvent.KEYCODE_MEDIA_NEXT:
 					// code for next
 					Log.i(TAG, "key pressed KEYCODE_MEDIA_NEXT");
-					msgIntent.putExtra("Message", MusicPlaybackService.MSG_NEXT);
+					msgIntent
+							.putExtra("Message", MusicPlaybackService.MSG_NEXT);
 					context.startService(msgIntent);
 					break;
 				case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 					// code for play/pause
 					Log.i(TAG, "key pressed KEYCODE_MEDIA_PLAY_PAUSE");
-					msgIntent.putExtra("Message", MusicPlaybackService.MSG_PLAYPAUSE);
+					msgIntent.putExtra("Message",
+							MusicPlaybackService.MSG_PLAYPAUSE);
 					context.startService(msgIntent);
 					break;
 				case KeyEvent.KEYCODE_MEDIA_PAUSE:
 					// code for play/pause
 					Log.i(TAG, "key pressed KEYCODE_MEDIA_PAUSE");
-					msgIntent.putExtra("Message", MusicPlaybackService.MSG_PLAYPAUSE);
+					msgIntent.putExtra("Message",
+							MusicPlaybackService.MSG_PLAYPAUSE);
 					context.startService(msgIntent);
 					break;
 				case KeyEvent.KEYCODE_MEDIA_PLAY:
 					// code for play/pause
 					Log.i(TAG, "key pressed KEYCODE_MEDIA_PLAY");
-					msgIntent.putExtra("Message", MusicPlaybackService.MSG_PLAYPAUSE);
+					msgIntent.putExtra("Message",
+							MusicPlaybackService.MSG_PLAYPAUSE);
 					context.startService(msgIntent);
 					break;
 				case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 					Log.i(TAG, "key pressed KEYCODE_MEDIA_PREVIOUS");
-					msgIntent.putExtra("Message", MusicPlaybackService.MSG_PREVIOUS);
+					msgIntent.putExtra("Message",
+							MusicPlaybackService.MSG_PREVIOUS);
 					context.startService(msgIntent);
 					// code for previous
 					break;
@@ -136,17 +126,19 @@ public class MusicBroadcastReceiver extends BroadcastReceiver {
 					break;
 				case KeyEvent.KEYCODE_MEDIA_STOP:
 					Log.i(TAG, "key pressed KEYCODE_MEDIA_STOP");
-					// Oddly enough, I think Android stops listening for pause after a while, so let's use
+					// Oddly enough, I think Android stops listening for pause
+					// after a while, so let's use
 					// stop as a "start playing if paused"
-					msgIntent.putExtra("Message", MusicPlaybackService.MSG_PLAYPAUSE);
+					msgIntent.putExtra("Message",
+							MusicPlaybackService.MSG_PLAYPAUSE);
 					context.startService(msgIntent);
 					break;
 				default:
 					Log.i(TAG, "key pressed " + keyCode);
 					// code for stop
 					break;
-			}
-				
+				}
+
 			}
 		}
 
