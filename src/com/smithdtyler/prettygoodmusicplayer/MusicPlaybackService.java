@@ -327,10 +327,18 @@ public class MusicPlaybackService extends Service {
 		for (Messenger client : mClients) {
 			Message msg = Message.obtain(null, MSG_SERVICE_STATUS);
 			Bundle b = new Bundle();
-			b.putString(PRETTY_SONG_NAME, Utils.getPrettySongName(songFile));
-			b.putString(PRETTY_ALBUM_NAME, songFile.getParentFile().getName());
-			b.putString(PRETTY_ARTIST_NAME, songFile.getParentFile()
-					.getParentFile().getName());
+			if(songFile != null){
+				b.putString(PRETTY_SONG_NAME, Utils.getPrettySongName(songFile));
+				b.putString(PRETTY_ALBUM_NAME, songFile.getParentFile().getName());
+				b.putString(PRETTY_ARTIST_NAME, songFile.getParentFile()
+						.getParentFile().getName());
+			} else {
+				// songFile can be null while we're shutting down.
+				b.putString(PRETTY_SONG_NAME, " ");
+				b.putString(PRETTY_ALBUM_NAME, " ");
+				b.putString(PRETTY_ARTIST_NAME, " ");
+			}
+			
 			if (mp.isPlaying()) {
 				b.putInt(PLAYBACK_STATE, PlaybackState.PLAYING.ordinal());
 			} else {
