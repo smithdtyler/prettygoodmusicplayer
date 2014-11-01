@@ -33,7 +33,7 @@ public class Utils {
 
 	// https://developer.android.com/guide/appendix/media-formats.html
 	private static final String[] legalFormatExtensions = { "mp3", "m4p",
-			"m4a", "wav", "ogg", "mkv", "3gp", "aac" };
+			"m4a", "wav", "ogg", "mkv", "3gp", "aac", "flac"};
 
 	private static String mediaFileEndingRegex = "";
 	static {
