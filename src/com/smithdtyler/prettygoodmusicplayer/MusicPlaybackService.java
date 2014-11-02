@@ -219,6 +219,11 @@ public class MusicPlaybackService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.i("MyService", "Received start id " + startId + ": " + intent);
+		if(intent == null){
+			// intent can be null if this is called by the OS due to "START STICKY"
+			// Start, but don't do anything until we get a message from the user.
+			return START_STICKY;
+		}
 		int command = intent.getIntExtra("Message", -1);
 		if (command != -1) {
 			Log.i(TAG, "I got a message! " + command);
