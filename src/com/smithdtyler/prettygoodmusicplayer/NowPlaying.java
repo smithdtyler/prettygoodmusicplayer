@@ -33,6 +33,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -83,7 +84,7 @@ public class NowPlaying extends Activity {
 		
 		// The song name field will be set when we get our first update update from the service.
 
-		final Button pause = (Button) findViewById(R.id.playPause);
+		final ImageButton pause = (ImageButton) findViewById(R.id.playPause);
 		pause.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -93,7 +94,7 @@ public class NowPlaying extends Activity {
 
 		});
 
-		Button previous = (Button) findViewById(R.id.previous);
+		ImageButton previous = (ImageButton) findViewById(R.id.previous);
 		previous.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -103,7 +104,7 @@ public class NowPlaying extends Activity {
 
 		});
 
-		Button next = (Button) findViewById(R.id.next);
+		ImageButton next = (ImageButton) findViewById(R.id.next);
 		next.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -235,14 +236,16 @@ public class NowPlaying extends Activity {
 				}
 				
 				PlaybackState state = PlaybackState.values()[msg.getData().getInt(MusicPlaybackService.PLAYBACK_STATE, 0)];
-				Button playPause = (Button)_activity.findViewById(R.id.playPause);
-				if(playPause.getText().equals("Play")){
+				ImageButton playPause = (ImageButton)_activity.findViewById(R.id.playPause);
+				if(playPause.getContentDescription().equals(_activity.getResources().getString(R.string.play))){
 					if(state == PlaybackState.PLAYING){
-						playPause.setText("Pause");
+						playPause.setImageDrawable(_activity.getResources().getDrawable(R.drawable.ic_action_pause));
+						playPause.setContentDescription(_activity.getResources().getString(R.string.pause));
 					}
 				} else {
 					if(state == PlaybackState.PAUSED){
-						playPause.setText("Play");
+						playPause.setImageDrawable(_activity.getResources().getDrawable(R.drawable.ic_action_play));
+						playPause.setContentDescription(_activity.getResources().getString(R.string.play));
 					}
 				}
 				int duration = msg.getData().getInt(MusicPlaybackService.TRACK_DURATION, -1);

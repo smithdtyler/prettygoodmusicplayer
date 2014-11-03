@@ -1,68 +1,113 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/artistName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15"
+        android:background="@color/white" >
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/albumName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/artistName"
-        android:layout_marginTop="39dp"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="35"
+        android:background="@color/white" >
 
-    <TextView
-        android:id="@+id/songName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/albumName"
-        android:layout_marginTop="34dp"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <TextView
+            android:id="@+id/artistName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <SeekBar
-        android:id="@+id/songProgressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/songName"
-        android:layout_marginTop="104dp" />
+        <TextView
+            android:id="@+id/albumName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/artistName"
+            android:layout_marginTop="10dip"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/previous"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="44dp"
-        android:layout_marginLeft="15dp"
-        android:text="@string/previous" />
+        <TextView
+            android:id="@+id/songName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/albumName"
+            android:layout_marginTop="15dip"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </RelativeLayout>
 
-    <Button
-        android:id="@+id/playPause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/previous"
-        android:layout_alignBottom="@+id/previous"
-        android:layout_centerHorizontal="true"
-        android:text="@string/play" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="22"
+        android:background="@color/white" >
 
-    <Button
-        android:id="@+id/next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/previous"
-        android:layout_marginRight="15dp"
-        android:text="@string/next" />
+        <SeekBar
+            android:id="@+id/songProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:background="@color/darkishgray" >
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="16"
+        android:background="@color/darkishgray" >
+
+        <ImageButton
+            android:id="@+id/playPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_action_play"
+            android:contentDescription="@string/play"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/play" />
+
+        <ImageButton
+            android:id="@+id/previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/playPause"
+            android:layout_toLeftOf="@id/playPause"
+            android:layout_marginRight="20dip"
+            android:src="@drawable/ic_action_previous"
+            android:contentDescription="@string/previous"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/previous" />
+
+        <ImageButton
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/playPause"
+            android:layout_toRightOf="@id/playPause"
+            android:layout_marginLeft="20dip"
+            android:src="@drawable/ic_action_next"
+            android:contentDescription="@string/next"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="@string/next" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:background="@color/darkishgray" >
+    </LinearLayout>
+
+</LinearLayout>
