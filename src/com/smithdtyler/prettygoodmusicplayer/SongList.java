@@ -48,7 +48,12 @@ public class SongList extends Activity {
 		songs = new ArrayList<Map<String,String>>();
 		
 		File artistDir = new File(artistAbsDirName);
-		File albumDir = new File(artistDir, albumDirName);
+		File albumDir;
+		if(albumDirName != null){
+			albumDir = new File(artistDir, albumDirName);
+		} else {
+			albumDir = artistDir; 
+		}
 
 		List<File> songFiles = new ArrayList<File>();
 		if(albumDir.exists()){
