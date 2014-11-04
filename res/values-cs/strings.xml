@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Pretty Good Music Player</string>
+    <string name="action_settings">Nastavení</string>
+    <string name="title_activity_album_list">Alba</string>
+    <string name="title_activity_song_list">Skladby</string>
+    <string name="title_activity_now_playing">Právě hraje</string>
+    <string name="notification_title">Pretty Good Music Player</string>
+    <string name="notification_message">Přehrávání hudby</string>
+	<string name="ticker_text">Služba přehrávání hudby</string>
+	<string name="next">Další</string>
+	<string name="pause">Pozastavit</string>
+	<string name="play">Hrát</string>
+	<string name="previous">Předchozí</string>
+	<string name="directorydialogprompt">Kde jsou umístěny adresáře s hudbou?</string>
+    <string name="directorydialoghere">Tady jsou!</string>
+    <string name="directorydialogup">Nadřazený adresář</string>
+</resources>
