@@ -75,6 +75,7 @@
             android:layout_centerInParent="true"
             android:src="@drawable/ic_action_play"
             android:contentDescription="@string/play"
+            android:scaleType="fitCenter"
             style="?android:attr/borderlessButtonStyle"
             android:text="@string/play" />
 
@@ -87,6 +88,7 @@
             android:layout_marginRight="20dip"
             android:src="@drawable/ic_action_previous"
             android:contentDescription="@string/previous"
+            android:scaleType="fitCenter"
             style="?android:attr/borderlessButtonStyle"
             android:text="@string/previous" />
 
@@ -99,6 +101,7 @@
             android:layout_marginLeft="20dip"
             android:src="@drawable/ic_action_next"
             android:contentDescription="@string/next"
+            android:scaleType="fitCenter"
             style="?android:attr/borderlessButtonStyle"
             android:text="@string/next" />
     </RelativeLayout>
