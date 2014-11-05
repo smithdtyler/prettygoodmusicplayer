@@ -5,6 +5,7 @@
     <string name="title_activity_album_list">Albums</string>
     <string name="title_activity_song_list">Lieden</string>
     <string name="title_activity_now_playing">Jetzt Spielt</string>
+    <string name="title_activity_settings">Konfiguration</string>
     <string name="notification_title">Pretty Good Music Player</string>
     <string name="notification_message">Music Playing</string>
 	<string name="ticker_text">Music Playback Service</string>
