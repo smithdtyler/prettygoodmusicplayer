@@ -50,6 +50,10 @@ public class AlbumList extends Activity {
 		
 		File artist = new File(artistPath);
 		Log.d(TAG, "storage directory = " + artist);
+		if(!artist.isDirectory()){
+			Log.e(TAG, "Invalid artist directory provided: " +  artistPath);
+			return;
+		}
 		
 		List<File> albumFiles = new ArrayList<File>();
 		for(File albumFile : artist.listFiles()){

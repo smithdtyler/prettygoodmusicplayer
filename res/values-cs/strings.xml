@@ -6,6 +6,7 @@
     <string name="title_activity_album_list">Alba</string>
     <string name="title_activity_song_list">Skladby</string>
     <string name="title_activity_now_playing">Právě hraje</string>
+    <string name="title_activity_settings">Nastavení</string>
     <string name="notification_title">Pretty Good Music Player</string>
     <string name="notification_message">Přehrávání hudby</string>
 	<string name="ticker_text">Služba přehrávání hudby</string>
