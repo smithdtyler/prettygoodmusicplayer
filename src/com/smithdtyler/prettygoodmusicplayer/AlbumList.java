@@ -37,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AlbumList extends Activity {
 	public static final String ALBUM_NAME = "ALBUM_NAME";
@@ -50,8 +51,9 @@ public class AlbumList extends Activity {
 		
 		File artist = new File(artistPath);
 		Log.d(TAG, "storage directory = " + artist);
-		if(!artist.isDirectory()){
+		if(!artist.isDirectory() || (artist.listFiles() == null)){
 			Log.e(TAG, "Invalid artist directory provided: " +  artistPath);
+			Toast.makeText(getApplicationContext(), "The selected directory is empty", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		
