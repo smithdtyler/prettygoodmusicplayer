@@ -2,8 +2,7 @@
 <resources>
     <string-array
         name="themeoptions">
-        <item
-            >light</item>
-        <item>dark</item>
+        <item>Light</item>
+        <item>Dark</item>
     </string-array>
 </resources>

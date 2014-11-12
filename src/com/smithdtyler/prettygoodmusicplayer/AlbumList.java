@@ -94,10 +94,10 @@ public class AlbumList extends Activity {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
         Log.i(TAG, "got configured theme " + theme);
-        if(theme.equals("dark")){
+        if(theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
         	setTheme(R.style.PGMPDark);
-        } else if (theme.equals("light")){
+        } else if (theme.equalsIgnoreCase("light")){
         	Log.i(TAG, "setting theme to " + theme);
         	setTheme(R.style.PGMPLight);
         }
