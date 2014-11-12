@@ -65,7 +65,7 @@ public class MusicPlaybackService extends Service {
 	static final int MSG_PAUSE = 7;
 	static final int MSG_PAUSE_IN_ONE_SEC = 8;
 	static final int MSG_CANCEL_PAUSE_IN_ONE_SEC = 9;
-	
+
 	// State management
 	static final int MSG_REQUEST_STATE = 17;
 	static final int MSG_SERVICE_STATUS = 18;
@@ -107,23 +107,23 @@ public class MusicPlaybackService extends Service {
 	private OnAudioFocusChangeListener audioFocusListener = new PrettyGoodAudioFocusChangeListener();
 
 	private static IntentFilter filter = new IntentFilter();
-	static{
+	static {
 		filter.addAction("android.intent.action.HEADSET_PLUG");
 		filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
 		filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
 	}
 	private static MusicBroadcastReceiver receiver = new MusicBroadcastReceiver();
-	
+
 	/**
 	 * Keeps track of all current registered clients.
 	 */
-	List<Messenger> mClients = new ArrayList<Messenger>(); 
+	List<Messenger> mClients = new ArrayList<Messenger>();
 
 	final Messenger mMessenger = new Messenger(new IncomingHandler(this));
 
 	public AudioManager mAudioManager;
-	
-	// These are used to report song progress when the song isn't started yet. 
+
+	// These are used to report song progress when the song isn't started yet.
 	private int lastDuration = 0;
 	private int lastPosition = 0;
 	public long audioFocusLossTime = 0;
@@ -212,16 +212,19 @@ public class MusicPlaybackService extends Service {
 		// Apparently audio registration is persistent across lots of things...
 		// restarts, installs, etc.
 		mAudioManager.registerMediaButtonEventReceiver(cn);
-		// I tried to register this in the manifest, but it doesn't seen to accept it, so I'll do it this way.
+		// I tried to register this in the manifest, but it doesn't seen to
+		// accept it, so I'll do it this way.
 		getApplicationContext().registerReceiver(receiver, filter);
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.i("MyService", "Received start id " + startId + ": " + intent);
-		if(intent == null){
-			// intent can be null if this is called by the OS due to "START STICKY"
-			// Start, but don't do anything until we get a message from the user.
+		if (intent == null) {
+			// intent can be null if this is called by the OS due to
+			// "START STICKY"
+			// Start, but don't do anything until we get a message from the
+			// user.
 			return START_STICKY;
 		}
 		int command = intent.getIntExtra("Message", -1);
@@ -245,7 +248,7 @@ public class MusicPlaybackService extends Service {
 				stopForeground(true);
 				stopSelf();
 			} else if (command == MSG_PAUSE_IN_ONE_SEC) {
-				pauseTime  = System.currentTimeMillis() + 1000;
+				pauseTime = System.currentTimeMillis() + 1000;
 			} else if (command == MSG_CANCEL_PAUSE_IN_ONE_SEC) {
 				pauseTime = Long.MAX_VALUE;
 			}
@@ -278,11 +281,15 @@ public class MusicPlaybackService extends Service {
 			switch (msg.what) {
 			case MSG_REGISTER_CLIENT:
 				Log.i(TAG, "Got MSG_REGISTER_CLIENT");
-				_service.mClients.add(msg.replyTo);
+				synchronized (_service.mClients) {
+					_service.mClients.add(msg.replyTo);
+				}
 				break;
 			case MSG_UNREGISTER_CLIENT:
 				Log.i(TAG, "Got MSG_UNREGISTER_CLIENT");
-				_service.mClients.remove(msg.replyTo);
+				synchronized (_service.mClients) {
+					_service.mClients.remove(msg.replyTo);
+				}
 				break;
 			case MSG_PLAYPAUSE:
 				// if we got a playpause message, assume that the user can hear
@@ -321,7 +328,7 @@ public class MusicPlaybackService extends Service {
 
 	private void onTimerTick() {
 		long currentTime = System.currentTimeMillis();
-		if(pauseTime < currentTime){
+		if (pauseTime < currentTime) {
 			pause();
 		}
 		sendUpdateToClients();
@@ -329,46 +336,50 @@ public class MusicPlaybackService extends Service {
 
 	private void sendUpdateToClients() {
 		List<Messenger> toRemove = new ArrayList<Messenger>();
-		for (Messenger client : mClients) {
-			Message msg = Message.obtain(null, MSG_SERVICE_STATUS);
-			Bundle b = new Bundle();
-			if(songFile != null){
-				b.putString(PRETTY_SONG_NAME, Utils.getPrettySongName(songFile));
-				b.putString(PRETTY_ALBUM_NAME, songFile.getParentFile().getName());
-				b.putString(PRETTY_ARTIST_NAME, songFile.getParentFile()
-						.getParentFile().getName());
-			} else {
-				// songFile can be null while we're shutting down.
-				b.putString(PRETTY_SONG_NAME, " ");
-				b.putString(PRETTY_ALBUM_NAME, " ");
-				b.putString(PRETTY_ARTIST_NAME, " ");
-			}
-			
-			if (mp.isPlaying()) {
-				b.putInt(PLAYBACK_STATE, PlaybackState.PLAYING.ordinal());
-			} else {
-				b.putInt(PLAYBACK_STATE, PlaybackState.PAUSED.ordinal());
-			}
-			// We might not be able to send the position right away if mp is
-			// still being created
-			// so instead let's send the last position we knew about.
-			if (mp.isPlaying()) {
-				lastDuration = mp.getDuration();
-				lastPosition = mp.getCurrentPosition();
-			}
-			b.putInt(TRACK_DURATION, lastDuration);
-			b.putInt(TRACK_POSITION, lastPosition);
-			msg.setData(b);
-			try {
-				client.send(msg);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-				toRemove.add(client);
-			}
-		}
+		synchronized (mClients) {
+			for (Messenger client : mClients) {
+				Message msg = Message.obtain(null, MSG_SERVICE_STATUS);
+				Bundle b = new Bundle();
+				if (songFile != null) {
+					b.putString(PRETTY_SONG_NAME,
+							Utils.getPrettySongName(songFile));
+					b.putString(PRETTY_ALBUM_NAME, songFile.getParentFile()
+							.getName());
+					b.putString(PRETTY_ARTIST_NAME, songFile.getParentFile()
+							.getParentFile().getName());
+				} else {
+					// songFile can be null while we're shutting down.
+					b.putString(PRETTY_SONG_NAME, " ");
+					b.putString(PRETTY_ALBUM_NAME, " ");
+					b.putString(PRETTY_ARTIST_NAME, " ");
+				}
 
-		for (Messenger remove : toRemove) {
-			mClients.remove(remove);
+				if (mp.isPlaying()) {
+					b.putInt(PLAYBACK_STATE, PlaybackState.PLAYING.ordinal());
+				} else {
+					b.putInt(PLAYBACK_STATE, PlaybackState.PAUSED.ordinal());
+				}
+				// We might not be able to send the position right away if mp is
+				// still being created
+				// so instead let's send the last position we knew about.
+				if (mp.isPlaying()) {
+					lastDuration = mp.getDuration();
+					lastPosition = mp.getCurrentPosition();
+				}
+				b.putInt(TRACK_DURATION, lastDuration);
+				b.putInt(TRACK_POSITION, lastPosition);
+				msg.setData(b);
+				try {
+					client.send(msg);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+					toRemove.add(client);
+				}
+			}
+
+			for (Messenger remove : toRemove) {
+				mClients.remove(remove);
+			}
 		}
 	}
 
@@ -390,16 +401,17 @@ public class MusicPlaybackService extends Service {
 	}
 
 	private synchronized void previous() {
-		// if we're playing, and we're more than 3 seconds into the file, then just 
+		// if we're playing, and we're more than 3 seconds into the file, then
+		// just
 		// start the song over
-		if(mp.isPlaying()){
+		if (mp.isPlaying()) {
 			int progressMillis = mp.getCurrentPosition();
-			if(progressMillis > 3000){
+			if (progressMillis > 3000) {
 				mp.seekTo(0);
 				return;
 			}
 		}
-		
+
 		mp.stop();
 		mp.reset();
 		try {
@@ -534,14 +546,16 @@ public class MusicPlaybackService extends Service {
 		int icon = R.drawable.ic_pgmp_launcher;
 		String contentText = getResources().getString(R.string.ticker_text);
 		if (songFile != null) {
-			SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
-	        prefs.edit();
-	        File bestGuessMusicDir = Utils.getBestGuessMusicDirectory();
-	        String musicRoot = prefs.getString("ARTIST_DIRECTORY", bestGuessMusicDir.getAbsolutePath());
-			contentText = Utils.getArtistName(songFile, musicRoot)
-					+ ": " + Utils.getPrettySongName(songFile);
-			if(mp != null){
-				if(mp.isPlaying()){
+			SharedPreferences prefs = getSharedPreferences(
+					"PrettyGoodMusicPlayer", MODE_PRIVATE);
+			prefs.edit();
+			File bestGuessMusicDir = Utils.getBestGuessMusicDirectory();
+			String musicRoot = prefs.getString("ARTIST_DIRECTORY",
+					bestGuessMusicDir.getAbsolutePath());
+			contentText = Utils.getArtistName(songFile, musicRoot) + ": "
+					+ Utils.getPrettySongName(songFile);
+			if (mp != null) {
+				if (mp.isPlaying()) {
 					icon = R.drawable.ic_pgmp_launcher;
 				}
 			}
@@ -562,44 +576,49 @@ public class MusicPlaybackService extends Service {
 
 	private class PrettyGoodAudioFocusChangeListener implements
 			AudioManager.OnAudioFocusChangeListener {
-		
+
 		private PlaybackState stateOnFocusLoss = PlaybackState.UNKNOWN;
 
 		public void onAudioFocusChange(int focusChange) {
 			Log.w(TAG, "Focus change received " + focusChange);
 			if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
 				Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT");
-				if(mp.isPlaying()){
+				if (mp.isPlaying()) {
 					stateOnFocusLoss = PlaybackState.PLAYING;
 				} else {
 					stateOnFocusLoss = PlaybackState.PAUSED;
 				}
 				pause();
-				MusicPlaybackService.this.audioFocusLossTime  = System.currentTimeMillis();
+				MusicPlaybackService.this.audioFocusLossTime = System
+						.currentTimeMillis();
 				// Pause playback
 			} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
 				Log.i(TAG, "AUDIOFOCUS_GAIN");
 				// If it's been less than 20 seconds, resume playback
 				long curr = System.currentTimeMillis();
-				if(((curr - MusicPlaybackService.this.audioFocusLossTime) < 30000) && stateOnFocusLoss == PlaybackState.PLAYING){
+				if (((curr - MusicPlaybackService.this.audioFocusLossTime) < 30000)
+						&& stateOnFocusLoss == PlaybackState.PLAYING) {
 					play();
 				} else {
-					Log.i(TAG, "It's been more than 30 seconds or we were paused, don't auto-play");
+					Log.i(TAG,
+							"It's been more than 30 seconds or we were paused, don't auto-play");
 				}
 			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
 				Log.i(TAG, "AUDIOFOCUS_LOSS");
-				if(mp.isPlaying()){
+				if (mp.isPlaying()) {
 					stateOnFocusLoss = PlaybackState.PLAYING;
 				} else {
 					stateOnFocusLoss = PlaybackState.PAUSED;
 				}
 				pause();
-				MusicPlaybackService.this.audioFocusLossTime  = System.currentTimeMillis();
+				MusicPlaybackService.this.audioFocusLossTime = System
+						.currentTimeMillis();
 				// Stop playback
 			} else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
 				Log.i(TAG, "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
-				MusicPlaybackService.this.audioFocusLossTime  = System.currentTimeMillis();
-				if(mp.isPlaying()){
+				MusicPlaybackService.this.audioFocusLossTime = System
+						.currentTimeMillis();
+				if (mp.isPlaying()) {
 					stateOnFocusLoss = PlaybackState.PLAYING;
 				} else {
 					stateOnFocusLoss = PlaybackState.PAUSED;
@@ -608,10 +627,12 @@ public class MusicPlaybackService extends Service {
 			} else if (focusChange == AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK) {
 				Log.i(TAG, "AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK");
 				long curr = System.currentTimeMillis();
-				if(((curr - MusicPlaybackService.this.audioFocusLossTime) < 30000) && stateOnFocusLoss == PlaybackState.PLAYING){
+				if (((curr - MusicPlaybackService.this.audioFocusLossTime) < 30000)
+						&& stateOnFocusLoss == PlaybackState.PLAYING) {
 					play();
 				} else {
-					Log.i(TAG, "It's been more than 30 seconds or we were paused, don't auto-play");
+					Log.i(TAG,
+							"It's been more than 30 seconds or we were paused, don't auto-play");
 				}
 			}
 		}
