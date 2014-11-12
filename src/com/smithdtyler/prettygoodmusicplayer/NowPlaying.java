@@ -34,6 +34,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -51,12 +53,13 @@ public class NowPlaying extends Activity {
 	private String desiredAlbumName;
 	private String[] desiredSongAbsFileNames;
 	private int desiredAbsSongFileNamesPosition;
+	private boolean startPlayingRequired = true;
 
 	// Messaging and service stuff
 	boolean mIsBound;
 	private Messenger mService;
 	final Messenger mMessenger = new Messenger(new IncomingHandler(this));
-	private ServiceConnection mConnection = new NowPlayingServiceConnection();
+	private ServiceConnection mConnection = new NowPlayingServiceConnection(this);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +76,19 @@ public class NowPlaying extends Activity {
         	setTheme(R.style.PGMPLight);
         }
 		
-		setContentView(R.layout.activity_now_playing);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+        		WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_now_playing);
 		
-		doBindService();
+		if(savedInstanceState == null){
+			doBindService(true);
+			startPlayingRequired = true;
+		} else {
+			doBindService(false);
+			startPlayingRequired = false;
+		}
 
 		// Get the message from the intent
 		Intent intent = getIntent();
@@ -173,6 +186,12 @@ public class NowPlaying extends Activity {
 	// Service connection management
 	private class NowPlayingServiceConnection implements ServiceConnection {
 
+		private NowPlaying _nowPlaying;
+
+		public NowPlayingServiceConnection(NowPlaying nowPlaying) {
+			this._nowPlaying = nowPlaying;
+		}
+
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			mService = new Messenger(service);
 			
@@ -187,28 +206,30 @@ public class NowPlaying extends Activity {
 				// anything with it
 			}
 			
-			if(desiredSongAbsFileNames != null){
-				// set the playlist
-				Message msg = Message.obtain(null, MusicPlaybackService.MSG_SET_PLAYLIST);
-				msg.getData().putStringArray(SongList.SONG_ABS_FILE_NAME_LIST, desiredSongAbsFileNames);
-				msg.getData().putInt(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, desiredAbsSongFileNamesPosition);
-				try {
-					Log.i(TAG, "Sending a playlist!");
-					mService.send(msg);
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				}
-				
-				// start playing!
-				msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
-				try {
-					Log.i(TAG, "Sending a play command!");
-					mService.send(msg);
-				} catch (RemoteException e) {
-					e.printStackTrace();
+			if(this._nowPlaying.startPlayingRequired){
+				if(desiredSongAbsFileNames != null){
+					// set the playlist
+					Message msg = Message.obtain(null, MusicPlaybackService.MSG_SET_PLAYLIST);
+					msg.getData().putStringArray(SongList.SONG_ABS_FILE_NAME_LIST, desiredSongAbsFileNames);
+					msg.getData().putInt(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, desiredAbsSongFileNamesPosition);
+					try {
+						Log.i(TAG, "Sending a playlist!");
+						mService.send(msg);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
+
+					// start playing!
+					msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
+					try {
+						Log.i(TAG, "Sending a play command!");
+						mService.send(msg);
+					} catch (RemoteException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-			
+
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
@@ -276,14 +297,16 @@ public class NowPlaying extends Activity {
 	}
 	
 	// Service Management Methods
-	void doBindService() {
+	void doBindService(boolean startService) {
 		Log.i(TAG, "Binding to the service!");
 		bindService(new Intent(this, MusicPlaybackService.class), mConnection,
 				Context.BIND_IMPORTANT | Context.BIND_AUTO_CREATE);
 		mIsBound = true;
 		// Need to start the service so it won't be stopped when this activity is destroyed.
 		// https://developer.android.com/guide/components/bound-services.html
-		startService(new Intent(this, MusicPlaybackService.class));
+		if(startService){
+			startService(new Intent(this, MusicPlaybackService.class));
+		}
 	}
 
 	void doUnbindService() {
