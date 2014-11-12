@@ -188,6 +188,7 @@ import android.widget.TextView;
 
              public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                      long id) {
+            	 // TODO just use the position instead
             	 TextView clickedView = (TextView) view.findViewById(R.id.PGMPListItemText);
             	 // Apparently sometimes clickedview returns the listview, other times it returns the text view
             	 if(clickedView == null){
