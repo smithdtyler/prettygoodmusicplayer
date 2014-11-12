@@ -29,7 +29,9 @@ import com.smithdtyler.prettygoodmusicplayer.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -127,6 +129,18 @@ public class SongList extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("pref_theme", "light");
+        Log.i(TAG, "got configured theme " + theme);
+        if(theme.equals("dark")){
+        	Log.i(TAG, "setting theme to " + theme);
+        	setTheme(R.style.PGMPDark);
+        } else if (theme.equals("light")){
+        	Log.i(TAG, "setting theme to " + theme);
+        	setTheme(R.style.PGMPLight);
+        }
+		
 		setContentView(R.layout.activity_song_list);
 		
 		 // Get the message from the intent
@@ -138,7 +152,7 @@ public class SongList extends Activity {
 	    
 	    populateSongs(artistName, album, artistDir);
 	    
-        simpleAdpt = new SimpleAdapter(this, songs, android.R.layout.simple_list_item_1, new String[] {"song"}, new int[] {android.R.id.text1});
+        simpleAdpt = new SimpleAdapter(this, songs, R.layout.pgmp_list_item, new String[] {"song"}, new int[] {R.id.PGMPListItemText});
         ListView lv = (ListView) findViewById(R.id.songListView);
         lv.setAdapter(simpleAdpt);
         

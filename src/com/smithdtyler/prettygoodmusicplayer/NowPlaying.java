@@ -23,12 +23,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -59,6 +61,18 @@ public class NowPlaying extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("pref_theme", "light");
+        Log.i(TAG, "got configured theme " + theme);
+        if(theme.equals("dark")){
+        	Log.i(TAG, "setting theme to " + theme);
+        	setTheme(R.style.PGMPDark);
+        } else if (theme.equals("light")){
+        	Log.i(TAG, "setting theme to " + theme);
+        	setTheme(R.style.PGMPLight);
+        }
+		
 		setContentView(R.layout.activity_now_playing);
 		
 		doBindService();

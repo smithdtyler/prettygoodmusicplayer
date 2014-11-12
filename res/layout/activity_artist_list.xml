@@ -2,16 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="#FFFFFF"
-	android:orientation="vertical">
-	
-	<ListView android:id="@+id/artistListView"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_weight="4"
-		android:layout_gravity="top"
-		android:divider="#7070FF"
-		android:dividerHeight="2px"
-	/>
+	android:orientation="vertical"
+	style="?attr/backgroundColor"
+	>
+
+    <!-- The background of ^ this linear layout appears to set what appears below the listview. -->
+    <!-- Why isn't the 'listbackground' style having an effect? -->
+    
+    <ListView
+        android:id="@+id/artistListView"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:dividerHeight="2dp" 
+        style="?attr/dividerColor"
+        >
+    </ListView>
 	
 </LinearLayout>

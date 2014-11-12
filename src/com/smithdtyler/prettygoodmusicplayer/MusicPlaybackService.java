@@ -498,7 +498,7 @@ public class MusicPlaybackService extends Service {
 		mp.reset();
 		try {
 			fis.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Log.w(TAG, "Failed to close the file");
 			e.printStackTrace();
 		}

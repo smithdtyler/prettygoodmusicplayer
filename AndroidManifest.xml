@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.smithdtyler.prettygoodmusicplayer"
-    android:versionCode="11"
-    android:versionName="1.8.2" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:versionCode="12"
+    android:versionName="2.0" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -14,7 +14,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_pgmp_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppBaseTheme" >
         <!-- Set the artist list to launch mode single task to prevent multiple instances -->
         <!-- This fixes an error where exiting the application just brings up another instance -->
         <!-- See https://developer.android.com/guide/topics/manifest/activity-element.html#lmode -->
@@ -24,7 +24,6 @@
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

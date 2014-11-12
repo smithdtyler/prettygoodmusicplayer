@@ -1,10 +1,12 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Reference: https://stackoverflow.com/questions/19106227/best-way-to-change-individual-views-styles-in-a-multi-theme-app -->
+    
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
+    <style name="AppBaseTheme" parent="android:Theme.Holo">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -12,9 +14,91 @@
         -->
     </style>
 
-    <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+
+    </style>
+    
+    <!-- Application theme. -->
+    <style name="PGMPDark" parent="@style/AppTheme">
+        <item name="android:divider">@color/red</item>
+        <item name="multiListItem">@style/DarkListItemStyle</item>
+        <item name="backgroundColor">@style/DarkLayout</item>
+        <item name="dividerColor">@style/DarkDividerStyle</item>
+        <item name="backgroundAccentColor">@style/DarkBackgroundAccent</item>
+        <item name="nowPlayingText">@style/DarkNowPlayingText</item>
+    </style>
+    
+    <style name="PGMPLight" parent="@style/AppTheme">
+        <item name="multiListItem">@style/LightListItemStyle</item>
+        <item name="backgroundColor">@style/LightLayout</item>
+        <item name="dividerColor">@style/LightDividerStyle</item>   
+        <item name="backgroundAccentColor">@style/LightBackgroundAccent</item>
+        <item name="nowPlayingText">@style/LightNowPlayingText</item>
+    </style>
+
+    <style name="ListItemStyle">
+        <item name="android:textSize">22sp</item>
+        <item name="android:paddingTop">18dp</item>
+        <item name="android:paddingBottom">18dp</item>
+        <item name="android:paddingLeft">10dp</item>
+    </style>
+    
+    <style name="DarkBackgroundAccent">
+        <item name="android:background">@color/darkerdarkishgray</item>
+        <item name="android:windowBackground">@color/darkerdarkishgray</item>
+    </style>
+    
+    <style name="DarkLayout">
+        <item name="android:background">@color/black</item>
+    </style>
+    
+    <style name="DarkDividerStyle">
+        <item name="android:divider">@color/white</item>
+    </style>
+   
+    <style name="DarkListItemStyle" parent="ListItemStyle">
+        <item name="android:background">@drawable/darkselectable</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHighlight">@color/white</item>
+    </style>
+    
+    <style name="DarkBackgroundStyle">
+        <item name="android:background">@color/black</item>
+        <item name="android:windowBackground">@color/black</item>
+    </style>
+    
+    <style name="DarkNowPlayingText">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHighlight">@color/white</item>
+    </style>
+    
+    <style name="LightBackgroundAccent">
+        <item name="android:background">@color/darkishgray</item>
+        <item name="android:windowBackground">@color/darkishgray</item>
+    </style>
+    
+    <style name="LightLayout">
+        <item name="android:background">@color/white</item>
+    </style>
+    
+    <style name="LightDividerStyle">
+        <item name="android:divider">@color/black</item>
+    </style>
+    
+    <style name="LightListItemStyle" parent="ListItemStyle">
+        <item name="android:background">@drawable/lightselectable</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHighlight">@color/white</item>
+    </style>
+    
+    <style name="LightNowPlayingText">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHighlight">@color/black</item>
+    </style>
+    
+    <style name="LightBackgroundStyle">
+        <item name="android:background">@color/white</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
 </resources>

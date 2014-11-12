@@ -2,5 +2,9 @@
 
 <color name="white">#ffffff</color>
 <color name="darkishgray">#dbdbdb</color>
-
+<color name="darkerdarkishgray">#2e2e2e</color>
+<color name="black">#000000</color>
+<color name="lightdivider">#7070FF</color>
+<color name="darkdivider">#6E6E6E</color>
+<color name="red">#ff0000</color>
 </resources>

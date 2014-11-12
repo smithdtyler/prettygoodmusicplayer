@@ -2,16 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="#FFFFFF"
-	android:orientation="vertical">
-	
-	<ListView android:id="@+id/albumListView"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_weight="4"
-		android:layout_gravity="top"
-		android:divider="#7070FF"
-		android:dividerHeight="2px"
-	/>
-	
+	android:orientation="vertical"
+	style="?attr/backgroundColor"
+    >
+
+    <ListView
+        android:id="@+id/albumListView"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:dividerHeight="2dp" 
+        style="?attr/dividerColor"
+        >
+    </ListView>
+
+	<!-- Reference for how to specify the row format: 
+	https://stackoverflow.com/questions/15832335/android-custom-row-item-for-listview -->
+		
 </LinearLayout>

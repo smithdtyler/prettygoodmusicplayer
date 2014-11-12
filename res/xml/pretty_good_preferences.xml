@@ -2,7 +2,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory
         android:title="File Preferences">
-    <Preference android:title="Choose Music Directory" android:summary="Pick the Directory Containing Your Artists" android:icon="@android:drawable/ic_menu_set_as"/>
+        <Preference android:title="Choose Music Directory" android:summary="Pick the Directory Containing Your Artists" android:icon="@android:drawable/ic_menu_set_as"/>
     </PreferenceCategory>
-
+    <PreferenceCategory
+        android:title="Style Preferences">
+	    <ListPreference
+	        android:key="pref_theme"
+	        android:title="Theme"
+	        android:dialogTitle="Pick the theme for the Music Player"
+	        android:entries="@array/themeoptions"
+	        android:entryValues="@array/themeoptions"
+	        android:defaultValue="light" />
+    </PreferenceCategory>
 </PreferenceScreen>

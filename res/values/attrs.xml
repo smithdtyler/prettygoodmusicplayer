@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <resources>
+       <attr name="multiListItem" format="reference" />
+       <attr name="backgroundColor" format="reference" />
+       <attr name="dividerColor" format="reference" />
+       <attr name="backgroundAccentColor" format="reference" />
+       <attr name="nowPlayingText" format="reference" />
+  </resources>

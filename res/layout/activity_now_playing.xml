@@ -1,20 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    style="?attr/backgroundColor" >
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
-        android:background="@color/white" >
+        style="?attr/backgroundColor">
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="40"
-        android:background="@color/white" >
+        style="?attr/backgroundColor" >
 
         <TextView
             android:id="@+id/artistName"
@@ -23,7 +24,9 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            style="?nowPlayingText"
+             />
 
         <TextView
             android:id="@+id/albumName"
@@ -34,7 +37,9 @@
             android:layout_marginTop="10dip"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            style="?nowPlayingText"
+             />
 
         <TextView
             android:id="@+id/songName"
@@ -45,7 +50,9 @@
             android:layout_marginTop="15dip"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="35sp" />
+            android:textSize="35sp" 
+            style="?nowPlayingText"
+            />
 
     </RelativeLayout>
 
@@ -53,26 +60,28 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="22"
-        android:background="@color/white" >
+        style="?attr/backgroundColor" >
 
         <SeekBar
             android:id="@+id/songProgressBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+         />
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="6"
-        android:background="@color/darkishgray" >
+        style="?attr/backgroundAccentColor" >
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="16"
-        android:background="@color/darkishgray" >
+        style="?attr/backgroundAccentColor" >
 
         <ImageButton
             android:id="@+id/playPause"
@@ -116,7 +125,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="6"
-        android:background="@color/darkishgray" >
+        style="?attr/backgroundAccentColor" >
     </LinearLayout>
 
 </LinearLayout>

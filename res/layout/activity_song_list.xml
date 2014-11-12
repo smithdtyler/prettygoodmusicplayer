@@ -2,16 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="#FFFFFF"
-	android:orientation="vertical">
+	android:orientation="vertical"
+	style="?attr/backgroundColor"
+	>
 	
 	<ListView android:id="@+id/songListView"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="0dp"
 		android:layout_weight="4"
 		android:layout_gravity="top"
-		android:divider="#7070FF"
-		android:dividerHeight="2px"
+		android:dividerHeight="2dp"
+		style="?attr/dividerColor"
 	/>
 	
 </LinearLayout>

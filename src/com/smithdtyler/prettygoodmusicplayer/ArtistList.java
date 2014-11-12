@@ -37,6 +37,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -58,6 +59,7 @@ import android.widget.TextView;
 	private List<Map<String,String>> artists;
 	private SimpleAdapter simpleAdpt;
 	private String baseDir;
+	private Object currentTheme;
 	
 	private void populateArtists(String baseDir){
 		artists = new ArrayList<Map<String,String>>();
@@ -113,6 +115,7 @@ import android.widget.TextView;
             simpleAdpt = new SimpleAdapter(this, artists, android.R.layout.simple_list_item_1, new String[] {"artist"}, new int[] {android.R.id.text1});
             lv.setAdapter(simpleAdpt);
         }
+        
         int top = prefs.getInt("ARTIST_LIST_TOP", Integer.MIN_VALUE);
         int index = prefs.getInt("ARTIST_LIST_INDEX", Integer.MIN_VALUE);
         if(top > Integer.MIN_VALUE && index > Integer.MIN_VALUE){
@@ -121,6 +124,16 @@ import android.widget.TextView;
         } else {
         	Log.i(TAG, "No saved position found");
         }
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("pref_theme", "light");
+        Log.i(TAG, "got configured theme " + theme);
+        if(currentTheme == null){
+        	currentTheme = theme;
+        } else if(!currentTheme.equals(theme)){
+        	recreate(); // the configuration was changed, re-create
+        }
+        
 	}
 
 	@Override
@@ -146,7 +159,7 @@ import android.widget.TextView;
 
         populateArtists(baseDir);
         
-        simpleAdpt = new SimpleAdapter(this, artists, android.R.layout.simple_list_item_1, new String[] {"artist"}, new int[] {android.R.id.text1});
+        simpleAdpt = new SimpleAdapter(this, artists, R.layout.pgmp_list_item, new String[] {"artist"}, new int[] {R.id.PGMPListItemText});
         ListView lv = (ListView) findViewById(R.id.artistListView);
         lv.setAdapter(simpleAdpt);
     }
@@ -156,16 +169,26 @@ import android.widget.TextView;
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("pref_theme", "light");
+        Log.i(TAG, "got configured theme " + theme);
+        if(theme.equals("dark")){
+        	Log.i(TAG, "setting theme to " + theme);
+        	setTheme(R.style.PGMPDark);
+        } else if (theme.equals("light")){
+        	Log.i(TAG, "setting theme to " + theme);
+        	setTheme(R.style.PGMPLight);
+        }
         setContentView(R.layout.activity_artist_list);
 
         ListView lv = (ListView) findViewById(R.id.artistListView);
-        
+
         // React to user clicks on item
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
              public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                      long id) {
-            	 TextView clickedView = (TextView) view;
+            	 TextView clickedView = (TextView) view.findViewById(R.id.PGMPListItemText);
             	 if(!clickedView.getText().equals(PICK_DIR_TEXT)){
 	            	 Intent intent = new Intent(ArtistList.this, AlbumList.class);
 	            	 intent.putExtra(ARTIST_NAME, clickedView.getText());
