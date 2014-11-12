@@ -189,6 +189,15 @@ import android.widget.TextView;
              public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                      long id) {
             	 TextView clickedView = (TextView) view.findViewById(R.id.PGMPListItemText);
+            	 // Apparently sometimes clickedview returns the listview, other times it returns the text view
+            	 if(clickedView == null){
+            		 if(view instanceof TextView){
+            			 clickedView = (TextView)view;
+            		 } else{
+            			 Log.w(TAG, "Got null clicked view");
+            			 return;
+            		 }
+            	 }
             	 if(!clickedView.getText().equals(PICK_DIR_TEXT)){
 	            	 Intent intent = new Intent(ArtistList.this, AlbumList.class);
 	            	 intent.putExtra(ARTIST_NAME, clickedView.getText());
