@@ -139,6 +139,14 @@ public class NowPlaying extends Activity {
 			}
 		});
 		
+		final ImageButton shuffle = (ImageButton) findViewById(R.id.shuffle);
+		shuffle.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				toggleShuffle();
+			}
+		});
+		
 		SeekBar seekBar = (SeekBar)findViewById(R.id.songProgressBar);
 		seekBar.setEnabled(false);
 	}
@@ -177,6 +185,17 @@ public class NowPlaying extends Activity {
         Message msg = Message.obtain(null, MusicPlaybackService.MSG_PREVIOUS);
         try {
         	Log.i(TAG, "Sending a request to go to previous!");
+			mService.send(msg);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void toggleShuffle(){
+		Log.d(TAG, "Shuffle clicked...");
+        Message msg = Message.obtain(null, MusicPlaybackService.MSG_TOGGLE_SHUFFLE);
+        try {
+        	Log.i(TAG, "Sending a request to toggle shuffle!");
 			mService.send(msg);
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -267,6 +286,12 @@ public class NowPlaying extends Activity {
 				tv = (TextView) _activity.findViewById(R.id.artistName);
 				if(!tv.getText().equals(currentArtistName)){
 					tv.setText(currentArtistName);
+				}
+				
+				boolean isShuffling = msg.getData().getBoolean(MusicPlaybackService.IS_SHUFFLING);
+				ImageButton shuffle = (ImageButton)_activity.findViewById(R.id.shuffle);
+				if(shuffle.isSelected() != isShuffling){
+					shuffle.setSelected(isShuffling);
 				}
 				
 				PlaybackState state = PlaybackState.values()[msg.getData().getInt(MusicPlaybackService.PLAYBACK_STATE, 0)];

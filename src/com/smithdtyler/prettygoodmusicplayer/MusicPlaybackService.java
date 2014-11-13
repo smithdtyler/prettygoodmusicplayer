@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -65,6 +66,7 @@ public class MusicPlaybackService extends Service {
 	static final int MSG_PAUSE = 7;
 	static final int MSG_PAUSE_IN_ONE_SEC = 8;
 	static final int MSG_CANCEL_PAUSE_IN_ONE_SEC = 9;
+	static final int MSG_TOGGLE_SHUFFLE = 10;
 
 	// State management
 	static final int MSG_REQUEST_STATE = 17;
@@ -82,6 +84,7 @@ public class MusicPlaybackService extends Service {
 	static final String PLAYBACK_STATE = "PLAYBACK_STATE";
 	static final String TRACK_DURATION = "TRACK_DURATION";
 	static final String TRACK_POSITION = "TRACK_POSITION";
+	static final String IS_SHUFFLING = "IS_SHUFFLING";
 
 	private static final ComponentName cn = new ComponentName(
 			MusicBroadcastReceiver.class.getPackage().getName(),
@@ -128,6 +131,8 @@ public class MusicPlaybackService extends Service {
 	private int lastPosition = 0;
 	public long audioFocusLossTime = 0;
 	private long pauseTime = Long.MAX_VALUE;
+	private boolean _shuffle = false;
+	private List<Integer> shuffleQueue = new ArrayList<Integer>();
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -306,6 +311,10 @@ public class MusicPlaybackService extends Service {
 				Log.i(TAG, "Got a previous message!");
 				_service.previous();
 				break;
+			case MSG_TOGGLE_SHUFFLE:
+				Log.i(TAG, "Got a toggle shuffle message!");
+				_service.toggleShuffle();
+				break;
 			case MSG_SET_PLAYLIST:
 				Log.i(TAG, "Got a set playlist message!");
 				_service.songAbsoluteFileNames = msg.getData().getStringArray(
@@ -316,6 +325,7 @@ public class MusicPlaybackService extends Service {
 						_service.songAbsoluteFileNames[_service.songAbsoluteFileNamesPosition]);
 				_service.startPlayingFile();
 				_service.updateNotification();
+				_service.resetShuffle();
 				break;
 			case MSG_REQUEST_STATE:
 				Log.i(TAG, "Got a state request message!");
@@ -333,6 +343,7 @@ public class MusicPlaybackService extends Service {
 		}
 		sendUpdateToClients();
 	}
+
 
 	private void sendUpdateToClients() {
 		List<Messenger> toRemove = new ArrayList<Messenger>();
@@ -353,6 +364,8 @@ public class MusicPlaybackService extends Service {
 					b.putString(PRETTY_ALBUM_NAME, " ");
 					b.putString(PRETTY_ARTIST_NAME, " ");
 				}
+				
+				b.putBoolean(IS_SHUFFLING, this._shuffle);
 
 				if (mp.isPlaying()) {
 					b.putInt(PLAYBACK_STATE, PlaybackState.PLAYING.ordinal());
@@ -504,6 +517,41 @@ public class MusicPlaybackService extends Service {
 		}
 		updateNotification();
 	}
+	
+	private void resetShuffle(){
+		Random rand = new Random();
+		synchronized(shuffleQueue){
+			shuffleQueue.clear();
+		}
+		List<Integer> allPositions = new ArrayList<Integer>();
+		for(int i = 0;i<this.songAbsoluteFileNames.length;i++){
+			allPositions.add(i);
+		}
+		
+		while(!allPositions.isEmpty()){
+			int loc = rand.nextInt(allPositions.size());
+			shuffleQueue.add(allPositions.get(loc));
+			allPositions.remove(loc);
+		}
+		
+		StringBuffer logbuf = new StringBuffer();
+		for(Integer loc : shuffleQueue){
+			logbuf.append(" " + loc + " ");
+		}
+		Log.i(TAG, "new shuffle queue: " + logbuf.toString());
+	}
+	
+	private int grabNextShuffledPosition(){
+		synchronized(shuffleQueue){
+			if(shuffleQueue.isEmpty()){
+				Log.d(TAG, "Shuffle queue is empty, re-filling...");
+				resetShuffle();
+			}
+			int loc = shuffleQueue.get(0);
+			shuffleQueue.remove(0);
+			return loc;
+		}
+	}
 
 	private synchronized void next() {
 		mp.stop();
@@ -514,8 +562,13 @@ public class MusicPlaybackService extends Service {
 			Log.w(TAG, "Failed to close the file");
 			e.printStackTrace();
 		}
-		songAbsoluteFileNamesPosition = (songAbsoluteFileNamesPosition + 1)
-				% songAbsoluteFileNames.length;
+		
+		if(!this._shuffle){
+			songAbsoluteFileNamesPosition = (songAbsoluteFileNamesPosition + 1)
+					% songAbsoluteFileNames.length;
+		} else {
+			songAbsoluteFileNamesPosition = grabNextShuffledPosition();
+		}
 		String next = songAbsoluteFileNames[songAbsoluteFileNamesPosition];
 		try {
 			songFile = new File(next);
@@ -530,6 +583,10 @@ public class MusicPlaybackService extends Service {
 			next();
 		}
 		updateNotification();
+	}
+	
+	public void toggleShuffle() {
+		this._shuffle = !this._shuffle ;
 	}
 
 	private void updateNotification() {
