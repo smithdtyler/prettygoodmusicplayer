@@ -112,7 +112,7 @@ import android.widget.TextView;
         	baseDir = prefDir;
         	populateArtists(baseDir);
             
-            simpleAdpt = new SimpleAdapter(this, artists, android.R.layout.simple_list_item_1, new String[] {"artist"}, new int[] {android.R.id.text1});
+            simpleAdpt = new SimpleAdapter(this, artists,  R.layout.pgmp_list_item, new String[] {"artist"}, new int[] {R.id.PGMPListItemText});
             lv.setAdapter(simpleAdpt);
         }
         
@@ -164,14 +164,13 @@ import android.widget.TextView;
         lv.setAdapter(simpleAdpt);
     }
 
-
-
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
         Log.i(TAG, "got configured theme " + theme);
+        currentTheme = theme;
         if(theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
         	setTheme(R.style.PGMPDark);
