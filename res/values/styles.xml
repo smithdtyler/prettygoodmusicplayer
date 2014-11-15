@@ -25,9 +25,8 @@
         <item name="backgroundColor">@style/DarkLayout</item>
         <item name="dividerColor">@style/DarkDividerStyle</item>
         <item name="backgroundAccentColor">@style/DarkBackgroundAccent</item>
-        <item name="nowPlayingText">@style/DarkNowPlayingText</item>
-        <item name="nowPlayingSongTextSize">@style/SmallSongTextStyle</item>
-        <item name="nowPlayingSongInfoTextSize">@style/SmallSongInfoTextStyle</item>
+        <item name="nowPlayingSongTextSize">@style/DarkSmallSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/DarkSmallSongInfoTextStyle</item>
     </style>
     
     <style name="PGMPDarkMedium" parent="@style/AppTheme">
@@ -36,9 +35,8 @@
         <item name="backgroundColor">@style/DarkLayout</item>
         <item name="dividerColor">@style/DarkDividerStyle</item>
         <item name="backgroundAccentColor">@style/DarkBackgroundAccent</item>
-        <item name="nowPlayingText">@style/DarkNowPlayingText</item>
-        <item name="nowPlayingSongTextSize">@style/MediumSongTextStyle</item>
-        <item name="nowPlayingSongInfoTextSize">@style/MediumSongInfoTextStyle</item>
+        <item name="nowPlayingSongTextSize">@style/DarkMediumSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/DarkMediumSongInfoTextStyle</item>
     </style>
     
     <style name="PGMPDarkLarge" parent="@style/AppTheme">
@@ -47,9 +45,8 @@
         <item name="backgroundColor">@style/DarkLayout</item>
         <item name="dividerColor">@style/DarkDividerStyle</item>
         <item name="backgroundAccentColor">@style/DarkBackgroundAccent</item>
-        <item name="nowPlayingText">@style/DarkNowPlayingText</item>
-        <item name="nowPlayingSongTextSize">@style/LargeSongTextStyle</item>
-        <item name="nowPlayingSongInfoTextSize">@style/LargeSongInfoTextStyle</item>
+        <item name="nowPlayingSongTextSize">@style/DarkLargeSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/DarkLargeSongInfoTextStyle</item>
     </style>
     
     <style name="PGMPLightSmall" parent="@style/AppTheme">
@@ -57,9 +54,8 @@
         <item name="backgroundColor">@style/LightLayout</item>
         <item name="dividerColor">@style/LightDividerStyle</item>   
         <item name="backgroundAccentColor">@style/LightBackgroundAccent</item>
-        <item name="nowPlayingText">@style/LightNowPlayingText</item>
-        <item name="nowPlayingSongTextSize">@style/SmallSongTextStyle</item>
-        <item name="nowPlayingSongInfoTextSize">@style/SmallSongInfoTextStyle</item>
+        <item name="nowPlayingSongTextSize">@style/LightSmallSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/LightSmallSongInfoTextStyle</item>
     </style>
     
     <style name="PGMPLightMedium" parent="@style/AppTheme">
@@ -67,9 +63,8 @@
         <item name="backgroundColor">@style/LightLayout</item>
         <item name="dividerColor">@style/LightDividerStyle</item>   
         <item name="backgroundAccentColor">@style/LightBackgroundAccent</item>
-        <item name="nowPlayingText">@style/LightNowPlayingText</item>
-        <item name="nowPlayingSongTextSize">@style/MediumSongTextStyle</item>
-        <item name="nowPlayingSongInfoTextSize">@style/MediumSongInfoTextStyle</item>
+        <item name="nowPlayingSongTextSize">@style/LightMediumSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/LightMediumSongInfoTextStyle</item>
    </style>
     
     <style name="PGMPLightLarge" parent="@style/AppTheme">
@@ -78,8 +73,8 @@
         <item name="dividerColor">@style/LightDividerStyle</item>   
         <item name="backgroundAccentColor">@style/LightBackgroundAccent</item>
         <item name="nowPlayingText">@style/LightNowPlayingText</item>
-        <item name="nowPlayingSongTextSize">@style/LargeSongTextStyle</item>
-        <item name="nowPlayingSongInfoTextSize">@style/LargeSongInfoTextStyle</item>
+        <item name="nowPlayingSongTextSize">@style/LightLargeSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/LightLargeSongInfoTextStyle</item>
     </style>    
 
     <style name="SmallListItemStyle">
@@ -174,6 +169,7 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorHighlight">@color/white</item>
     </style>    
+    
     <style name="LightNowPlayingText">
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorHighlight">@color/black</item>
@@ -184,27 +180,51 @@
         <item name="android:windowBackground">@color/white</item>
     </style>
     
-    <style name="SmallSongTextStyle">
+    <style name="LightSmallSongTextStyle" parent="LightNowPlayingText">
         <item name="android:textSize">25sp</item>
     </style>
     
-    <style name="MediumSongTextStyle">
+    <style name="LightMediumSongTextStyle" parent="LightNowPlayingText">
         <item name="android:textSize">30sp</item>
     </style>
     
-    <style name="LargeSongTextStyle">
+    <style name="LightLargeSongTextStyle" parent="LightNowPlayingText">
         <item name="android:textSize">35sp</item>
     </style>
 
-    <style name="SmallSongInfoTextStyle">
+    <style name="LightSmallSongInfoTextStyle" parent="LightNowPlayingText">
         <item name="android:textSize">20sp</item>
     </style>
     
-    <style name="MediumSongInfoTextStyle">
+    <style name="LightMediumSongInfoTextStyle" parent="LightNowPlayingText">
         <item name="android:textSize">25sp</item>
     </style>
     
-    <style name="LargeSongInfoTextStyle">
+    <style name="LightLargeSongInfoTextStyle" parent="LightNowPlayingText">
+        <item name="android:textSize">30sp</item>
+    </style>
+    
+    <style name="DarkSmallSongTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">25sp</item>
+    </style>
+    
+    <style name="DarkMediumSongTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">30sp</item>
+    </style>
+    
+    <style name="DarkLargeSongTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">35sp</item>
+    </style>
+
+    <style name="DarkSmallSongInfoTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">20sp</item>
+    </style>
+    
+    <style name="DarkMediumSongInfoTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">25sp</item>
+    </style>
+    
+    <style name="DarkLargeSongInfoTextStyle" parent="DarkNowPlayingText">
         <item name="android:textSize">30sp</item>
     </style>
     
