@@ -46,7 +46,7 @@
             android:layout_marginTop="12dip"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="30sp"
+            android:textSize="?nowPlayingSongInfoTextSize"
             style="?nowPlayingText"
              />
 
@@ -59,7 +59,7 @@
             android:layout_marginTop="8dip"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="30sp"
+            android:textSize="?nowPlayingSongInfoTextSize"
             style="?nowPlayingText"
              />
 
@@ -72,7 +72,7 @@
             android:layout_marginTop="12dip"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="35sp" 
+            android:textSize="?nowPlayingSongTextSize" 
             style="?nowPlayingText"
             />
 

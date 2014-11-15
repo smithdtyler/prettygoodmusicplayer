@@ -60,6 +60,7 @@ import android.widget.TextView;
 	private SimpleAdapter simpleAdpt;
 	private String baseDir;
 	private Object currentTheme;
+	private String currentSize;
 	
 	private void populateArtists(String baseDir){
 		artists = new ArrayList<Map<String,String>>();
@@ -127,10 +128,17 @@ import android.widget.TextView;
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
+        String size = sharedPref.getString("pref_text_size", "medium");
         Log.i(TAG, "got configured theme " + theme);
+        Log.i(TAG, "Got configured size " + size);
         if(currentTheme == null){
         	currentTheme = theme;
-        } else if(!currentTheme.equals(theme)){
+        } 
+        
+        if(currentSize == null){
+        	currentSize = size;
+        }
+        if(!currentTheme.equals(theme) || !currentSize.equals(size)){
         	recreate(); // the configuration was changed, re-create
         }
         
@@ -169,17 +177,32 @@ import android.widget.TextView;
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
+        String size = sharedPref.getString("pref_text_size", "medium");
         Log.i(TAG, "got configured theme " + theme);
+        Log.i(TAG, "got configured size " + size);
         currentTheme = theme;
+        currentSize = size;
         if(theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
-        	setTheme(R.style.PGMPDark);
+        	if(size.equalsIgnoreCase("small")){
+        		setTheme(R.style.PGMPDarkSmall);
+        	} else if (size.equalsIgnoreCase("medium")){
+        		setTheme(R.style.PGMPDarkMedium);
+        	} else {
+        		setTheme(R.style.PGMPDarkLarge);
+        	}
         } else if (theme.equalsIgnoreCase("light")){
         	Log.i(TAG, "setting theme to " + theme);
-        	setTheme(R.style.PGMPLight);
+        	if(size.equalsIgnoreCase("small")){
+        		setTheme(R.style.PGMPLightSmall);
+        	} else if (size.equalsIgnoreCase("medium")){
+        		setTheme(R.style.PGMPLightMedium);
+        	} else {
+        		setTheme(R.style.PGMPLightLarge);
+        	}
         }
         setContentView(R.layout.activity_artist_list);
-
+        
         ListView lv = (ListView) findViewById(R.id.artistListView);
 
         // React to user clicks on item

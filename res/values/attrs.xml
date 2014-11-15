@@ -5,4 +5,6 @@
        <attr name="dividerColor" format="reference" />
        <attr name="backgroundAccentColor" format="reference" />
        <attr name="nowPlayingText" format="reference" />
+       <attr name="nowPlayingSongTextSize" format="reference" />
+       <attr name="nowPlayingSongInfoTextSize" format="reference" />
   </resources>

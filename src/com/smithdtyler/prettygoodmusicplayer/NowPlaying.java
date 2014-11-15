@@ -67,13 +67,27 @@ public class NowPlaying extends Activity {
 		
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
+        String size = sharedPref.getString("pref_text_size", "medium");
         Log.i(TAG, "got configured theme " + theme);
+        Log.i(TAG, "got configured size " + size);
         if(theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
-        	setTheme(R.style.PGMPDark);
+        	if(size.equalsIgnoreCase("small")){
+        		setTheme(R.style.PGMPDarkSmall);
+        	} else if (size.equalsIgnoreCase("medium")){
+        		setTheme(R.style.PGMPDarkMedium);
+        	} else {
+        		setTheme(R.style.PGMPDarkLarge);
+        	}
         } else if (theme.equalsIgnoreCase("light")){
         	Log.i(TAG, "setting theme to " + theme);
-        	setTheme(R.style.PGMPLight);
+        	if(size.equalsIgnoreCase("small")){
+        		setTheme(R.style.PGMPLightSmall);
+        	} else if (size.equalsIgnoreCase("medium")){
+        		setTheme(R.style.PGMPLightMedium);
+        	} else {
+        		setTheme(R.style.PGMPLightLarge);
+        	}
         }
 		
         requestWindowFeature(Window.FEATURE_NO_TITLE);

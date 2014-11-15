@@ -19,24 +19,84 @@
     </style>
     
     <!-- Application theme. -->
-    <style name="PGMPDark" parent="@style/AppTheme">
+    <style name="PGMPDarkSmall" parent="@style/AppTheme">
         <item name="android:divider">@color/red</item>
-        <item name="multiListItem">@style/DarkListItemStyle</item>
+        <item name="multiListItem">@style/SmallDarkListItemStyle</item>
         <item name="backgroundColor">@style/DarkLayout</item>
         <item name="dividerColor">@style/DarkDividerStyle</item>
         <item name="backgroundAccentColor">@style/DarkBackgroundAccent</item>
         <item name="nowPlayingText">@style/DarkNowPlayingText</item>
+        <item name="nowPlayingSongTextSize">@style/SmallSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/SmallSongInfoTextStyle</item>
     </style>
     
-    <style name="PGMPLight" parent="@style/AppTheme">
-        <item name="multiListItem">@style/LightListItemStyle</item>
+    <style name="PGMPDarkMedium" parent="@style/AppTheme">
+        <item name="android:divider">@color/red</item>
+        <item name="multiListItem">@style/MediumDarkListItemStyle</item>
+        <item name="backgroundColor">@style/DarkLayout</item>
+        <item name="dividerColor">@style/DarkDividerStyle</item>
+        <item name="backgroundAccentColor">@style/DarkBackgroundAccent</item>
+        <item name="nowPlayingText">@style/DarkNowPlayingText</item>
+        <item name="nowPlayingSongTextSize">@style/MediumSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/MediumSongInfoTextStyle</item>
+    </style>
+    
+    <style name="PGMPDarkLarge" parent="@style/AppTheme">
+        <item name="android:divider">@color/red</item>
+        <item name="multiListItem">@style/LargeDarkListItemStyle</item>
+        <item name="backgroundColor">@style/DarkLayout</item>
+        <item name="dividerColor">@style/DarkDividerStyle</item>
+        <item name="backgroundAccentColor">@style/DarkBackgroundAccent</item>
+        <item name="nowPlayingText">@style/DarkNowPlayingText</item>
+        <item name="nowPlayingSongTextSize">@style/LargeSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/LargeSongInfoTextStyle</item>
+    </style>
+    
+    <style name="PGMPLightSmall" parent="@style/AppTheme">
+        <item name="multiListItem">@style/SmallLightListItemStyle</item>
         <item name="backgroundColor">@style/LightLayout</item>
         <item name="dividerColor">@style/LightDividerStyle</item>   
         <item name="backgroundAccentColor">@style/LightBackgroundAccent</item>
         <item name="nowPlayingText">@style/LightNowPlayingText</item>
+        <item name="nowPlayingSongTextSize">@style/SmallSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/SmallSongInfoTextStyle</item>
     </style>
+    
+    <style name="PGMPLightMedium" parent="@style/AppTheme">
+        <item name="multiListItem">@style/MediumLightListItemStyle</item>
+        <item name="backgroundColor">@style/LightLayout</item>
+        <item name="dividerColor">@style/LightDividerStyle</item>   
+        <item name="backgroundAccentColor">@style/LightBackgroundAccent</item>
+        <item name="nowPlayingText">@style/LightNowPlayingText</item>
+        <item name="nowPlayingSongTextSize">@style/MediumSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/MediumSongInfoTextStyle</item>
+   </style>
+    
+    <style name="PGMPLightLarge" parent="@style/AppTheme">
+        <item name="multiListItem">@style/LargeLightListItemStyle</item>
+        <item name="backgroundColor">@style/LightLayout</item>
+        <item name="dividerColor">@style/LightDividerStyle</item>   
+        <item name="backgroundAccentColor">@style/LightBackgroundAccent</item>
+        <item name="nowPlayingText">@style/LightNowPlayingText</item>
+        <item name="nowPlayingSongTextSize">@style/LargeSongTextStyle</item>
+        <item name="nowPlayingSongInfoTextSize">@style/LargeSongInfoTextStyle</item>
+    </style>    
 
-    <style name="ListItemStyle">
+    <style name="SmallListItemStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">10dp</item>
+    </style>
+    
+    <style name="MediumListItemStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingLeft">10dp</item>
+    </style>
+    
+    <style name="LargeListItemStyle">
         <item name="android:textSize">22sp</item>
         <item name="android:paddingTop">18dp</item>
         <item name="android:paddingBottom">18dp</item>
@@ -56,7 +116,19 @@
         <item name="android:divider">@color/white</item>
     </style>
    
-    <style name="DarkListItemStyle" parent="ListItemStyle">
+    <style name="SmallDarkListItemStyle" parent="SmallListItemStyle">
+        <item name="android:background">@drawable/darkselectable</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHighlight">@color/white</item>
+    </style>
+
+    <style name="MediumDarkListItemStyle" parent="MediumListItemStyle">
+        <item name="android:background">@drawable/darkselectable</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHighlight">@color/white</item>
+    </style>
+    
+    <style name="LargeDarkListItemStyle" parent="LargeListItemStyle">
         <item name="android:background">@drawable/darkselectable</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textColorHighlight">@color/white</item>
@@ -85,12 +157,23 @@
         <item name="android:divider">@color/black</item>
     </style>
     
-    <style name="LightListItemStyle" parent="ListItemStyle">
+    <style name="SmallLightListItemStyle" parent="SmallListItemStyle">
         <item name="android:background">@drawable/lightselectable</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorHighlight">@color/white</item>
     </style>
     
+    <style name="MediumLightListItemStyle" parent="MediumListItemStyle">
+        <item name="android:background">@drawable/lightselectable</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHighlight">@color/white</item>
+    </style>
+    
+    <style name="LargeLightListItemStyle" parent="LargeListItemStyle">
+        <item name="android:background">@drawable/lightselectable</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHighlight">@color/white</item>
+    </style>    
     <style name="LightNowPlayingText">
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorHighlight">@color/black</item>
@@ -100,5 +183,29 @@
         <item name="android:background">@color/white</item>
         <item name="android:windowBackground">@color/white</item>
     </style>
+    
+    <style name="SmallSongTextStyle">
+        <item name="android:textSize">25sp</item>
+    </style>
+    
+    <style name="MediumSongTextStyle">
+        <item name="android:textSize">30sp</item>
+    </style>
+    
+    <style name="LargeSongTextStyle">
+        <item name="android:textSize">35sp</item>
+    </style>
 
+    <style name="SmallSongInfoTextStyle">
+        <item name="android:textSize">20sp</item>
+    </style>
+    
+    <style name="MediumSongInfoTextStyle">
+        <item name="android:textSize">25sp</item>
+    </style>
+    
+    <style name="LargeSongInfoTextStyle">
+        <item name="android:textSize">30sp</item>
+    </style>
+    
 </resources>

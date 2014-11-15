@@ -13,5 +13,12 @@
 	        android:entries="@array/themeoptions"
 	        android:entryValues="@array/themeoptions"
 	        android:defaultValue="light" />
+	   	<ListPreference
+	        android:key="pref_text_size"
+	        android:title="Text Size"
+	        android:dialogTitle="Pick the text size for the Music Player"
+	        android:entries="@array/textsizeoptions"
+	        android:entryValues="@array/textsizeoptions"
+	        android:defaultValue="light" />
     </PreferenceCategory>
 </PreferenceScreen>
