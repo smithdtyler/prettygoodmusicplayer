@@ -418,7 +418,8 @@ public class NowPlaying extends Activity {
         	currentSize = size;
         }
         if(!currentTheme.equals(theme) || !currentSize.equals(size) || currentFullScreen != fullScreen){
-        	recreate(); // the configuration was changed, re-create
+        	finish();
+        	startActivity(getIntent());
         }
 	}
 

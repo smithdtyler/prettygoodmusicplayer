@@ -168,7 +168,8 @@ public class AlbumList extends Activity {
         	currentSize = size;
         }
         if(!currentTheme.equals(theme) || !currentSize.equals(size)){
-        	recreate(); // the configuration was changed, re-create
+        	finish();
+        	startActivity(getIntent());
         }
 	}
 
