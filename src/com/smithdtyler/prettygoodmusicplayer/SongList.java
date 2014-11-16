@@ -33,6 +33,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -45,6 +47,8 @@ public class SongList extends Activity {
 	private List<Map<String,String>> songs;
 	private SimpleAdapter simpleAdpt;
 	private List<String> songAbsFileNameList;
+	private String currentTheme;
+	private String currentSize;
 	
 	private void populateSongs(String artistName, String albumDirName, String artistAbsDirName){
 		songs = new ArrayList<Map<String,String>>();
@@ -135,6 +139,8 @@ public class SongList extends Activity {
         String size = sharedPref.getString("pref_text_size", "medium");
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "got configured size " + size);
+        currentTheme = theme;
+        currentSize = size;
         if(theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
         	if(size.equalsIgnoreCase("small")){
@@ -186,6 +192,47 @@ public class SongList extends Activity {
             	 startActivity(intent);
              }
         });
+	}
+	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.song_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+        	Intent intent = new Intent(SongList.this, SettingsActivity.class);
+        	startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    
+    @Override
+	protected void onResume() {
+		super.onResume();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("pref_theme", "light");
+        String size = sharedPref.getString("pref_text_size", "medium");
+        Log.i(TAG, "got configured theme " + theme);
+        Log.i(TAG, "Got configured size " + size);
+        if(currentTheme == null){
+        	currentTheme = theme;
+        } 
+        
+        if(currentSize == null){
+        	currentSize = size;
+        }
+        if(!currentTheme.equals(theme) || !currentSize.equals(size)){
+        	recreate(); // the configuration was changed, re-create
+        }
 	}
 
 }

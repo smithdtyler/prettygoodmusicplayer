@@ -34,6 +34,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -60,6 +62,9 @@ public class NowPlaying extends Activity {
 	private Messenger mService;
 	final Messenger mMessenger = new Messenger(new IncomingHandler(this));
 	private ServiceConnection mConnection = new NowPlayingServiceConnection(this);
+	private String currentTheme;
+	private String currentSize;
+	private boolean currentFullScreen;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +95,13 @@ public class NowPlaying extends Activity {
         	}
         }
 		
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-        		WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", true);
+        currentFullScreen = fullScreen;
+        if(fullScreen){
+        	requestWindowFeature(Window.FEATURE_NO_TITLE);
+        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+        			WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
 
         setContentView(R.layout.activity_now_playing);
 		
@@ -369,6 +378,48 @@ public class NowPlaying extends Activity {
 			unbindService(mConnection);
 			mIsBound = false;
 		}
+	}
+	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.now_playing, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+        	Intent intent = new Intent(NowPlaying.this, SettingsActivity.class);
+        	startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    
+    @Override
+	protected void onResume() {
+		super.onResume();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("pref_theme", "light");
+        String size = sharedPref.getString("pref_text_size", "medium");
+        boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", false);
+        Log.i(TAG, "got configured theme " + theme);
+        Log.i(TAG, "Got configured size " + size);
+        if(currentTheme == null){
+        	currentTheme = theme;
+        } 
+        
+        if(currentSize == null){
+        	currentSize = size;
+        }
+        if(!currentTheme.equals(theme) || !currentSize.equals(size) || currentFullScreen != fullScreen){
+        	recreate(); // the configuration was changed, re-create
+        }
 	}
 
 

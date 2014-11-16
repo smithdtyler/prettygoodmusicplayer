@@ -132,7 +132,9 @@ public class MusicPlaybackService extends Service {
 	public long audioFocusLossTime = 0;
 	private long pauseTime = Long.MAX_VALUE;
 	private boolean _shuffle = false;
-	private List<Integer> shuffleQueue = new ArrayList<Integer>();
+	private List<Integer> shuffleFrontList = new ArrayList<Integer>();
+	private Random random;
+	private List<Integer> shuffleBackList = new ArrayList<Integer>();
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -150,6 +152,7 @@ public class MusicPlaybackService extends Service {
 	public synchronized void onCreate() {
 		Log.i(TAG, "Music Playback Service Created!");
 		isRunning = true;
+		random = new Random();
 
 		mp = new MediaPlayer();
 
@@ -517,38 +520,42 @@ public class MusicPlaybackService extends Service {
 		}
 		updateNotification();
 	}
-	
+
 	private void resetShuffle(){
-		Random rand = new Random();
-		synchronized(shuffleQueue){
-			shuffleQueue.clear();
-		}
-		List<Integer> allPositions = new ArrayList<Integer>();
-		for(int i = 0;i<this.songAbsoluteFileNames.length;i++){
-			allPositions.add(i);
-		}
-		
-		while(!allPositions.isEmpty()){
-			int loc = rand.nextInt(allPositions.size());
-			shuffleQueue.add(allPositions.get(loc));
-			allPositions.remove(loc);
-		}
-		
-		StringBuffer logbuf = new StringBuffer();
-		for(Integer loc : shuffleQueue){
-			logbuf.append(" " + loc + " ");
-		}
-		Log.i(TAG, "new shuffle queue: " + logbuf.toString());
-	}
-	
-	private int grabNextShuffledPosition(){
-		synchronized(shuffleQueue){
-			if(shuffleQueue.isEmpty()){
-				Log.d(TAG, "Shuffle queue is empty, re-filling...");
-				resetShuffle();
+		synchronized(shuffleFrontList){
+			shuffleFrontList.clear();
+			shuffleBackList.clear();
+			for(int i = 0;i < songAbsoluteFileNames.length;i++){
+				shuffleFrontList.add(i);
 			}
-			int loc = shuffleQueue.get(0);
-			shuffleQueue.remove(0);
+		}
+	}
+
+	// Props to this fellow: https://stackoverflow.com/questions/5467174/how-to-implement-a-repeating-shuffle-thats-random-but-not-too-random
+	private int grabNextShuffledPosition(){
+		synchronized(shuffleFrontList){
+			int threshold = (int) Math.ceil((songAbsoluteFileNames.length + 1) / 2);
+			Log.d(TAG, "threshold: " + threshold);
+			if(shuffleFrontList.size() < threshold){
+				Log.d(TAG, "Shuffle queue is half empty, adding a new song...");
+				shuffleFrontList.add(shuffleBackList.get(0));
+				shuffleBackList.remove(0);
+			}
+			int rand = Math.abs(random.nextInt()) % shuffleFrontList.size();
+			int loc = shuffleFrontList.get(rand);
+			shuffleFrontList.remove(rand);
+			shuffleBackList.add(loc);
+			Log.i(TAG, "next position is: " + loc);
+			String front = "";
+			String back = "";
+			for(int i : shuffleFrontList){
+				front = front + "," + i;
+			}
+			for(int i : shuffleBackList){
+				back = back + "," + i;
+			}
+			Log.i(TAG, "Front list = " + front);
+			Log.i(TAG, "Back list = " + back);
 			return loc;
 		}
 	}

@@ -175,6 +175,7 @@ import android.widget.TextView;
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PreferenceManager.setDefaultValues(this, R.xml.pretty_good_preferences, false);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
         String size = sharedPref.getString("pref_text_size", "medium");

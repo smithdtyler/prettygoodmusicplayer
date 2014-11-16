@@ -19,6 +19,10 @@
 	        android:dialogTitle="Pick the text size for the Music Player"
 	        android:entries="@array/textsizeoptions"
 	        android:entryValues="@array/textsizeoptions"
-	        android:defaultValue="light" />
+	        android:defaultValue="medium" />
+	   	<CheckBoxPreference
+	   	    android:key="pref_full_screen_now_playing"
+	   	    android:title="Full Screen Now Playing"
+	   	    android:defaultValue="true"/>
     </PreferenceCategory>
 </PreferenceScreen>

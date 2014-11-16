@@ -32,6 +32,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -46,6 +48,9 @@ public class AlbumList extends Activity {
 	private static final String TAG = "AlbumList";
 	private List<Map<String,String>> albums;
 	private BaseAdapter listAdapter;
+
+	private String currentTheme;
+	private String currentSize;
 	
 	private void populateAlbums(String artistName, String artistPath){
 		albums = new ArrayList<Map<String,String>>();
@@ -96,6 +101,8 @@ public class AlbumList extends Activity {
         String size = sharedPref.getString("pref_text_size", "medium");
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "got configured size " + size);
+        currentTheme = theme;
+        currentSize = size;
         if(theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
         	if(size.equalsIgnoreCase("small")){
@@ -144,5 +151,46 @@ public class AlbumList extends Activity {
         });
 
 	}
+	
+    @Override
+	protected void onResume() {
+		super.onResume();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("pref_theme", "light");
+        String size = sharedPref.getString("pref_text_size", "medium");
+        Log.i(TAG, "got configured theme " + theme);
+        Log.i(TAG, "Got configured size " + size);
+        if(currentTheme == null){
+        	currentTheme = theme;
+        } 
+        
+        if(currentSize == null){
+        	currentSize = size;
+        }
+        if(!currentTheme.equals(theme) || !currentSize.equals(size)){
+        	recreate(); // the configuration was changed, re-create
+        }
+	}
+
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.album_list, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+        	Intent intent = new Intent(AlbumList.this, SettingsActivity.class);
+        	startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }
