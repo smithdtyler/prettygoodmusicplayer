@@ -42,7 +42,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.smithdtyler.prettygoodmusicplayer.R;
+import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
 import com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService.PlaybackState;
 
 public class NowPlaying extends Activity {

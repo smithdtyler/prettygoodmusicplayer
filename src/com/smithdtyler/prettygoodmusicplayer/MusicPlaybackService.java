@@ -53,6 +53,7 @@ import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
+import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
 
 public class MusicPlaybackService extends Service {
 	static final int MSG_REGISTER_CLIENT = 1;

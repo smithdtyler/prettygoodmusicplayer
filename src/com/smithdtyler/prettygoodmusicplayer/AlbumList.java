@@ -41,6 +41,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
 
 public class AlbumList extends Activity {
 	public static final String ALBUM_NAME = "ALBUM_NAME";
