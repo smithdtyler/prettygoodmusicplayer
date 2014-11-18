@@ -2,13 +2,13 @@
 <resources>
     <string-array
         name="themeoptions">
-        <item>Light</item>
-        <item>Dark</item>
+        <item>Světlý</item>
+        <item>Tmavý</item>
     </string-array>
     <string-array
         name="textsizeoptions">
-        <item>Small</item>
-        <item>Medium</item>
-        <item>Large</item>
+        <item>Malý</item>
+        <item>Střední</item>
+        <item>Velký</item>
     </string-array>
 </resources>
