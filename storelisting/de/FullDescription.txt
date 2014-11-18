@@ -1,0 +1,39 @@
+Genervt von Musikspielern mit langen Ladezeiten, weil die App Werbeanzeigen laden muss oder versucht Daten herunter zu laden? Oder von Musikspielern, die Bluetooth- Eingaben ignorieren oder nach wenigen Minuten abstürzen?
+
+War ich auch, deshalb schrieb ich diese App!
+
+Der Pretty Good Music Player ist ein Open Source (GPL), Verzeichnis orientierter Spieler ohne Schnickschnack. 
+
+Er ist klein, er ist schnell, und er spielt Musik.
+
+Funktionsdetails:
+
+- Spielt .mp3, .m4p, .m4a, .aac, und viele weitere Arten von Audio-Dateien ab.
+
+- Schützt gegen versehentliches Pausieren
+
+- Akzeptiert Eingaben von Bluetooth-Headsets, wie Play, Pause, Vorheriger/Nächster Titel;
+
+Erwartete VerzeichnissStruktur
+musik/
+   artist/
+      album1/
+         01 - Erstes Lied.mp3
+         02 - Zweites Lied.mp3
+         …
+      album2
+         01 - Erstes Lied.mp3
+         02 - Zweites Lied.mp3
+
+The full source code is available here: https://github.com/smithdtyler/prettygoodmusicplayer
+The awesome icon was designed by Emily Krueger of Vine Creative: http://www.vinecreativemn.com/
+
+Copyright (C) 2014  Tyler Smith
+Dieses Programm ist freie Software. Sie können es unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation veröffentlicht, weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder (nach Ihrer Option) jeder späteren Version.
+
+Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public License.
+Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem Programm erhalten haben. Falls nicht, siehe <http://www.gnu.org/licenses/>.
+
+This is an unofficial translation of the GNU General Public License into German. It was not published by the Free Software Foundation, and does not legally state the distribution terms for software that uses the GNU GPL—only the original English text of the GNU GPL does that. However, we hope that this translation will help German speakers understand the GNU GPL better.
+
+Dies ist eine inoffizielle deutsche Übersetzung der GNU General Public License, die nicht von der Free Software Foundation herausgegeben wurde. Es handelt sich hierbei nicht um eine rechtsgültige Festlegung der Bedingungen für die Weitergabe von Software, die der GNU GPL unterliegt; dies leistet nur der englische Originaltext. Wir hoffen jedoch, daß diese Übersetzung deutschsprachigen Lesern helfen wird, die GNU GPL besser zu verstehen.
