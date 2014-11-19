@@ -14,7 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="4"
-        android:dividerHeight="2dp" 
+        android:dividerHeight="1dp" 
         style="?attr/dividerColor"
         >
     </ListView>

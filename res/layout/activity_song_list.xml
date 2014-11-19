@@ -11,7 +11,7 @@
 		android:layout_height="0dp"
 		android:layout_weight="4"
 		android:layout_gravity="top"
-		android:dividerHeight="2dp"
+		android:dividerHeight="1dp"
 		style="?attr/dividerColor"
 	/>
 	
