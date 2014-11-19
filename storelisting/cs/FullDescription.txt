@@ -1,0 +1,60 @@
+Jste již unaveni přehrávači hudby kterým trvá věčně než naběhnout, protože načítají reklamy a jiný obsah z webu? Unaveni přehrávači bez Bluetooth ovládání, nebo jejich neustálými pády po pár minutách? Já byl také a proto jsem napsal tuto aplikaci!
+
+Pretty Good Music Player je open source (GPL) přehrávač hudby pracující s adresáři, bez zbytečných okras. Je malý, je rychlý a přehrává hudbu. 
+
+Přehled funkcí:
+- Nová funkce! Nyní se dá také měnit vzhled a velikost písma!
+- Tento přehrávač má ochranu proti náhodnému pozastavení přehrávání při krátkém posuvu kabelu sluchátek. Bylo nemilé, když se přehrávání přerušovalo jen proto, že kabel poskočil.
+- Přehrává .mp3, .m4p, .m4a, .aac a mnoho dalších.
+- Rozpoznává následující příkazy z Bluetooth sluchátek: přehrát, pozastavit, předchozí a další.
+- Pokud jsou vybrány 'Všechny skladby' daného umělce, skladby jsou seřazeny podle alb, ne abecedně. 
+- Automatické pozastavení a spuštění přehrávání pokud jiné aplikace přehrávají hudbu (např. GPS).
+- Při delším přerušení než 30 sekund (např. telefonát) se hudba již automaticky nespustí. 
+- "Opakovat vše" je stále zapnuto.
+- Pokud stisknete tlačítko "zpět" příliš rychle, dojde k ověření, že chcete opravdu ukončit aplikaci.
+
+Očekávaná adresářová struktura:
+Aplikace je připravena pro práci s adresáři podle umělců, tak jak se dá zkopírovat z iTunes. To předpokládá následující adresářovou strukturu:
+
+music/
+   umělec/
+      /album1
+          /01 - První skladba.mp3
+          /02 - Druhá skladba.mp3
+          /03 - Třetí skladba.mp3
+          /04 - Čtvrtá skladba.mp3
+      /album2
+          /01 - Další skladba.mp3
+      ....
+
+Ostatní:
+Zaznamenal jsem, že po pozastavení přehrávání na delší dobu, musím zmáčknout a podržet tlačítko pro 'pozastavení' na svých Bluetooth sluchátkách pro spuštění přehrávání.
+
+Kompletní zdrojový kód je zde: https://github.com/smithdtyler/prettygoodmusicplayer
+
+Úžasná ikona byla navržena Emily Krueger z Vine Creative: http://www.vinecreativemn.com/
+
+Pokud máte jakékoliv problémy, zanechte detailní komentář a já se pokusím o co nejrychlejší nápravu.
+
+Kompatibilita:
+    Bluetooth ovládání testováno se sluchátky LG Electronics Tone+ HBS-730 Bluetooth
+
+Licence:
+
+    Pretty Good Music Player
+    Copyright Tyler Smith 2014
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    See http://www.gnu.org/licenses/ for a full copy of the  GNU General Public License.
+
+Reddit:
+    Publikuji na Reddit https://www.reddit.com/user/MythsBusted
