@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.smithdtyler.prettygoodmusicplayer.R;
+import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
 
 import android.app.Activity;
 import android.content.Intent;

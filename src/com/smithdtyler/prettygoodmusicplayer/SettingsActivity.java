@@ -35,6 +35,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
