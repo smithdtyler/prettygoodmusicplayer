@@ -62,7 +62,7 @@ public class SongList extends Activity {
 		}
 
 		List<File> songFiles = new ArrayList<File>();
-		if(albumDir.exists()){
+		if(albumDir.exists() && albumDir.isDirectory() && (albumDir.listFiles() != null)){
 			Log.d(TAG, "external storage directory = " + albumDir);
 			
 			for(File song : albumDir.listFiles()){
