@@ -18,6 +18,7 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -40,6 +41,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.smithdtyler.prettygoodmusicplayer.R;
@@ -56,6 +58,7 @@ public class NowPlaying extends Activity {
 	private String[] desiredSongAbsFileNames;
 	private int desiredAbsSongFileNamesPosition;
 	private boolean startPlayingRequired = true;
+	private boolean userDraggingProgress = false;
 
 	// Messaging and service stuff
 	boolean mIsBound;
@@ -171,7 +174,40 @@ public class NowPlaying extends Activity {
 		});
 		
 		SeekBar seekBar = (SeekBar)findViewById(R.id.songProgressBar);
-		seekBar.setEnabled(false);
+		seekBar.setEnabled(true);
+		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
+
+			private int requestedProgress;
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				if(fromUser){
+					Log.v(TAG, "drag location updated..." + progress);
+					this.requestedProgress = progress;
+				}
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				NowPlaying.this.userDraggingProgress = true;
+				
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				Message msg = Message.obtain(null, MusicPlaybackService.MSG_SEEK_TO);
+				msg.getData().putInt(MusicPlaybackService.TRACK_POSITION, requestedProgress);
+				try {
+					Log.i(TAG, "Sending a request to seek!");
+					mService.send(msg);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+				NowPlaying.this.userDraggingProgress = false;
+			}
+			
+		});
 	}
 
 	@Override
@@ -333,9 +369,11 @@ public class NowPlaying extends Activity {
 				int duration = msg.getData().getInt(MusicPlaybackService.TRACK_DURATION, -1);
 				int position = msg.getData().getInt(MusicPlaybackService.TRACK_POSITION, -1);
 				if(duration > 0){
-					SeekBar seekBar = (SeekBar)_activity.findViewById(R.id.songProgressBar);
-					seekBar.setMax(duration);
-					seekBar.setProgress(position);
+					if(!_activity.userDraggingProgress){
+						SeekBar seekBar = (SeekBar)_activity.findViewById(R.id.songProgressBar);
+						seekBar.setMax(duration);
+						seekBar.setProgress(position);
+					}
 				}
 				break;
 			default:
@@ -345,6 +383,7 @@ public class NowPlaying extends Activity {
 	}
 	
 	// Service Management Methods
+	@SuppressLint("InlinedApi") 
 	void doBindService(boolean startService) {
 		Log.i(TAG, "Binding to the service!");
 		bindService(new Intent(this, MusicPlaybackService.class), mConnection,

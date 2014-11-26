@@ -67,6 +67,7 @@ public class MusicPlaybackService extends Service {
 	static final int MSG_PAUSE_IN_ONE_SEC = 8;
 	static final int MSG_CANCEL_PAUSE_IN_ONE_SEC = 9;
 	static final int MSG_TOGGLE_SHUFFLE = 10;
+	static final int MSG_SEEK_TO = 11;
 
 	// State management
 	static final int MSG_REQUEST_STATE = 17;
@@ -333,6 +334,11 @@ public class MusicPlaybackService extends Service {
 			case MSG_REQUEST_STATE:
 				Log.i(TAG, "Got a state request message!");
 				break;
+			case MSG_SEEK_TO:
+				Log.i(TAG, "Got a seek request message!");
+				int progress = msg.getData().getInt(TRACK_POSITION);
+				_service.jumpTo(progress);
+				break;
 			default:
 				super.handleMessage(msg);
 			}
@@ -478,6 +484,11 @@ public class MusicPlaybackService extends Service {
 			e.printStackTrace();
 		}
 	}
+	private synchronized void jumpTo(int position){
+		if(mp.isPlaying()){
+			mp.seekTo(position);
+		}
+	}
 
 	private synchronized void playPause() {
 		if (mp.isPlaying()) {
@@ -487,6 +498,7 @@ public class MusicPlaybackService extends Service {
 			play();
 		}
 	}
+	
 
 	private synchronized void play() {
 		if (mp.isPlaying()) {
