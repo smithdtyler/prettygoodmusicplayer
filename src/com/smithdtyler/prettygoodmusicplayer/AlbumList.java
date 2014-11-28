@@ -90,6 +90,14 @@ public class AlbumList extends Activity {
 			map.put("album", album);			
 			albums.add(map);
 		}
+		
+		if(albums.size() == 1){
+       	 Intent intent = new Intent(AlbumList.this, SongList.class);
+		 intent.putExtra(ALBUM_NAME, "All");
+       	 intent.putExtra(ArtistList.ARTIST_NAME, artist);
+       	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistPath);
+       	 startActivity(intent);
+		}
 	}
 	
 	@Override
