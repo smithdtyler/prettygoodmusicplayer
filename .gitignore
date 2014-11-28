@@ -1,3 +1,4 @@
 *.apk
 /bin/*
 /gen/*
+.DS_Store
