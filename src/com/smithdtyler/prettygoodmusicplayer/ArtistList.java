@@ -81,7 +81,17 @@ import android.widget.TextView;
 
 			@Override
 			public int compare(String arg0, String arg1) {
-				return(arg0.toUpperCase().compareTo(arg1.toUpperCase()));
+		        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ArtistList.this);
+		        boolean ignoreleadingthe = sharedPref.getBoolean("ignore_leading_the_in_artist", false);
+				if(ignoreleadingthe){
+					if(arg0.toLowerCase().startsWith("the ")){
+						arg0 = arg0.substring(4);
+					}
+					if(arg1.toLowerCase().startsWith("the ")){
+						arg1 = arg1.substring(4);
+					}
+				}
+		        return(arg0.toUpperCase().compareTo(arg1.toUpperCase()));
 			}
 			
 		});
