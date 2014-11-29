@@ -18,6 +18,8 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
+import java.util.Locale;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -185,6 +187,7 @@ public class NowPlaying extends Activity {
 				if(fromUser){
 					Log.v(TAG, "drag location updated..." + progress);
 					this.requestedProgress = progress;
+					updateSongProgressLabel(progress);
 				}
 			}
 
@@ -214,6 +217,14 @@ public class NowPlaying extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		unbindService(mConnection);
+	}
+	
+	private void updateSongProgressLabel(int progress){
+		TextView progressLabel = (TextView)findViewById(R.id.songProgressLabel);
+		int minutes = progress / (1000 * 60);
+		int seconds = (progress % (1000 * 60)) / 1000;
+		String time = String.format(Locale.getDefault(), "%d:%02d", minutes, seconds);
+		progressLabel.setText(time);
 	}
 	
 	// Playback control methods
@@ -373,6 +384,7 @@ public class NowPlaying extends Activity {
 						SeekBar seekBar = (SeekBar)_activity.findViewById(R.id.songProgressBar);
 						seekBar.setMax(duration);
 						seekBar.setProgress(position);
+						_activity.updateSongProgressLabel(position);
 					}
 				}
 				break;
