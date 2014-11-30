@@ -13,6 +13,16 @@
 	        android:entries="@array/themeoptions"
 	        android:entryValues="@array/themeoptions"
 	        android:defaultValue="light" />
+	    <ListPreference
+            android:key="accent_color"
+            android:title="Accent Color"
+            android:entries="@array/accentcoloroptions"
+            android:entryValues="@array/accentcoloroptions"
+            android:defaultValue="Gray"/>
+	    <EditTextPreference
+	        android:key="custom_accent_color"
+            android:title="Custom Accent Color (aarrggbb)"
+            android:defaultValue="FF555533"/>
 	   	<ListPreference
 	        android:key="pref_text_size"
 	        android:title="Text Size"

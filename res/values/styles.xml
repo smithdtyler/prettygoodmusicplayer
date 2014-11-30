@@ -99,8 +99,8 @@
     </style>
     
     <style name="DarkBackgroundAccent">
-        <item name="android:background">@color/darkerdarkishgray</item>
-        <item name="android:windowBackground">@color/darkerdarkishgray</item>
+        <item name="android:background">@color/green</item>
+        <item name="android:windowBackground">@color/green</item>
     </style>
     
     <style name="DarkLayout">

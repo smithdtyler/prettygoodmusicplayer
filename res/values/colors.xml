@@ -7,4 +7,7 @@
 <color name="lightdivider">#7070FF</color>
 <color name="darkdivider">#6E6E6E</color>
 <color name="red">#ff0000</color>
+<!-- <color name="orange">#e17a00</color>-->
+<color name="orange">#cf6023</color>
+<color name="green">#00d42d</color>
 </resources>

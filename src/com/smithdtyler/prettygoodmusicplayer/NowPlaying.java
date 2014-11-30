@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -35,10 +36,10 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -46,7 +47,6 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.smithdtyler.prettygoodmusicplayer.R;
 import com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService.PlaybackState;
 
 public class NowPlaying extends Activity {
@@ -107,9 +107,8 @@ public class NowPlaying extends Activity {
         	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         			WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
-
         setContentView(R.layout.activity_now_playing);
-		
+
 		if(savedInstanceState == null){
 			doBindService(true);
 			startPlayingRequired = true;
@@ -456,6 +455,55 @@ public class NowPlaying extends Activity {
 	protected void onResume() {
 		super.onResume();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        
+        View shuffleBG = findViewById(R.id.shufflebackground);
+        View buttonBG = findViewById(R.id.playpausepreviousbackground);
+        View spacer1 = findViewById(R.id.spacer1);
+        View spacer2 = findViewById(R.id.spacer2);
+        
+        String accentColor = sharedPref.getString("accent_color", "Gray");
+        String customAccentColor = sharedPref.getString("custom_accent_color", "");
+        if(shuffleBG != null && buttonBG != null && spacer1 != null && spacer2 != null){
+        	if(accentColor.equals("Gray")){
+        		shuffleBG.setBackgroundColor(0xFF2e2e2e);
+        		buttonBG.setBackgroundColor(0xFF2e2e2e);
+        		spacer1.setBackgroundColor(0xFF2e2e2e);
+        		spacer2.setBackgroundColor(0xFF2e2e2e);
+        	} else if(accentColor.equals("Orange")){
+        		shuffleBG.setBackgroundColor(0xFFcf6023);
+        		buttonBG.setBackgroundColor(0xFFcf6023);
+        		spacer1.setBackgroundColor(0xFFcf6023);
+        		spacer2.setBackgroundColor(0xFFcf6023);
+        	} else if(accentColor.equals("Blue")){
+        		shuffleBG.setBackgroundColor(0xFF0000BB);
+        		buttonBG.setBackgroundColor(0xFF0000BB);
+        		spacer1.setBackgroundColor(0xFF0000BB);
+        		spacer2.setBackgroundColor(0xFF0000BB);
+        	} else if(accentColor.equals("Green")){
+        		shuffleBG.setBackgroundColor(0xFF00BB00);
+        		buttonBG.setBackgroundColor(0xFF00BB00);
+        		spacer1.setBackgroundColor(0xFF00BB00);
+        		spacer2.setBackgroundColor(0xFF00BB00);
+        	} else if(accentColor.equals("Custom")){
+        		try{
+        			Log.i(TAG, "custom color: " + customAccentColor);
+        			if(!customAccentColor.startsWith("#")){
+        				customAccentColor = "#" + customAccentColor;
+        			}
+        			if(customAccentColor.toLowerCase(Locale.getDefault()).startsWith("0x")){
+        				customAccentColor = customAccentColor.substring(2);
+        			}
+        			int custom = Color.parseColor(customAccentColor.trim());
+        			shuffleBG.setBackgroundColor(custom);
+        			buttonBG.setBackgroundColor(custom);
+        			spacer1.setBackgroundColor(custom);
+        			spacer2.setBackgroundColor(custom);
+        		} catch (Exception e){
+        			Log.w(TAG, "Unable to parse custom color", e);
+        		}
+        	}
+        }
+        
         String theme = sharedPref.getString("pref_theme", "light");
         String size = sharedPref.getString("pref_text_size", "medium");
         boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", false);

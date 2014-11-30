@@ -11,4 +11,12 @@
         <item>Medium</item>
         <item>Large</item>
     </string-array>
+    <string-array
+        name="accentcoloroptions">
+        <item>Gray</item>
+        <item>Orange</item>
+        <item>Blue</item>
+        <item>Green</item>
+        <item>Custom</item>
+    </string-array>
 </resources>
