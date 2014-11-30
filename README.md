@@ -1,4 +1,4 @@
-prettygoodmusicplayer
+prettygoodmusicplayer: launcher mode
 =====================
 
 A music player app for Android hits the basics hard
