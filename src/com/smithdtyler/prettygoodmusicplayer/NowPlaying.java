@@ -464,27 +464,27 @@ public class NowPlaying extends Activity {
         String accentColor = sharedPref.getString("accent_color", "Gray");
         String customAccentColor = sharedPref.getString("custom_accent_color", "");
         if(shuffleBG != null && buttonBG != null && spacer1 != null && spacer2 != null){
-        	if(accentColor.equals("Gray")){
+        	if(accentColor.equals(getResources().getStringArray(R.array.accentcoloroptions)[0])){
         		shuffleBG.setBackgroundColor(0xFF2e2e2e);
         		buttonBG.setBackgroundColor(0xFF2e2e2e);
         		spacer1.setBackgroundColor(0xFF2e2e2e);
         		spacer2.setBackgroundColor(0xFF2e2e2e);
-        	} else if(accentColor.equals("Orange")){
+        	} else if(accentColor.equals(getResources().getStringArray(R.array.accentcoloroptions)[1])){
         		shuffleBG.setBackgroundColor(0xFFcf6023);
         		buttonBG.setBackgroundColor(0xFFcf6023);
         		spacer1.setBackgroundColor(0xFFcf6023);
         		spacer2.setBackgroundColor(0xFFcf6023);
-        	} else if(accentColor.equals("Blue")){
+        	} else if(accentColor.equals(getResources().getStringArray(R.array.accentcoloroptions)[2])){
         		shuffleBG.setBackgroundColor(0xFF0000BB);
         		buttonBG.setBackgroundColor(0xFF0000BB);
         		spacer1.setBackgroundColor(0xFF0000BB);
         		spacer2.setBackgroundColor(0xFF0000BB);
-        	} else if(accentColor.equals("Green")){
+        	} else if(accentColor.equals(getResources().getStringArray(R.array.accentcoloroptions)[3])){
         		shuffleBG.setBackgroundColor(0xFF00BB00);
         		buttonBG.setBackgroundColor(0xFF00BB00);
         		spacer1.setBackgroundColor(0xFF00BB00);
         		spacer2.setBackgroundColor(0xFF00BB00);
-        	} else if(accentColor.equals("Custom")){
+        	} else if(accentColor.equals(getResources().getStringArray(R.array.accentcoloroptions)[4])){
         		try{
         			Log.i(TAG, "custom color: " + customAccentColor);
         			if(!customAccentColor.startsWith("#")){
