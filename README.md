@@ -4,7 +4,8 @@ prettygoodmusicplayer
 A music player app for Android hits the basics hard
 
 Building: 
-I've been building this in Eclipse. I haven't tried other IDEs.
+I've been building this in Eclipse. For Android Studio do 'Import Project' -> select build.gradle -> click 'Yes' for the gradle wrapper (or choose your own gradle folder. Wrapper is recommended as AStudio is finicky about which version it uses)
+
 
 Installing:
 The production version is available here:
