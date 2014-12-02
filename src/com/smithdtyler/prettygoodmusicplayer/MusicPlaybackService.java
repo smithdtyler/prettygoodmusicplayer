@@ -136,6 +136,9 @@ public class MusicPlaybackService extends Service {
 	private List<Integer> shuffleFrontList = new ArrayList<Integer>();
 	private Random random;
 	private List<Integer> shuffleBackList = new ArrayList<Integer>();
+	private String artist;
+	private String artistAbsPath;
+	private String album;
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -185,6 +188,10 @@ public class MusicPlaybackService extends Service {
 		// https://stackoverflow.com/questions/6406730/updating-an-ongoing-notification-quietly/15538209#15538209
 		Intent resultIntent = new Intent(this, NowPlaying.class);
 		resultIntent.putExtra("From_Notification", true);
+		resultIntent.putExtra(AlbumList.ALBUM_NAME, album);
+		resultIntent.putExtra(ArtistList.ARTIST_NAME, artist);
+		resultIntent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistAbsPath);
+		
 		// Use the FLAG_ACTIVITY_CLEAR_TOP to prevent launching a second
 		// NowPlaying if one already exists.
 		resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -328,6 +335,9 @@ public class MusicPlaybackService extends Service {
 						SongList.SONG_ABS_FILE_NAME_LIST_POSITION);
 				_service.songFile = new File(
 						_service.songAbsoluteFileNames[_service.songAbsoluteFileNamesPosition]);
+				_service.artist = msg.getData().getString(ArtistList.ARTIST_NAME);
+				_service.artistAbsPath = msg.getData().getString(ArtistList.ARTIST_ABS_PATH_NAME);
+				_service.album = msg.getData().getString(AlbumList.ALBUM_NAME);
 				_service.startPlayingFile();
 				_service.updateNotification();
 				_service.resetShuffle();
@@ -623,8 +633,13 @@ public class MusicPlaybackService extends Service {
 		// Use the FLAG_ACTIVITY_CLEAR_TOP to prevent launching a second
 		// NowPlaying if one already exists.
 		resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		resultIntent.putExtra("From_Notification", true);
+		resultIntent.putExtra(AlbumList.ALBUM_NAME, album);
+		resultIntent.putExtra(ArtistList.ARTIST_NAME, artist);
+		resultIntent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistAbsPath);
+		
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-				resultIntent, 0);
+				resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		Builder builder = new NotificationCompat.Builder(
 				this.getApplicationContext());

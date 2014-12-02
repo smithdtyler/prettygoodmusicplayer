@@ -57,6 +57,7 @@ public class NowPlaying extends Activity {
 	
 	// State information
 	private String desiredArtistName;
+	private String desiredArtistAbsPath;
 	private String desiredAlbumName;
 	private String[] desiredSongAbsFileNames;
 	private int desiredAbsSongFileNamesPosition;
@@ -78,14 +79,34 @@ public class NowPlaying extends Activity {
 		
 		Intent originIntent = getIntent();
 		if(originIntent.getBooleanExtra("From_Notification", false)){
-			Log.i(TAG, "Now Playing was launched from a notification, setting up its back stack");
-			// Reference: https://developer.android.com/reference/android/app/TaskStackBuilder.html
-			TaskStackBuilder tsb = TaskStackBuilder.create(this);
-			Intent intent = new Intent(this, ArtistList.class);
-			tsb.addNextIntent(intent);
-			intent = new Intent(this, NowPlaying.class);
-			tsb.addNextIntent(intent);
-			tsb.startActivities();
+
+			String artistName = originIntent.getStringExtra(ArtistList.ARTIST_NAME);
+			String artistAbsPath = originIntent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
+			if(artistName != null && artistAbsPath != null){
+				Log.i(TAG, "Now Playing was launched from a notification, setting up its back stack");
+				// Reference: https://developer.android.com/reference/android/app/TaskStackBuilder.html
+				TaskStackBuilder tsb = TaskStackBuilder.create(this);
+				Intent intent = new Intent(this, ArtistList.class);
+				tsb.addNextIntent(intent);
+
+				intent = new Intent(this, AlbumList.class);
+				intent.putExtra(ArtistList.ARTIST_NAME, artistName);
+				intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistAbsPath);
+				tsb.addNextIntent(intent);
+
+				String albumName =  originIntent.getStringExtra(AlbumList.ALBUM_NAME);
+				if(albumName != null){
+					intent = new Intent(this, SongList.class);
+					intent.putExtra(AlbumList.ALBUM_NAME, albumName);
+					intent.putExtra(ArtistList.ARTIST_NAME, artistName);
+					intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistAbsPath);
+					tsb.addNextIntent(intent);
+				}
+				intent = new Intent(this, NowPlaying.class);
+				tsb.addNextIntent(intent);
+				tsb.startActivities();
+			}
+
 		}
 		
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -135,6 +156,7 @@ public class NowPlaying extends Activity {
 		if(intent.getBooleanExtra(KICKOFF_SONG, false)){
 			desiredArtistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
 			desiredAlbumName = intent.getStringExtra(AlbumList.ALBUM_NAME);
+			desiredArtistAbsPath = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
 			desiredSongAbsFileNames = intent.getStringArrayExtra(SongList.SONG_ABS_FILE_NAME_LIST);
 			desiredAbsSongFileNamesPosition = intent.getIntExtra(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, 0);
 
@@ -313,6 +335,9 @@ public class NowPlaying extends Activity {
 					Message msg = Message.obtain(null, MusicPlaybackService.MSG_SET_PLAYLIST);
 					msg.getData().putStringArray(SongList.SONG_ABS_FILE_NAME_LIST, desiredSongAbsFileNames);
 					msg.getData().putInt(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, desiredAbsSongFileNamesPosition);
+					msg.getData().putString(ArtistList.ARTIST_NAME, desiredArtistName);
+					msg.getData().putString(ArtistList.ARTIST_ABS_PATH_NAME, desiredArtistAbsPath);
+					msg.getData().putString(AlbumList.ALBUM_NAME, desiredAlbumName);
 					try {
 						Log.i(TAG, "Sending a playlist!");
 						mService.send(msg);

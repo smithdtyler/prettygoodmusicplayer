@@ -188,6 +188,7 @@ public class SongList extends Activity {
             	 songAbsFileNameList.toArray(songNamesArr);
             	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
             	 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, position);
+            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
             	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
             	 startActivity(intent);
              }
