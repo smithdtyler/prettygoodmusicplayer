@@ -184,6 +184,7 @@ public class MusicPlaybackService extends Service {
 		// https://stackoverflow.com/questions/19474116/the-constructor-notification-is-deprecated
 		// https://stackoverflow.com/questions/6406730/updating-an-ongoing-notification-quietly/15538209#15538209
 		Intent resultIntent = new Intent(this, NowPlaying.class);
+		resultIntent.putExtra("From_Notification", true);
 		// Use the FLAG_ACTIVITY_CLEAR_TOP to prevent launching a second
 		// NowPlaying if one already exists.
 		resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -35,6 +35,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,6 +75,18 @@ public class NowPlaying extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Intent originIntent = getIntent();
+		if(originIntent.getBooleanExtra("From_Notification", false)){
+			Log.i(TAG, "Now Playing was launched from a notification, setting up its back stack");
+			// Reference: https://developer.android.com/reference/android/app/TaskStackBuilder.html
+			TaskStackBuilder tsb = TaskStackBuilder.create(this);
+			Intent intent = new Intent(this, ArtistList.class);
+			tsb.addNextIntent(intent);
+			intent = new Intent(this, NowPlaying.class);
+			tsb.addNextIntent(intent);
+			tsb.startActivities();
+		}
 		
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
