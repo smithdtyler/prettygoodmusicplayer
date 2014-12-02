@@ -23,6 +23,7 @@
         <activity
             android:name="com.smithdtyler.prettygoodmusicplayer.ArtistList"
             android:label="@string/app_name"
+            android:alwaysRetainTaskState="true"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,25 +32,22 @@
         </activity>
         <activity
             android:name="com.smithdtyler.prettygoodmusicplayer.SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings">
         </activity>
         <activity
             android:name="com.smithdtyler.prettygoodmusicplayer.AlbumList"
-            android:label="@string/title_activity_album_list" >
+            android:label="@string/title_activity_album_list"
+            android:alwaysRetainTaskState="true" >
         </activity>
         <activity
             android:name="com.smithdtyler.prettygoodmusicplayer.SongList"
-            android:label="@string/title_activity_song_list" >
+            android:label="@string/title_activity_song_list"
+            android:alwaysRetainTaskState="true" >
         </activity>
         <activity
             android:name="com.smithdtyler.prettygoodmusicplayer.NowPlaying"
-            android:label="@string/title_activity_now_playing" >
-        </activity>
-        <activity android:name="com.mburman.fileexplore.FileExplore">
-            <intent-filter>
-                <action android:name="com.smithdtyler.prettygoodmusicplayer.PICK_DIRECTORY"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
+            android:label="@string/title_activity_now_playing"
+            android:alwaysRetainTaskState="true" >
         </activity>
         <service android:name="com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService" android:icon="@drawable/ic_pgmp_launcher">
         </service>
