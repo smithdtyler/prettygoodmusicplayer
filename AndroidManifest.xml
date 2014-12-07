@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="16"
+        android:targetSdkVersion="19"
         tools:overrideLibrary="android.support.v13"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -46,9 +46,16 @@
         <activity
             android:name="com.smithdtyler.prettygoodmusicplayer.NowPlaying"
             android:label="@string/title_activity_now_playing"
+            android:exported="true"
         >
         </activity>
-        <service android:name="com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService" android:icon="@drawable/ic_pgmp_launcher">
+        <!-- The service has android:exported="true" because that's needed for
+        control from the notification. Not sure why it causes a warning... -->
+        <service 
+            android:name="com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService"
+            android:icon="@drawable/ic_pgmp_launcher"
+            android:exported="true"
+        >
         </service>
         <receiver android:name="com.smithdtyler.prettygoodmusicplayer.MusicBroadcastReceiver" 
             android:enabled="true">
