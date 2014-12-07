@@ -23,9 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-
-import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -40,6 +39,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
+
 public class SongList extends Activity {
 	public static final String SONG_ABS_FILE_NAME_LIST = "SONG_LIST";
 	public static final String SONG_ABS_FILE_NAME_LIST_POSITION = "SONG_LIST_POSITION";
@@ -49,20 +50,35 @@ public class SongList extends Activity {
 	private List<String> songAbsFileNameList;
 	private String currentTheme;
 	private String currentSize;
+	private boolean hasResume = false;
+	private int resumeFilePos = -1;
+	private int resumeProgress;
+	private String resume;
+	private String artistDir;
+	private File albumDir;
+	private boolean audiobookMode;
 	
 	private void populateSongs(String artistName, String albumDirName, String artistAbsDirName){
+		
 		songs = new ArrayList<Map<String,String>>();
 		
 		File artistDir = new File(artistAbsDirName);
-		File albumDir;
 		if(albumDirName != null){
 			albumDir = new File(artistDir, albumDirName);
 		} else {
 			albumDir = artistDir; 
 		}
 
+		SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
+		resume = prefs.getString(albumDir.getAbsolutePath(), null);
+		if(resume != null){
+			Log.i(TAG, "Found resumable time! " + resume);
+		} else {
+			Log.i(TAG, "Didn't find a resumable time");
+		}
+
 		List<File> songFiles = new ArrayList<File>();
-		if(albumDir.exists()){
+		if(albumDir.exists() && albumDir.isDirectory() && (albumDir.listFiles() != null)){
 			Log.d(TAG, "external storage directory = " + albumDir);
 			
 			for(File song : albumDir.listFiles()){
@@ -124,6 +140,42 @@ public class SongList extends Activity {
 			songs.add(map);
 		}
 		
+		if(resume != null && audiobookMode){
+			try{
+				String resumeSongName = resume.substring(0, resume.lastIndexOf('~'));
+				
+				File resumeFile = new File(albumDir, resumeSongName);
+				if(resumeFile.exists()){
+					String progress = resume.substring(resume.lastIndexOf('~') + 1);
+					int prog = Integer.valueOf(progress);
+					resumeProgress = prog;
+					resumeSongName = Utils.getPrettySongName(resumeSongName);
+					int minutes = prog / (1000 * 60);
+					int seconds = (prog % (1000 * 60)) / 1000;
+					String time = String.format(Locale.getDefault(), "%d:%02d", minutes, seconds);
+					Map<String, String> map = new HashMap<String, String>();
+					map.put("song", "Resume: " + resumeSongName + " (" + time + ")");
+					songs.add(0, map);
+					// loop over the available songs, make sure we still have it
+					for(int i = 0; i< songFiles.size(); i++){
+						File song = songFiles.get(i);
+						if(song.equals(resumeFile)){
+							resumeFilePos  = i;
+							break;
+						}
+					}
+					if(resumeFilePos >= 0){
+						hasResume = true;
+					}
+				} else {
+					Log.w(TAG, "Couldn't find file to resume");
+				}
+			} catch (Exception e){
+				Log.w(TAG, "Couldn't add resume song name", e);
+				hasResume = false;
+			}
+		}
+		
 		songAbsFileNameList = new ArrayList<String>();
 		for(File song : songFiles){
 			songAbsFileNameList.add(song.getAbsolutePath());
@@ -134,9 +186,16 @@ public class SongList extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		 // Get the message from the intent
+	    Intent intent = getIntent();
+	    final String artistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
+	    final String album = intent.getStringExtra(AlbumList.ALBUM_NAME);
+	    artistDir = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
+	    
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
         String size = sharedPref.getString("pref_text_size", "medium");
+        audiobookMode = sharedPref.getBoolean("pref_audiobook_mode", false);
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "got configured size " + size);
         currentTheme = theme;
@@ -163,11 +222,6 @@ public class SongList extends Activity {
 		
 		setContentView(R.layout.activity_song_list);
 		
-		 // Get the message from the intent
-	    Intent intent = getIntent();
-	    final String artistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
-	    final String album = intent.getStringExtra(AlbumList.ALBUM_NAME);
-	    final String artistDir = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
 	    Log.i(TAG, "Getting songs for " + album);
 	    
 	    populateSongs(artistName, album, artistDir);
@@ -181,15 +235,44 @@ public class SongList extends Activity {
 
              public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                      long id) {
-            	 Intent intent = new Intent(SongList.this, NowPlaying.class);
-            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
-            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
-            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
-            	 songAbsFileNameList.toArray(songNamesArr);
-            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
-            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, position);
-            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
-            	 startActivity(intent);
+            	 
+            	 if(hasResume){
+            		 if(position == 0){
+            			 Intent intent = new Intent(SongList.this, NowPlaying.class);
+    	            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
+    	            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
+    	            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
+    	            	 songAbsFileNameList.toArray(songNamesArr);
+    	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
+   	            		 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, resumeFilePos);
+   	            		 intent.putExtra(MusicPlaybackService.TRACK_POSITION, resumeProgress);
+   	            		 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
+    	            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
+    	            	 startActivity(intent);
+            		 } else {
+    	            	 Intent intent = new Intent(SongList.this, NowPlaying.class);
+    	            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
+    	            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
+    	            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
+    	            	 songAbsFileNameList.toArray(songNamesArr);
+    	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
+    	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, position - 1);
+    	            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
+    	            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
+    	            	 startActivity(intent);
+            		 }
+            	 } else {
+	            	 Intent intent = new Intent(SongList.this, NowPlaying.class);
+	            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
+	            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
+	            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
+	            	 songAbsFileNameList.toArray(songNamesArr);
+	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
+	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, position);
+	            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
+	            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
+	            	 startActivity(intent);
+            	 }
              }
         });
 	}
@@ -212,6 +295,10 @@ public class SongList extends Activity {
         	startActivity(intent);
             return true;
         }
+        if(id == android.R.id.home){
+        	onBackPressed();
+        	return true;
+        }
         return super.onOptionsItemSelected(item);
     }
     
@@ -221,6 +308,7 @@ public class SongList extends Activity {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
         String size = sharedPref.getString("pref_text_size", "medium");
+        boolean audiobookModePref = sharedPref.getBoolean("pref_audiobook_mode", false);
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "Got configured size " + size);
         if(currentTheme == null){
@@ -230,7 +318,19 @@ public class SongList extends Activity {
         if(currentSize == null){
         	currentSize = size;
         }
-        if(!currentTheme.equals(theme) || !currentSize.equals(size)){
+        
+        boolean resetResume = false;
+        if(audiobookMode != audiobookModePref){
+        	resetResume = true;
+        }
+        SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
+        String newResume = prefs.getString(albumDir.getAbsolutePath(), null);
+        if(resume != null && newResume != null && !newResume.equals(resume)){
+        	resetResume = true;
+        }else if(resume == null && newResume != null){
+        	resetResume = true;
+        }
+        if(!currentTheme.equals(theme) || !currentSize.equals(size) || resetResume){
         	finish();
         	startActivity(getIntent());
         }

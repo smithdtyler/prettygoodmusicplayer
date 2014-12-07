@@ -41,6 +41,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
 
 public class AlbumList extends Activity {
@@ -91,13 +92,29 @@ public class AlbumList extends Activity {
 			map.put("album", album);			
 			albums.add(map);
 		}
+		
+		// If albums size is 1, then there were no directories in this folder.
+		// skip straight to listing songs.
+		if(albums.size() == 1){
+       	 Intent intent = new Intent(AlbumList.this, SongList.class);
+		 intent.putExtra(ALBUM_NAME, "All");
+       	 intent.putExtra(ArtistList.ARTIST_NAME, artist);
+       	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistPath);
+       	 startActivity(intent);
+       	 // In this case we don't want to add the AlbumList to the back stack
+       	 // so call 'finish' immediately.
+       	 finish();
+		}
 	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+	    Intent intent = getIntent();
+	    final String artist = intent.getStringExtra(ArtistList.ARTIST_NAME);
+		
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
         String size = sharedPref.getString("pref_text_size", "medium");
         Log.i(TAG, "got configured theme " + theme);
@@ -126,8 +143,6 @@ public class AlbumList extends Activity {
 		setContentView(R.layout.activity_album_list);
 		
 		 // Get the message from the intent
-	    Intent intent = getIntent();
-	    final String artist = intent.getStringExtra(ArtistList.ARTIST_NAME);
 	    Log.i(TAG, "Getting albums for " + artist);
 	    
 	    final String artistPath = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
@@ -191,6 +206,10 @@ public class AlbumList extends Activity {
         	Intent intent = new Intent(AlbumList.this, SettingsActivity.class);
         	startActivity(intent);
             return true;
+        }
+        if(id == android.R.id.home){
+        	onBackPressed();
+        	return true;
         }
         return super.onOptionsItemSelected(item);
     }

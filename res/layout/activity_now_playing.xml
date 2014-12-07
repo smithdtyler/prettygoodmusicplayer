@@ -5,6 +5,7 @@
     style="?attr/backgroundColor" >
 
     <RelativeLayout
+        android:id="@+id/shufflebackground"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
@@ -35,7 +36,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="45"
+        android:layout_weight="40"
         style="?attr/backgroundColor" >
 
         <TextView
@@ -75,10 +76,29 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="12"
+        style="?attr/backgroundColor" >
+        
+        <TextView
+            android:id="@+id/songProgressLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dip"
+            android:layout_marginBottom="12dip"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            style="?attr/nowPlayingSongInfoTextSize"
+            />
+   	</RelativeLayout>
+    
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="15"
+        android:layout_weight="20"
         style="?attr/backgroundColor" >
 
         <SeekBar
@@ -86,10 +106,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
          />
-
     </LinearLayout>
-
+    
     <LinearLayout
+        android:id="@+id/spacer1"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="6"
@@ -97,6 +117,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/playpausepreviousbackground"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="16"
@@ -141,6 +162,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/spacer2"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="6"

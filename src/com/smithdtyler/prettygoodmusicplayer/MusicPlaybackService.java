@@ -53,6 +53,7 @@ import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
+
 import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
 
 public class MusicPlaybackService extends Service {
@@ -68,6 +69,7 @@ public class MusicPlaybackService extends Service {
 	static final int MSG_PAUSE_IN_ONE_SEC = 8;
 	static final int MSG_CANCEL_PAUSE_IN_ONE_SEC = 9;
 	static final int MSG_TOGGLE_SHUFFLE = 10;
+	static final int MSG_SEEK_TO = 11;
 
 	// State management
 	static final int MSG_REQUEST_STATE = 17;
@@ -136,6 +138,10 @@ public class MusicPlaybackService extends Service {
 	private List<Integer> shuffleFrontList = new ArrayList<Integer>();
 	private Random random;
 	private List<Integer> shuffleBackList = new ArrayList<Integer>();
+	private String artist;
+	private String artistAbsPath;
+	private String album;
+	private long lastResumeUpdateTime;
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -184,6 +190,11 @@ public class MusicPlaybackService extends Service {
 		// https://stackoverflow.com/questions/19474116/the-constructor-notification-is-deprecated
 		// https://stackoverflow.com/questions/6406730/updating-an-ongoing-notification-quietly/15538209#15538209
 		Intent resultIntent = new Intent(this, NowPlaying.class);
+		resultIntent.putExtra("From_Notification", true);
+		resultIntent.putExtra(AlbumList.ALBUM_NAME, album);
+		resultIntent.putExtra(ArtistList.ARTIST_NAME, artist);
+		resultIntent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistAbsPath);
+		
 		// Use the FLAG_ACTIVITY_CLEAR_TOP to prevent launching a second
 		// NowPlaying if one already exists.
 		resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -327,12 +338,21 @@ public class MusicPlaybackService extends Service {
 						SongList.SONG_ABS_FILE_NAME_LIST_POSITION);
 				_service.songFile = new File(
 						_service.songAbsoluteFileNames[_service.songAbsoluteFileNamesPosition]);
-				_service.startPlayingFile();
+				_service.artist = msg.getData().getString(ArtistList.ARTIST_NAME);
+				_service.artistAbsPath = msg.getData().getString(ArtistList.ARTIST_ABS_PATH_NAME);
+				_service.album = msg.getData().getString(AlbumList.ALBUM_NAME);
+				int songPosition = msg.getData().getInt(TRACK_POSITION, 0);
+				_service.startPlayingFile(songPosition);
 				_service.updateNotification();
 				_service.resetShuffle();
 				break;
 			case MSG_REQUEST_STATE:
 				Log.i(TAG, "Got a state request message!");
+				break;
+			case MSG_SEEK_TO:
+				Log.i(TAG, "Got a seek request message!");
+				int progress = msg.getData().getInt(TRACK_POSITION);
+				_service.jumpTo(progress);
 				break;
 			default:
 				super.handleMessage(msg);
@@ -345,7 +365,24 @@ public class MusicPlaybackService extends Service {
 		if (pauseTime < currentTime) {
 			pause();
 		}
+		updateResumePosition();
 		sendUpdateToClients();
+	}
+	
+	private void updateResumePosition(){
+		long currentTime = System.currentTimeMillis();
+		if(currentTime - 10000 > lastResumeUpdateTime){
+			if(mp != null && songFile != null && mp.isPlaying()){
+				int pos = mp.getCurrentPosition();
+				SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
+				Log.i(TAG,
+						"Preferences update success: "
+								+ prefs.edit()
+										.putString(songFile.getParentFile().getAbsolutePath(),songFile.getName() + "~" + pos)
+										.commit());
+			}
+			lastResumeUpdateTime = currentTime;
+		}
 	}
 
 
@@ -454,9 +491,10 @@ public class MusicPlaybackService extends Service {
 			// Just go to the next song back
 			previous();
 		}
+		updateNotification();
 	}
 
-	private synchronized void startPlayingFile() {
+	private synchronized void startPlayingFile(int songProgress) {
 		// Have we loaded a file yet?
 		if (mp.getDuration() > 0) {
 			pause();
@@ -469,6 +507,9 @@ public class MusicPlaybackService extends Service {
 			fis = new FileInputStream(songFile);
 			mp.setDataSource(fis.getFD());
 			mp.prepare();
+			if(songProgress > 0){
+				mp.seekTo(songProgress);
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -477,6 +518,20 @@ public class MusicPlaybackService extends Service {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private synchronized void jumpTo(int position){
+		if(mp.isPlaying()){
+			mp.seekTo(position);
+		} else {
+			// if we're paused but initialized, try to seek
+			try{
+				mp.seekTo(position);
+				lastPosition = mp.getCurrentPosition();
+			} catch (Exception e){
+				Log.w(TAG, "Unable to seek to position, file may not have been loaded");
+			}
 		}
 	}
 
@@ -488,6 +543,7 @@ public class MusicPlaybackService extends Service {
 			play();
 		}
 	}
+	
 
 	private synchronized void play() {
 		if (mp.isPlaying()) {
@@ -603,8 +659,13 @@ public class MusicPlaybackService extends Service {
 		// Use the FLAG_ACTIVITY_CLEAR_TOP to prevent launching a second
 		// NowPlaying if one already exists.
 		resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		resultIntent.putExtra("From_Notification", true);
+		resultIntent.putExtra(AlbumList.ALBUM_NAME, album);
+		resultIntent.putExtra(ArtistList.ARTIST_NAME, artist);
+		resultIntent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistAbsPath);
+		
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-				resultIntent, 0);
+				resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		Builder builder = new NotificationCompat.Builder(
 				this.getApplicationContext());
@@ -625,7 +686,26 @@ public class MusicPlaybackService extends Service {
 				}
 			}
 		}
+		
+		Intent previousIntent = new Intent("Previous", null, this, MusicPlaybackService.class);
+		previousIntent.putExtra("Message", MSG_PREVIOUS);
+		PendingIntent previousPendingIntent = PendingIntent.getService(this, 0, previousIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+		Intent nextIntent = new Intent("Next", null, this, MusicPlaybackService.class);
+		nextIntent.putExtra("Message", MSG_NEXT);
+		PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		PendingIntent playPausePendingIntent;
+		Intent playPauseIntent = new Intent("PlayPause", null, this, MusicPlaybackService.class);
+		playPauseIntent.putExtra("Message", MSG_PLAYPAUSE);
+		playPausePendingIntent = PendingIntent.getService(this, 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		int playPauseIcon;
+		if(mp != null && mp.isPlaying()){
+			playPauseIcon = R.drawable.ic_action_pause;
+		} else {
+			playPauseIcon = R.drawable.ic_action_play;
+		}
+		
 		Notification notification = builder
 				.setContentText(contentText)
 				.setSmallIcon(icon)
@@ -633,6 +713,9 @@ public class MusicPlaybackService extends Service {
 				.setContentIntent(pendingIntent)
 				.setContentTitle(
 						getResources().getString(R.string.notification_title))
+				.addAction(R.drawable.ic_action_previous, "", previousPendingIntent)
+				.addAction(playPauseIcon, "", playPausePendingIntent)
+				.addAction(R.drawable.ic_action_next, "", nextPendingIntent)
 				.build();
 
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,6 +45,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import com.smithdtyler.prettygoodmusicplayer.launchermode.R;
 
 @SuppressLint("DefaultLocale") public class ArtistList extends Activity {
 	private static final String TAG = "Artist List";
@@ -81,7 +81,17 @@ import android.widget.TextView;
 
 			@Override
 			public int compare(String arg0, String arg1) {
-				return(arg0.toUpperCase().compareTo(arg1.toUpperCase()));
+		        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ArtistList.this);
+		        boolean ignoreleadingthe = sharedPref.getBoolean("ignore_leading_the_in_artist", false);
+				if(ignoreleadingthe){
+					if(arg0.toLowerCase().startsWith("the ")){
+						arg0 = arg0.substring(4);
+					}
+					if(arg1.toLowerCase().startsWith("the ")){
+						arg1 = arg1.substring(4);
+					}
+				}
+		        return(arg0.toUpperCase().compareTo(arg1.toUpperCase()));
 			}
 			
 		});
@@ -176,6 +186,7 @@ import android.widget.TextView;
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         PreferenceManager.setDefaultValues(this, R.xml.pretty_good_preferences, false);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");

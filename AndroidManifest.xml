@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <manifest package="com.smithdtyler.prettygoodmusicplayer.launchermode"
-    android:versionCode="22"
-    android:versionName="2.2.5" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:versionCode="44"
+    android:versionName="3.1.4L" xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="16" />
+        android:minSdkVersion="10"
+        android:targetSdkVersion="10"
+        tools:overrideLibrary="android.support.v13"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
@@ -32,27 +33,31 @@
         </activity>
         <activity
             android:name="com.smithdtyler.prettygoodmusicplayer.SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings">
         </activity>
         <activity
             android:name="com.smithdtyler.prettygoodmusicplayer.AlbumList"
-            android:label="@string/title_activity_album_list" >
+            android:label="@string/title_activity_album_list"
+         >
         </activity>
         <activity
             android:name="com.smithdtyler.prettygoodmusicplayer.SongList"
-            android:label="@string/title_activity_song_list" >
+            android:label="@string/title_activity_song_list"
+        >
         </activity>
         <activity
             android:name="com.smithdtyler.prettygoodmusicplayer.NowPlaying"
-            android:label="@string/title_activity_now_playing" >
+            android:label="@string/title_activity_now_playing"
+            android:exported="true"
+        >
         </activity>
-        <activity android:name="com.mburman.fileexplore.FileExplore">
-            <intent-filter>
-                <action android:name="com.smithdtyler.prettygoodmusicplayer.PICK_DIRECTORY"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <service android:name="com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService" android:icon="@drawable/ic_pgmp_launcher">
+        <!-- The service has android:exported="true" because that's needed for
+        control from the notification. Not sure why it causes a warning... -->
+        <service 
+            android:name="com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService"
+            android:icon="@drawable/ic_pgmp_launcher"
+            android:exported="true"
+        >
         </service>
         <receiver android:name="com.smithdtyler.prettygoodmusicplayer.MusicBroadcastReceiver" 
             android:enabled="true">

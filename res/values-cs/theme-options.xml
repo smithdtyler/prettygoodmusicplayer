@@ -11,4 +11,17 @@
         <item>Střední</item>
         <item>Velký</item>
     </string-array>
+    <string-array
+        name="accentcoloroptions">
+        <item>Grey</item>
+        <item>zelená</item>
+        <item>modrý</item>
+        <item>oranžový</item>
+        <item>zelená</item>
+        <item>slonová kost</item>
+        <item>nebe</item>
+        <item>Dopravní zelená</item>
+        <item>Voda Modrá</item>
+        <item>zvyk</item>
+    </string-array>
 </resources>

@@ -1,3 +1,12 @@
 *.apk
 /bin/*
 /gen/*
+local.properties
+.DS_Store
+
+# gradle/Android Studio ignores
+.idea/*
+build/*
+.gradle/*
+*.iml
+gradle*
