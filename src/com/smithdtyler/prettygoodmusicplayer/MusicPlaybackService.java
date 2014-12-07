@@ -470,6 +470,7 @@ public class MusicPlaybackService extends Service {
 			// Just go to the next song back
 			previous();
 		}
+		updateNotification();
 	}
 
 	private synchronized void startPlayingFile() {
@@ -660,7 +661,26 @@ public class MusicPlaybackService extends Service {
 				}
 			}
 		}
+		
+		Intent previousIntent = new Intent("Previous", null, this, MusicPlaybackService.class);
+		previousIntent.putExtra("Message", MSG_PREVIOUS);
+		PendingIntent previousPendingIntent = PendingIntent.getService(this, 0, previousIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+		Intent nextIntent = new Intent("Next", null, this, MusicPlaybackService.class);
+		nextIntent.putExtra("Message", MSG_NEXT);
+		PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		PendingIntent playPausePendingIntent;
+		Intent playPauseIntent = new Intent("PlayPause", null, this, MusicPlaybackService.class);
+		playPauseIntent.putExtra("Message", MSG_PLAYPAUSE);
+		playPausePendingIntent = PendingIntent.getService(this, 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		int playPauseIcon;
+		if(mp != null && mp.isPlaying()){
+			playPauseIcon = R.drawable.ic_action_pause;
+		} else {
+			playPauseIcon = R.drawable.ic_action_play;
+		}
+		
 		Notification notification = builder
 				.setContentText(contentText)
 				.setSmallIcon(icon)
@@ -668,6 +688,9 @@ public class MusicPlaybackService extends Service {
 				.setContentIntent(pendingIntent)
 				.setContentTitle(
 						getResources().getString(R.string.notification_title))
+				.addAction(R.drawable.ic_action_previous, "", previousPendingIntent)
+				.addAction(playPauseIcon, "", playPausePendingIntent)
+				.addAction(R.drawable.ic_action_next, "", nextPendingIntent)
 				.build();
 
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
