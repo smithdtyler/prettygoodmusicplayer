@@ -21,6 +21,7 @@ package com.smithdtyler.prettygoodmusicplayer;
 import java.io.File;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -30,6 +31,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -71,6 +73,28 @@ public class SettingsActivity extends PreferenceActivity {
 		// Add 'general' preferences.
 		// TODO this is deprecated, update to use fragments I guess?
 		addPreferencesFromResource(R.xml.pretty_good_preferences);
+	}
+	
+	
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+        if(id == android.R.id.home){
+        	onBackPressed();
+        	return true;
+        }
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
