@@ -73,6 +73,7 @@ public class NowPlaying extends Activity {
 	private String currentTheme;
 	private String currentSize;
 	private boolean currentFullScreen;
+	private int desiredSongProgress;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +164,7 @@ public class NowPlaying extends Activity {
 			desiredArtistAbsPath = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
 			desiredSongAbsFileNames = intent.getStringArrayExtra(SongList.SONG_ABS_FILE_NAME_LIST);
 			desiredAbsSongFileNamesPosition = intent.getIntExtra(SongList.SONG_ABS_FILE_NAME_LIST_POSITION, 0);
+			desiredSongProgress = intent.getIntExtra(MusicPlaybackService.TRACK_POSITION, 0);
 
 			Log.d(TAG, "Got song names " + desiredSongAbsFileNames + " position "
 					+ desiredAbsSongFileNamesPosition);
@@ -342,6 +344,7 @@ public class NowPlaying extends Activity {
 					msg.getData().putString(ArtistList.ARTIST_NAME, desiredArtistName);
 					msg.getData().putString(ArtistList.ARTIST_ABS_PATH_NAME, desiredArtistAbsPath);
 					msg.getData().putString(AlbumList.ALBUM_NAME, desiredAlbumName);
+					msg.getData().putInt(MusicPlaybackService.TRACK_POSITION, desiredSongProgress);
 					try {
 						Log.i(TAG, "Sending a playlist!");
 						mService.send(msg);

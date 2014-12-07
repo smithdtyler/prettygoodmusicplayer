@@ -139,6 +139,7 @@ public class MusicPlaybackService extends Service {
 	private String artist;
 	private String artistAbsPath;
 	private String album;
+	private long lastResumeUpdateTime;
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -338,7 +339,8 @@ public class MusicPlaybackService extends Service {
 				_service.artist = msg.getData().getString(ArtistList.ARTIST_NAME);
 				_service.artistAbsPath = msg.getData().getString(ArtistList.ARTIST_ABS_PATH_NAME);
 				_service.album = msg.getData().getString(AlbumList.ALBUM_NAME);
-				_service.startPlayingFile();
+				int songPosition = msg.getData().getInt(TRACK_POSITION, 0);
+				_service.startPlayingFile(songPosition);
 				_service.updateNotification();
 				_service.resetShuffle();
 				break;
@@ -361,7 +363,24 @@ public class MusicPlaybackService extends Service {
 		if (pauseTime < currentTime) {
 			pause();
 		}
+		updateResumePosition();
 		sendUpdateToClients();
+	}
+	
+	private void updateResumePosition(){
+		long currentTime = System.currentTimeMillis();
+		if(currentTime - 10000 > lastResumeUpdateTime){
+			if(mp != null && songFile != null && mp.isPlaying()){
+				int pos = mp.getCurrentPosition();
+				SharedPreferences prefs = getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
+				Log.i(TAG,
+						"Preferences update success: "
+								+ prefs.edit()
+										.putString(songFile.getParentFile().getAbsolutePath(),songFile.getName() + "~" + pos)
+										.commit());
+			}
+			lastResumeUpdateTime = currentTime;
+		}
 	}
 
 
@@ -473,7 +492,7 @@ public class MusicPlaybackService extends Service {
 		updateNotification();
 	}
 
-	private synchronized void startPlayingFile() {
+	private synchronized void startPlayingFile(int songProgress) {
 		// Have we loaded a file yet?
 		if (mp.getDuration() > 0) {
 			pause();
@@ -486,6 +505,9 @@ public class MusicPlaybackService extends Service {
 			fis = new FileInputStream(songFile);
 			mp.setDataSource(fis.getFD());
 			mp.prepare();
+			if(songProgress > 0){
+				mp.seekTo(songProgress);
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -496,6 +518,7 @@ public class MusicPlaybackService extends Service {
 			e.printStackTrace();
 		}
 	}
+	
 	private synchronized void jumpTo(int position){
 		if(mp.isPlaying()){
 			mp.seekTo(position);

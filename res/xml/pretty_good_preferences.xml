@@ -5,6 +5,13 @@
         <Preference android:title="Choose Music Directory" android:summary="Pick the Directory Containing Your Artists" android:icon="@android:drawable/ic_menu_set_as"/>
     </PreferenceCategory>
     <PreferenceCategory
+        android:title="Podcasts and Audiobooks">
+        <CheckBoxPreference
+            android:key="pref_audiobook_mode"
+            android:title="Audiobook Mode"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory
         android:title="Style Preferences">
 	    <ListPreference
 	        android:key="pref_theme"
