@@ -40,7 +40,7 @@
 	   	<CheckBoxPreference
 	   	    android:key="pref_full_screen_now_playing"
 	   	    android:title="Full Screen Now Playing"
-	   	    android:defaultValue="true"/>
+	   	    android:defaultValue="false"/>
 	   	<CheckBoxPreference
 	   	    android:key="ignore_leading_the_in_artist"
 	   	    android:title="Ignore Leading 'The' in Artist Names"
