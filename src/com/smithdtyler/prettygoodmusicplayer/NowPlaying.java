@@ -136,7 +136,7 @@ public class NowPlaying extends Activity {
 			}
 		}
 
-		boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", true);
+		boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", false);
 		currentFullScreen = fullScreen;
 		if(fullScreen){
 			requestWindowFeature(Window.FEATURE_NO_TITLE);

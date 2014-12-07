@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.smithdtyler.prettygoodmusicplayer"
-    android:versionCode="43"
-    android:versionName="3.1.3" xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="44"
+    android:versionName="3.1.4" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk
