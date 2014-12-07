@@ -25,7 +25,7 @@
             android:title="Accent Color"
             android:entries="@array/accentcoloroptions"
             android:entryValues="@array/accentcoloroptions"
-            android:defaultValue="Gray"/>
+        />
 	    <EditTextPreference
 	        android:key="custom_accent_color"
             android:title="Custom Accent Color (aarrggbb)"
