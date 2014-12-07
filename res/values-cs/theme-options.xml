@@ -13,10 +13,15 @@
     </string-array>
     <string-array
         name="accentcoloroptions">
-        <item>Šedá</item>
-        <item>Oranžová</item>
-        <item>Modrá</item>
-        <item>Zelená</item>
-        <item>Custom</item>
+        <item>Grey</item>
+        <item>zelená</item>
+        <item>modrý</item>
+        <item>oranžový</item>
+        <item>zelená</item>
+        <item>slonová kost</item>
+        <item>nebe</item>
+        <item>Dopravní zelená</item>
+        <item>Voda Modrá</item>
+        <item>zvyk</item>
     </string-array>
 </resources>

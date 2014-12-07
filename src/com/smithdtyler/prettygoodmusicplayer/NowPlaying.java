@@ -1,7 +1,7 @@
 /**
    The Pretty Good Music Player
    Copyright (C) 2014  Tyler Smith
- 
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -21,6 +21,7 @@ package com.smithdtyler.prettygoodmusicplayer;
 import java.util.Locale;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -51,10 +52,10 @@ import android.widget.TextView;
 import com.smithdtyler.prettygoodmusicplayer.MusicPlaybackService.PlaybackState;
 
 public class NowPlaying extends Activity {
-	
+
 	private static final String TAG = "Now Playing";
 	static final String KICKOFF_SONG = "KICKOFF_SONG";
-	
+
 	// State information
 	private String desiredArtistName;
 	private String desiredArtistAbsPath;
@@ -72,11 +73,11 @@ public class NowPlaying extends Activity {
 	private String currentTheme;
 	private String currentSize;
 	private boolean currentFullScreen;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		Intent originIntent = getIntent();
 		if(originIntent.getBooleanExtra("From_Notification", false)){
 
@@ -108,40 +109,43 @@ public class NowPlaying extends Activity {
 			}
 
 		}
-		
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
-        Log.i(TAG, "got configured theme " + theme);
-        Log.i(TAG, "got configured size " + size);
-        if(theme.equalsIgnoreCase("dark")){
-        	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
-        		setTheme(R.style.PGMPDarkSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
-        		setTheme(R.style.PGMPDarkMedium);
-        	} else {
-        		setTheme(R.style.PGMPDarkLarge);
-        	}
-        } else if (theme.equalsIgnoreCase("light")){
-        	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
-        		setTheme(R.style.PGMPLightSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
-        		setTheme(R.style.PGMPLightMedium);
-        	} else {
-        		setTheme(R.style.PGMPLightLarge);
-        	}
-        }
-		
-        boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", true);
-        currentFullScreen = fullScreen;
-        if(fullScreen){
-        	requestWindowFeature(Window.FEATURE_NO_TITLE);
-        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-        			WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
-        setContentView(R.layout.activity_now_playing);
+
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		String theme = sharedPref.getString("pref_theme", "light");
+		String size = sharedPref.getString("pref_text_size", "medium");
+		Log.i(TAG, "got configured theme " + theme);
+		Log.i(TAG, "got configured size " + size);
+		if(theme.equalsIgnoreCase("dark")){
+			Log.i(TAG, "setting theme to " + theme);
+			if(size.equalsIgnoreCase("small")){
+				setTheme(R.style.PGMPDarkSmall);
+			} else if (size.equalsIgnoreCase("medium")){
+				setTheme(R.style.PGMPDarkMedium);
+			} else {
+				setTheme(R.style.PGMPDarkLarge);
+			}
+		} else if (theme.equalsIgnoreCase("light")){
+			Log.i(TAG, "setting theme to " + theme);
+			if(size.equalsIgnoreCase("small")){
+				setTheme(R.style.PGMPLightSmall);
+			} else if (size.equalsIgnoreCase("medium")){
+				setTheme(R.style.PGMPLightMedium);
+			} else {
+				setTheme(R.style.PGMPLightLarge);
+			}
+		}
+
+		boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", true);
+		currentFullScreen = fullScreen;
+		if(fullScreen){
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		} else {
+			ActionBar actionBar = getActionBar();
+			actionBar.setDisplayHomeAsUpEnabled(true);
+		}
+		setContentView(R.layout.activity_now_playing);
 
 		if(savedInstanceState == null){
 			doBindService(true);
@@ -162,14 +166,14 @@ public class NowPlaying extends Activity {
 
 			Log.d(TAG, "Got song names " + desiredSongAbsFileNames + " position "
 					+ desiredAbsSongFileNamesPosition);
-			
+
 			TextView et = (TextView) findViewById(R.id.artistName);
 			et.setText(desiredArtistName);
-	
+
 			et = (TextView) findViewById(R.id.albumName);
 			et.setText(desiredAlbumName);
 		}
-		
+
 		// The song name field will be set when we get our first update update from the service.
 
 		final ImageButton pause = (ImageButton) findViewById(R.id.playPause);
@@ -200,7 +204,7 @@ public class NowPlaying extends Activity {
 				next();
 			}
 		});
-		
+
 		final ImageButton shuffle = (ImageButton) findViewById(R.id.shuffle);
 		shuffle.setOnClickListener(new OnClickListener(){
 			@Override
@@ -208,7 +212,7 @@ public class NowPlaying extends Activity {
 				toggleShuffle();
 			}
 		});
-		
+
 		SeekBar seekBar = (SeekBar)findViewById(R.id.songProgressBar);
 		seekBar.setEnabled(true);
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
@@ -228,7 +232,7 @@ public class NowPlaying extends Activity {
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
 				NowPlaying.this.userDraggingProgress = true;
-				
+
 			}
 
 			@Override
@@ -243,7 +247,7 @@ public class NowPlaying extends Activity {
 				}
 				NowPlaying.this.userDraggingProgress = false;
 			}
-			
+
 		});
 	}
 
@@ -252,7 +256,7 @@ public class NowPlaying extends Activity {
 		super.onDestroy();
 		unbindService(mConnection);
 	}
-	
+
 	private void updateSongProgressLabel(int progress){
 		TextView progressLabel = (TextView)findViewById(R.id.songProgressLabel);
 		int minutes = progress / (1000 * 60);
@@ -260,52 +264,52 @@ public class NowPlaying extends Activity {
 		String time = String.format(Locale.getDefault(), "%d:%02d", minutes, seconds);
 		progressLabel.setText(time);
 	}
-	
+
 	// Playback control methods
 	private void playPause(){
 		Log.d(TAG, "Play/Pause clicked...");
-        Message msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
-        try {
-        	Log.i(TAG, "Sending a request to start playing!");
+		Message msg = Message.obtain(null, MusicPlaybackService.MSG_PLAYPAUSE);
+		try {
+			Log.i(TAG, "Sending a request to start playing!");
 			mService.send(msg);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void next(){
 		Log.d(TAG, "next...");
-        Message msg = Message.obtain(null, MusicPlaybackService.MSG_NEXT);
-        try {
-        	Log.i(TAG, "SEnding a request to go to next!");
+		Message msg = Message.obtain(null, MusicPlaybackService.MSG_NEXT);
+		try {
+			Log.i(TAG, "SEnding a request to go to next!");
 			mService.send(msg);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void previous(){
 		Log.d(TAG, "Previous clicked...");
-        Message msg = Message.obtain(null, MusicPlaybackService.MSG_PREVIOUS);
-        try {
-        	Log.i(TAG, "Sending a request to go to previous!");
+		Message msg = Message.obtain(null, MusicPlaybackService.MSG_PREVIOUS);
+		try {
+			Log.i(TAG, "Sending a request to go to previous!");
 			mService.send(msg);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void toggleShuffle(){
 		Log.d(TAG, "Shuffle clicked...");
-        Message msg = Message.obtain(null, MusicPlaybackService.MSG_TOGGLE_SHUFFLE);
-        try {
-        	Log.i(TAG, "Sending a request to toggle shuffle!");
+		Message msg = Message.obtain(null, MusicPlaybackService.MSG_TOGGLE_SHUFFLE);
+		try {
+			Log.i(TAG, "Sending a request to toggle shuffle!");
 			mService.send(msg);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	// Service connection management
 	private class NowPlayingServiceConnection implements ServiceConnection {
 
@@ -317,7 +321,7 @@ public class NowPlaying extends Activity {
 
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			mService = new Messenger(service);
-			
+
 			// Register with the service
 			try {
 				Message msg = Message.obtain(null,
@@ -328,7 +332,7 @@ public class NowPlaying extends Activity {
 				// In this case the service has crashed before we could even do
 				// anything with it
 			}
-			
+
 			if(this._nowPlaying.startPlayingRequired){
 				if(desiredSongAbsFileNames != null){
 					// set the playlist
@@ -364,15 +368,15 @@ public class NowPlaying extends Activity {
 			mService = null; // TODO need to do some null checks
 		}
 	};
-	
+
 	private static class IncomingHandler extends Handler {
-		
+
 		private NowPlaying _activity;
-		
+
 		private IncomingHandler(NowPlaying nowPlaying){
 			_activity = nowPlaying;
 		}
-		
+
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
@@ -382,25 +386,25 @@ public class NowPlaying extends Activity {
 				if(!tv.getText().equals(currentSongName)){
 					tv.setText(currentSongName);
 				}
-				
+
 				String currentAlbumName = msg.getData().getString(MusicPlaybackService.PRETTY_ALBUM_NAME);
 				tv = (TextView) _activity.findViewById(R.id.albumName);
 				if(!tv.getText().equals(currentAlbumName)){
 					tv.setText(currentAlbumName);
 				}
-				
+
 				String currentArtistName = msg.getData().getString(MusicPlaybackService.PRETTY_ARTIST_NAME);
 				tv = (TextView) _activity.findViewById(R.id.artistName);
 				if(!tv.getText().equals(currentArtistName)){
 					tv.setText(currentArtistName);
 				}
-				
+
 				boolean isShuffling = msg.getData().getBoolean(MusicPlaybackService.IS_SHUFFLING);
 				ImageButton shuffle = (ImageButton)_activity.findViewById(R.id.shuffle);
 				if(shuffle.isSelected() != isShuffling){
 					shuffle.setSelected(isShuffling);
 				}
-				
+
 				PlaybackState state = PlaybackState.values()[msg.getData().getInt(MusicPlaybackService.PLAYBACK_STATE, 0)];
 				ImageButton playPause = (ImageButton)_activity.findViewById(R.id.playPause);
 				if(playPause.getContentDescription().equals(_activity.getResources().getString(R.string.play))){
@@ -430,7 +434,7 @@ public class NowPlaying extends Activity {
 			}
 		}
 	}
-	
+
 	// Service Management Methods
 	@SuppressLint("InlinedApi") 
 	void doBindService(boolean startService) {
@@ -461,103 +465,125 @@ public class NowPlaying extends Activity {
 					// crashed.
 				}
 			}
-			
+
 			// Detach our existing connection.
 			unbindService(mConnection);
 			mIsBound = false;
 		}
 	}
-	
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.now_playing, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-        	Intent intent = new Intent(NowPlaying.this, SettingsActivity.class);
-        	startActivity(intent);
-            return true;
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.now_playing, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			Intent intent = new Intent(NowPlaying.this, SettingsActivity.class);
+			startActivity(intent);
+			return true;
+		}
+        if(id == android.R.id.home){
+        	onBackPressed();
+        	return true;
         }
-        return super.onOptionsItemSelected(item);
-    }
-    
-    @Override
+		return super.onOptionsItemSelected(item);
+	}
+
+	private void setAccentColors(int color){
+		View shuffleBG = findViewById(R.id.shufflebackground);
+		View buttonBG = findViewById(R.id.playpausepreviousbackground);
+		View spacer1 = findViewById(R.id.spacer1);
+		View spacer2 = findViewById(R.id.spacer2);
+		if(shuffleBG != null && buttonBG != null && spacer1 != null && spacer2 != null){
+			shuffleBG.setBackgroundColor(color);
+			buttonBG.setBackgroundColor(color);
+			spacer1.setBackgroundColor(color);
+			spacer2.setBackgroundColor(color);
+		}
+	}
+
+	@Override
 	protected void onResume() {
 		super.onResume();
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        
-        View shuffleBG = findViewById(R.id.shufflebackground);
-        View buttonBG = findViewById(R.id.playpausepreviousbackground);
-        View spacer1 = findViewById(R.id.spacer1);
-        View spacer2 = findViewById(R.id.spacer2);
-        
-        String accentColor = sharedPref.getString("accent_color", "Gray");
-        String customAccentColor = sharedPref.getString("custom_accent_color", "");
-        if(shuffleBG != null && buttonBG != null && spacer1 != null && spacer2 != null){
-        	if(accentColor.equals(getResources().getStringArray(R.array.accentcoloroptions)[0])){
-        		shuffleBG.setBackgroundColor(0xFF2e2e2e);
-        		buttonBG.setBackgroundColor(0xFF2e2e2e);
-        		spacer1.setBackgroundColor(0xFF2e2e2e);
-        		spacer2.setBackgroundColor(0xFF2e2e2e);
-        	} else if(accentColor.equals(getResources().getStringArray(R.array.accentcoloroptions)[1])){
-        		shuffleBG.setBackgroundColor(0xFFcf6023);
-        		buttonBG.setBackgroundColor(0xFFcf6023);
-        		spacer1.setBackgroundColor(0xFFcf6023);
-        		spacer2.setBackgroundColor(0xFFcf6023);
-        	} else if(accentColor.equals(getResources().getStringArray(R.array.accentcoloroptions)[2])){
-        		shuffleBG.setBackgroundColor(0xFF0000BB);
-        		buttonBG.setBackgroundColor(0xFF0000BB);
-        		spacer1.setBackgroundColor(0xFF0000BB);
-        		spacer2.setBackgroundColor(0xFF0000BB);
-        	} else if(accentColor.equals(getResources().getStringArray(R.array.accentcoloroptions)[3])){
-        		shuffleBG.setBackgroundColor(0xFF00BB00);
-        		buttonBG.setBackgroundColor(0xFF00BB00);
-        		spacer1.setBackgroundColor(0xFF00BB00);
-        		spacer2.setBackgroundColor(0xFF00BB00);
-        	} else if(accentColor.equals(getResources().getStringArray(R.array.accentcoloroptions)[4])){
-        		try{
-        			Log.i(TAG, "custom color: " + customAccentColor);
-        			if(!customAccentColor.startsWith("#")){
-        				customAccentColor = "#" + customAccentColor;
-        			}
-        			if(customAccentColor.toLowerCase(Locale.getDefault()).startsWith("0x")){
-        				customAccentColor = customAccentColor.substring(2);
-        			}
-        			int custom = Color.parseColor(customAccentColor.trim());
-        			shuffleBG.setBackgroundColor(custom);
-        			buttonBG.setBackgroundColor(custom);
-        			spacer1.setBackgroundColor(custom);
-        			spacer2.setBackgroundColor(custom);
-        		} catch (Exception e){
-        			Log.w(TAG, "Unable to parse custom color", e);
-        		}
-        	}
-        }
-        
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
-        boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", false);
-        Log.i(TAG, "got configured theme " + theme);
-        Log.i(TAG, "Got configured size " + size);
-        if(currentTheme == null){
-        	currentTheme = theme;
-        } 
-        
-        if(currentSize == null){
-        	currentSize = size;
-        }
-        if(!currentTheme.equals(theme) || !currentSize.equals(size) || currentFullScreen != fullScreen){
-        	finish();
-        	startActivity(getIntent());
-        }
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+		String accentColor = sharedPref.getString("accent_color", getResources().getStringArray(R.array.accentcoloroptions)[0]);
+		String customAccentColor = sharedPref.getString("custom_accent_color", "");
+		String colorOptions[] = getResources().getStringArray(R.array.accentcoloroptions);
+		// TODO I'm sure there's a better way to do this, I'm just not sure what it is...
+		for(int i = 0;i<colorOptions.length;i++){
+			if(accentColor.equals(colorOptions[i])){
+				switch(i){
+				case 0: 
+					setAccentColors(getResources().getColor(R.color.agategrey));
+					break;
+				case 1: 
+					setAccentColors(getResources().getColor(R.color.blackgreen));
+					break;
+				case 2: 
+					setAccentColors(getResources().getColor(R.color.brilliantblue));
+					break;
+				case 3: 
+					setAccentColors(getResources().getColor(R.color.brilliantorange));
+					break;
+				case 4: 
+					setAccentColors(getResources().getColor(R.color.emeraldgreen));
+					break;
+				case 5: 
+					setAccentColors(getResources().getColor(R.color.ivory));
+					break;
+				case 6: 
+					setAccentColors(getResources().getColor(R.color.skyblue));
+					break;
+				case 7: 
+					setAccentColors(getResources().getColor(R.color.trafficgreen));
+					break;
+				case 8: 
+					setAccentColors(getResources().getColor(R.color.waterblue));
+					break;
+				case 9: 
+					try{
+						Log.i(TAG, "custom color: " + customAccentColor);
+						if(!customAccentColor.startsWith("#")){
+							customAccentColor = "#" + customAccentColor;
+						}
+						if(customAccentColor.toLowerCase(Locale.getDefault()).startsWith("0x")){
+							customAccentColor = customAccentColor.substring(2);
+						}
+						int custom = Color.parseColor(customAccentColor.trim());
+						setAccentColors(custom);
+					} catch (Exception e){
+						Log.w(TAG, "Unable to parse custom color", e);
+					}
+					break;
+				}
+			}
+		}
+		
+		String theme = sharedPref.getString("pref_theme", "light");
+		String size = sharedPref.getString("pref_text_size", "medium");
+		boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", false);
+		Log.i(TAG, "got configured theme " + theme);
+		Log.i(TAG, "Got configured size " + size);
+		if(currentTheme == null){
+			currentTheme = theme;
+		} 
+
+		if(currentSize == null){
+			currentSize = size;
+		}
+		if(!currentTheme.equals(theme) || !currentSize.equals(size) || currentFullScreen != fullScreen){
+			finish();
+			startActivity(getIntent());
+		}
 	}
 
 

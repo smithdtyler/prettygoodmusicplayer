@@ -13,10 +13,15 @@
     </string-array>
     <string-array
         name="accentcoloroptions">
-        <item>Gray</item>
-        <item>Orange</item>
-        <item>Blue</item>
-        <item>Green</item>
+        <item>Agate Grey</item>
+        <item>Black Green</item>
+        <item>Brilliant Blue</item>
+        <item>Brilliant Orange</item>
+        <item>Emerald Green</item>
+        <item>Ivory</item>
+        <item>Sky Blue</item>
+        <item>Traffic Green</item>
+        <item>Water Blue</item>
         <item>Custom</item>
     </string-array>
 </resources>

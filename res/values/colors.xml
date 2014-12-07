@@ -10,4 +10,15 @@
 <!-- <color name="orange">#e17a00</color>-->
 <color name="orange">#cf6023</color>
 <color name="green">#00d42d</color>
+
+<color name="skyblue">#0A96BF</color>
+<color name="brilliantorange">#F8AF2E</color>
+<color name="blackgreen">#363B42</color>
+<color name="emeraldgreen">#197B1A</color>
+<color name="ivory">#EAC641</color>
+<color name="brilliantblue">#3B5A9B</color>
+<color name="agategrey">#C4C4C4</color>
+<color name="waterblue">#067985</color>
+<color name="trafficgreen">#18985A</color>
+
 </resources>

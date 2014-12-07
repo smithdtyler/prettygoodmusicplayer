@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -109,7 +110,13 @@ public class AlbumList extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+	    Intent intent = getIntent();
+	    final String artist = intent.getStringExtra(ArtistList.ARTIST_NAME);
+		
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setTitle(artist);
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
         String size = sharedPref.getString("pref_text_size", "medium");
         Log.i(TAG, "got configured theme " + theme);
@@ -138,8 +145,6 @@ public class AlbumList extends Activity {
 		setContentView(R.layout.activity_album_list);
 		
 		 // Get the message from the intent
-	    Intent intent = getIntent();
-	    final String artist = intent.getStringExtra(ArtistList.ARTIST_NAME);
 	    Log.i(TAG, "Getting albums for " + artist);
 	    
 	    final String artistPath = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
@@ -203,6 +208,10 @@ public class AlbumList extends Activity {
         	Intent intent = new Intent(AlbumList.this, SettingsActivity.class);
         	startActivity(intent);
             return true;
+        }
+        if(id == android.R.id.home){
+        	onBackPressed();
+        	return true;
         }
         return super.onOptionsItemSelected(item);
     }

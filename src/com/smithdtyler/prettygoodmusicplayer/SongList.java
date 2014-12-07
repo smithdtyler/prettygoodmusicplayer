@@ -25,8 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.smithdtyler.prettygoodmusicplayer.R;
-
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -134,7 +133,17 @@ public class SongList extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		 // Get the message from the intent
+	    Intent intent = getIntent();
+	    final String artistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
+	    final String album = intent.getStringExtra(AlbumList.ALBUM_NAME);
+	    final String artistDir = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
+	    
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setTitle(artistName + ": " + album);
+		
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String theme = sharedPref.getString("pref_theme", "light");
         String size = sharedPref.getString("pref_text_size", "medium");
         Log.i(TAG, "got configured theme " + theme);
@@ -163,11 +172,6 @@ public class SongList extends Activity {
 		
 		setContentView(R.layout.activity_song_list);
 		
-		 // Get the message from the intent
-	    Intent intent = getIntent();
-	    final String artistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
-	    final String album = intent.getStringExtra(AlbumList.ALBUM_NAME);
-	    final String artistDir = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
 	    Log.i(TAG, "Getting songs for " + album);
 	    
 	    populateSongs(artistName, album, artistDir);
@@ -212,6 +216,10 @@ public class SongList extends Activity {
         	Intent intent = new Intent(SongList.this, SettingsActivity.class);
         	startActivity(intent);
             return true;
+        }
+        if(id == android.R.id.home){
+        	onBackPressed();
+        	return true;
         }
         return super.onOptionsItemSelected(item);
     }
