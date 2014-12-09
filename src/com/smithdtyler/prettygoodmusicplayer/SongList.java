@@ -320,7 +320,9 @@ public class SongList extends Activity {
         }else if(resume == null && newResume != null){
         	resetResume = true;
         }
+        
         if(!currentTheme.equals(theme) || !currentSize.equals(size) || resetResume){
+        	// Calling finish and startActivity will re-launch this activity, applying the new settings
         	finish();
         	startActivity(getIntent());
         }
