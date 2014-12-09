@@ -139,6 +139,8 @@ public class SongList extends Activity {
 			songs.add(map);
 		}
 		
+		// If there is a value set to resume to, and audiobook mode is enabled
+		// add an option to start where they left off
 		if(resume != null && audiobookMode){
 			try{
 				String resumeSongName = resume.substring(0, resume.lastIndexOf('~'));
@@ -153,7 +155,7 @@ public class SongList extends Activity {
 					int seconds = (prog % (1000 * 60)) / 1000;
 					String time = String.format(Locale.getDefault(), "%d:%02d", minutes, seconds);
 					Map<String, String> map = new HashMap<String, String>();
-					map.put("song", "Resume: " + resumeSongName + " (" + time + ")");
+					map.put("song", getResources().getString(R.string.resume) + ": " + resumeSongName + " (" + time + ")");
 					songs.add(0, map);
 					// loop over the available songs, make sure we still have it
 					for(int i = 0; i< songFiles.size(); i++){
@@ -239,43 +241,28 @@ public class SongList extends Activity {
              public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                      long id) {
             	 
+            	 Intent intent = new Intent(SongList.this, NowPlaying.class);
+            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
+            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
+            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
+            	 songAbsFileNameList.toArray(songNamesArr);
+            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
+            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
+            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
+
             	 if(hasResume){
             		 if(position == 0){
-            			 Intent intent = new Intent(SongList.this, NowPlaying.class);
-    	            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
-    	            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
-    	            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
-    	            	 songAbsFileNameList.toArray(songNamesArr);
-    	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
    	            		 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, resumeFilePos);
    	            		 intent.putExtra(MusicPlaybackService.TRACK_POSITION, resumeProgress);
-   	            		 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
-    	            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
-    	            	 startActivity(intent);
             		 } else {
-    	            	 Intent intent = new Intent(SongList.this, NowPlaying.class);
-    	            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
-    	            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
-    	            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
-    	            	 songAbsFileNameList.toArray(songNamesArr);
-    	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
+            			 // a 'resume' option has been added to the beginning of the list
+            			 // so adjust the selection to compensate
     	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, position - 1);
-    	            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
-    	            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
-    	            	 startActivity(intent);
             		 }
             	 } else {
-	            	 Intent intent = new Intent(SongList.this, NowPlaying.class);
-	            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
-	            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
-	            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
-	            	 songAbsFileNameList.toArray(songNamesArr);
-	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
 	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, position);
-	            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
-	            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
-	            	 startActivity(intent);
             	 }
+            	 startActivity(intent);
              }
         });
 	}
