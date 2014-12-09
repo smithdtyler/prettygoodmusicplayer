@@ -16,4 +16,5 @@
 	<string name="directorydialogprompt">Wo sind Ihren Artistverzeichnissen?</string>
     <string name="directorydialoghere">Hier!</string>
     <string name="directorydialogup">Verzeichniss nach oben</string>
+    <string name="resume">Fortsetzen</string>
 </resources>

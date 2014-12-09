@@ -17,4 +17,5 @@
 	<string name="directorydialogprompt">Where are your artist folders?</string>
     <string name="directorydialoghere">Right Here!</string>
     <string name="directorydialogup">Go up a directory</string>
+    <string name="resume">Resume</string>
 </resources>

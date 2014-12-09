@@ -17,4 +17,5 @@
 	<string name="directorydialogprompt">Kde jsou umístěny adresáře s hudbou?</string>
     <string name="directorydialoghere">Tady jsou!</string>
     <string name="directorydialogup">Nadřazený adresář</string>
+    <string name="resume">Resume</string>
 </resources>
