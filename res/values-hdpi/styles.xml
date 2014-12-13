@@ -1,0 +1,51 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+<style name="LightSmallSongTextStyle" parent="LightNowPlayingText">
+        <item name="android:textSize">20sp</item>
+    </style>
+    
+    <style name="LightMediumSongTextStyle" parent="LightNowPlayingText">
+        <item name="android:textSize">25sp</item>
+    </style>
+    
+    <style name="LightLargeSongTextStyle" parent="LightNowPlayingText">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="LightSmallSongInfoTextStyle" parent="LightNowPlayingText">
+        <item name="android:textSize">15sp</item>
+    </style>
+    
+    <style name="LightMediumSongInfoTextStyle" parent="LightNowPlayingText">
+        <item name="android:textSize">20sp</item>
+    </style>
+    
+    <style name="LightLargeSongInfoTextStyle" parent="LightNowPlayingText">
+        <item name="android:textSize">25sp</item>
+    </style>
+    
+    <style name="DarkSmallSongTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">20sp</item>
+    </style>
+    
+    <style name="DarkMediumSongTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">30sp</item>
+    </style>
+    
+    <style name="DarkLargeSongTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="DarkSmallSongInfoTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">15sp</item>
+    </style>
+    
+    <style name="DarkMediumSongInfoTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">20sp</item>
+    </style>
+    
+    <style name="DarkLargeSongInfoTextStyle" parent="DarkNowPlayingText">
+        <item name="android:textSize">25sp</item>
+    </style>
+    
+    </resources>

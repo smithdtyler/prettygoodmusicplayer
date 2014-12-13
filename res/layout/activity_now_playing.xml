@@ -13,7 +13,6 @@
 
         <ImageButton
             android:id="@+id/shuffle"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dip"
@@ -87,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dip"
+            android:layout_marginTop="2dip"
             android:layout_marginBottom="12dip"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -131,7 +130,6 @@
             android:src="@drawable/ic_action_play"
             android:contentDescription="@string/play"
             android:scaleType="fitCenter"
-            style="?android:attr/borderlessButtonStyle"
             android:text="@string/play" />
 
         <ImageButton
@@ -144,7 +142,6 @@
             android:src="@drawable/ic_action_previous"
             android:contentDescription="@string/previous"
             android:scaleType="fitCenter"
-            style="?android:attr/borderlessButtonStyle"
             android:text="@string/previous" />
 
         <ImageButton
@@ -157,7 +154,6 @@
             android:src="@drawable/ic_action_next"
             android:contentDescription="@string/next"
             android:scaleType="fitCenter"
-            style="?android:attr/borderlessButtonStyle"
             android:text="@string/next" />
     </RelativeLayout>
 
