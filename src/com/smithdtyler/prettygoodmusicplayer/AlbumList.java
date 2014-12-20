@@ -97,7 +97,7 @@ public class AlbumList extends Activity {
 		if(albums.size() == 1){
        	 Intent intent = new Intent(AlbumList.this, SongList.class);
 		 intent.putExtra(ALBUM_NAME, "All");
-       	 intent.putExtra(ArtistList.ARTIST_NAME, artist);
+       	 intent.putExtra(ArtistList.ARTIST_NAME, artist.getName());
        	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistPath);
        	 startActivity(intent);
        	 // In this case we don't want to add the AlbumList to the back stack
