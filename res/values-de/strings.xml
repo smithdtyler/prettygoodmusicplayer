@@ -2,19 +2,19 @@
 <resources>
     <string name="app_name">Pretty Good Music Player</string>
     <string name="action_settings">Konfiguration</string>
-    <string name="title_activity_album_list">Albums</string>
-    <string name="title_activity_song_list">Lieden</string>
-    <string name="title_activity_now_playing">Jetzt Spielt</string>
+    <string name="title_activity_album_list">Alben</string>
+    <string name="title_activity_song_list">Lieder</string>
+    <string name="title_activity_now_playing">Jetzt spielt</string>
     <string name="title_activity_settings">Konfiguration</string>
     <string name="notification_title">Pretty Good Music Player</string>
-    <string name="notification_message">Music Playing</string>
+    <string name="notification_message">Musik spielt</string>
 	<string name="ticker_text">Music Playback Service</string>
 	<string name="next">Nächster</string>
 	<string name="pause">Pause</string>
 	<string name="play">Play</string>
 	<string name="previous">Vorheriger</string>
-	<string name="directorydialogprompt">Wo sind Ihren Artistverzeichnissen?</string>
+	<string name="directorydialogprompt">Wo sind Ihre Künstlerverzeichnisse?</string>
     <string name="directorydialoghere">Hier!</string>
-    <string name="directorydialogup">Verzeichniss nach oben</string>
+    <string name="directorydialogup">Übergeordnetes Verzeichnis</string>
     <string name="resume">Fortsetzen</string>
 </resources>
