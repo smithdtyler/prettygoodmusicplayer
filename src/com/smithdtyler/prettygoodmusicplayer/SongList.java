@@ -198,27 +198,27 @@ public class SongList extends Activity {
 		actionBar.setTitle(artistName + ": " + album);
 		
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         audiobookMode = sharedPref.getBoolean("pref_audiobook_mode", false);
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "got configured size " + size);
         currentTheme = theme;
         currentSize = size;
-        if(theme.equalsIgnoreCase("dark")){
+        if(theme.equalsIgnoreCase(getString(R.string.dark))){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
+        	if(size.equalsIgnoreCase(getString(R.string.small))){
         		setTheme(R.style.PGMPDarkSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium))){
         		setTheme(R.style.PGMPDarkMedium);
         	} else {
         		setTheme(R.style.PGMPDarkLarge);
         	}
-        } else if (theme.equalsIgnoreCase("light")){
+        } else if (theme.equalsIgnoreCase(getString(R.string.light))){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
+        	if(size.equalsIgnoreCase(getString(R.string.small))){
         		setTheme(R.style.PGMPLightSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium))){
         		setTheme(R.style.PGMPLightMedium);
         	} else {
         		setTheme(R.style.PGMPLightLarge);
@@ -296,8 +296,8 @@ public class SongList extends Activity {
 	protected void onResume() {
 		super.onResume();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         boolean audiobookModePref = sharedPref.getBoolean("pref_audiobook_mode", false);
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "Got configured size " + size);
