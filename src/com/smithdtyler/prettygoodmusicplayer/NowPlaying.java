@@ -42,6 +42,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -197,6 +198,15 @@ public class NowPlaying extends Activity {
 			}
 
 		});
+		
+		previous.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				jumpBack();
+				return true;
+			}
+		});
 
 		ImageButton next = (ImageButton) findViewById(R.id.next);
 		next.setOnClickListener(new OnClickListener() {
@@ -212,6 +222,14 @@ public class NowPlaying extends Activity {
 			@Override
 			public void onClick(View v) {
 				toggleShuffle();
+			}
+		});
+		
+		final ImageButton jumpback = (ImageButton) findViewById(R.id.jumpback);
+		jumpback.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				jumpBack();
 			}
 		});
 
@@ -301,6 +319,17 @@ public class NowPlaying extends Activity {
 		}
 	}
 
+	public void jumpBack(){
+		Log.d(TAG, "JumpBack clicked...");
+		Message msg = Message.obtain(null, MusicPlaybackService.MSG_JUMPBACK);
+		try {
+			Log.i(TAG, "Sending a request to jump back!");
+			mService.send(msg);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void toggleShuffle(){
 		Log.d(TAG, "Shuffle clicked...");
 		Message msg = Message.obtain(null, MusicPlaybackService.MSG_TOGGLE_SHUFFLE);

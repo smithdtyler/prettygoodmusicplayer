@@ -68,6 +68,7 @@ public class MusicPlaybackService extends Service {
 	static final int MSG_CANCEL_PAUSE_IN_ONE_SEC = 9;
 	static final int MSG_TOGGLE_SHUFFLE = 10;
 	static final int MSG_SEEK_TO = 11;
+	static final int MSG_JUMPBACK = 12;
 
 	// State management
 	static final int MSG_REQUEST_STATE = 17;
@@ -234,7 +235,7 @@ public class MusicPlaybackService extends Service {
 		// accept it, so I'll do it this way.
 		getApplicationContext().registerReceiver(receiver, filter);
 	}
-
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.i("MyService", "Received start id " + startId + ": " + intent);
@@ -323,6 +324,10 @@ public class MusicPlaybackService extends Service {
 			case MSG_PREVIOUS:
 				Log.i(TAG, "Got a previous message!");
 				_service.previous();
+				break;
+			case MSG_JUMPBACK:
+				Log.i(TAG, "Got a jump back message!");
+				_service.jumpback();
 				break;
 			case MSG_TOGGLE_SHUFFLE:
 				Log.i(TAG, "Got a toggle shuffle message!");
@@ -450,6 +455,20 @@ public class MusicPlaybackService extends Service {
 		mp.release();
 		Log.i("MyService", "Service Stopped.");
 		isRunning = false;
+	}
+	
+	private synchronized void jumpback(){
+		if (mp.isPlaying()) {
+			int progressMillis = mp.getCurrentPosition();
+			if (progressMillis <= 20000) {
+				mp.seekTo(0);
+				return;
+			} else {
+				mp.seekTo(progressMillis - 20000);
+				return;
+			}
+		}
+		
 	}
 
 	private synchronized void previous() {
@@ -689,6 +708,10 @@ public class MusicPlaybackService extends Service {
 		previousIntent.putExtra("Message", MSG_PREVIOUS);
 		PendingIntent previousPendingIntent = PendingIntent.getService(this, 0, previousIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+		Intent jumpBackIntent = new Intent("JumpBack", null, this, MusicPlaybackService.class);
+		jumpBackIntent.putExtra("Message", MSG_JUMPBACK);
+		PendingIntent jumpBackPendingIntent = PendingIntent.getService(this, 0, jumpBackIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
 		Intent nextIntent = new Intent("Next", null, this, MusicPlaybackService.class);
 		nextIntent.putExtra("Message", MSG_NEXT);
 		PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -712,6 +735,8 @@ public class MusicPlaybackService extends Service {
 				.setContentTitle(
 						getResources().getString(R.string.notification_title))
 				.addAction(R.drawable.ic_action_previous, "", previousPendingIntent)
+				// Adding this causes uglyness
+//				.addAction(R.drawable.ic_action_rewind20, "", jumpBackPendingIntent)
 				.addAction(playPauseIcon, "", playPausePendingIntent)
 				.addAction(R.drawable.ic_action_next, "", nextPendingIntent)
 				.build();
