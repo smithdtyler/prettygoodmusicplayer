@@ -50,6 +50,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
@@ -141,6 +142,7 @@ public class MusicPlaybackService extends Service {
 	private String artistAbsPath;
 	private String album;
 	private long lastResumeUpdateTime;
+	private SharedPreferences sharedPref;
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -158,6 +160,8 @@ public class MusicPlaybackService extends Service {
 	public synchronized void onCreate() {
 		Log.i(TAG, "Music Playback Service Created!");
 		isRunning = true;
+		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
 		random = new Random();
 
 		mp = new MediaPlayer();
@@ -261,6 +265,9 @@ public class MusicPlaybackService extends Service {
 			} else if (command == MSG_PREVIOUS) {
 				Log.i(TAG, "I got a previous message");
 				previous();
+			} else if (command == MSG_JUMPBACK) {
+				Log.i(TAG, "I got a jumpback message");
+				jumpback();
 			} else if (command == MSG_STOP_SERVICE) {
 				Log.i(TAG, "I got a stop message");
 				timer.cancel();
@@ -671,6 +678,8 @@ public class MusicPlaybackService extends Service {
 	}
 
 	private void updateNotification() {
+        boolean audiobookMode = sharedPref.getBoolean("pref_audiobook_mode", false);
+
 		// https://stackoverflow.com/questions/5528288/how-do-i-update-the-notification-text-for-a-foreground-service-in-android
 		Intent resultIntent = new Intent(this, NowPlaying.class);
 		// Use the FLAG_ACTIVITY_CLEAR_TOP to prevent launching a second
@@ -727,19 +736,32 @@ public class MusicPlaybackService extends Service {
 			playPauseIcon = R.drawable.ic_action_play;
 		}
 		
-		Notification notification = builder
-				.setContentText(contentText)
-				.setSmallIcon(icon)
-				.setWhen(System.currentTimeMillis())
-				.setContentIntent(pendingIntent)
-				.setContentTitle(
-						getResources().getString(R.string.notification_title))
-				.addAction(R.drawable.ic_action_previous, "", previousPendingIntent)
-				// Adding this causes uglyness
-//				.addAction(R.drawable.ic_action_rewind20, "", jumpBackPendingIntent)
-				.addAction(playPauseIcon, "", playPausePendingIntent)
-				.addAction(R.drawable.ic_action_next, "", nextPendingIntent)
-				.build();
+		Notification notification;
+		if(audiobookMode){
+			notification = builder
+					.setContentText(contentText)
+					.setSmallIcon(icon)
+					.setWhen(System.currentTimeMillis())
+					.setContentIntent(pendingIntent)
+					.setContentTitle(
+							getResources().getString(R.string.notification_title))
+							.addAction(R.drawable.ic_action_rewind20, "", jumpBackPendingIntent)
+							.addAction(playPauseIcon, "", playPausePendingIntent)
+							.addAction(R.drawable.ic_action_next, "", nextPendingIntent)
+							.build();
+		} else {
+			notification = builder
+					.setContentText(contentText)
+					.setSmallIcon(icon)
+					.setWhen(System.currentTimeMillis())
+					.setContentIntent(pendingIntent)
+					.setContentTitle(
+							getResources().getString(R.string.notification_title))
+							.addAction(R.drawable.ic_action_previous, "", previousPendingIntent)
+							.addAction(playPauseIcon, "", playPausePendingIntent)
+							.addAction(R.drawable.ic_action_next, "", nextPendingIntent)
+							.build();
+		}
 
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.notify(uniqueid, notification);
