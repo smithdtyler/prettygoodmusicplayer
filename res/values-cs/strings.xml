@@ -23,4 +23,6 @@
     <string name="small">Small</string>
     <string name="medium">Medium</string>
     <string name="large">Large</string>
+    <string name="jumpback">Jump Back</string>
+    <string name="shuffle">Shuffle</string>
 </resources>
