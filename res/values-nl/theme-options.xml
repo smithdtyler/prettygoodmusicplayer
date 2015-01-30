@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="themeoptions">
+        <item>Licht</item>
+        <item>Donker</item>
+    </string-array>
+    <string-array
+        name="textsizeoptions">
+        <item>Klein</item>
+        <item>Middelgroot</item>
+        <item>Groot</item>
+    </string-array>
+    <string-array
+        name="accentcoloroptions">
+        <item>Agat-grijs</item>
+        <item>Zwart-groen</item>
+        <item>Helder Blauw</item>
+        <item>Helder Oranje</item>
+        <item>Smaragd-groen</item>
+        <item>Ivoor</item>
+        <item>Hemel-blauw</item>
+        <item>Verkeers-groen</item>
+        <item>Water-blauw</item>
+        <item>Custom</item>
+    </string-array>
+</resources>

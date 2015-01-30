@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Pretty Good Music Player</string>
+    <string name="action_settings">Instellingen</string>
+    <string name="title_activity_album_list">Albums</string>
+    <string name="title_activity_song_list">Nummers</string>
+    <string name="title_activity_now_playing">Speelt Nu</string>
+    <string name="title_activity_settings">Instellingen</string>
+    <string name="notification_title">Pretty Good Music Player</string>
+    <string name="notification_message">Spelende Muziek</string>
+	<string name="ticker_text">Muziek-afspelingsservice</string>
+	<string name="next">Volgende</string>
+	<string name="pause">Pauzeer</string>
+	<string name="play">Speel af</string>
+	<string name="previous">Vorige</string>
+	<string name="directorydialogprompt">Waar zijn de mappen met je artiesten?</string>
+    <string name="directorydialoghere">Hierzo!</string>
+    <string name="directorydialogup">Ga een map omhoog</string>
+    <string name="resume">Hervat afspelen</string>
+    <string name="light">Licht</string>
+    <string name="dark">Donker</string>
+    <string name="small">Klein</string>
+    <string name="medium">Middelgroot</string>
+    <string name="large">Groot</string>
+    <string name="jumpback">Spring Terug</string>
+    <string name="shuffle">Shuffle</string>
+</resources>
