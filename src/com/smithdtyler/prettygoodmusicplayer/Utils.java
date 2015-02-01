@@ -57,11 +57,6 @@ public class Utils {
 			return false;
 		}
 
-//		String name = dir.getName();
-//		if (!name.matches("^([A-Z]|[a-z]|[0-9]).+")) {
-//			return false;
-//		}
-
 		return true;
 	}
 
@@ -73,11 +68,6 @@ public class Utils {
 		if (!dir.isDirectory()) {
 			return false;
 		}
-
-//		String name = dir.getName();
-//		if (!name.matches("^([A-Z]|[a-z]|[0-9]).+")) {
-//			return false;
-//		}
 
 		return true;
 	}
@@ -92,10 +82,6 @@ public class Utils {
 		}
 
 		String name = song.getName();
-//		// needs to start with a letter or number
-//		if (!name.matches("^([A-Z]|[a-z]|[0-9]).+")) {
-//			return false;
-//		}
 
 		// Needs to end with one of the legal formats
 		for (String ending : legalFormatExtensions) {
