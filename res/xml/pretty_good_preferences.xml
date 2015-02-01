@@ -1,49 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     <PreferenceCategory
-        android:title="File Preferences">
-        <Preference android:title="Choose Music Directory" android:summary="Pick the Directory Containing Your Artists" android:icon="@android:drawable/ic_menu_set_as"/>
+        android:title="@string/file_preferences_title">
+        <Preference android:title="@string/choose_music_directory_prompt" 
+            android:summary="@string/choose_music_directory_summary"
+            android:icon="@android:drawable/ic_menu_set_as"/>
     </PreferenceCategory>
     <PreferenceCategory
-        android:title="Podcasts and Audiobooks">
+        android:title="@string/podcasts_and_audiobooks_title">
         <CheckBoxPreference
             android:key="pref_audiobook_mode"
-            android:title="Audiobook Mode"
+            android:title="@string/audiobook_mode"
             android:defaultValue="false"/>
     </PreferenceCategory>
     <PreferenceCategory
-        android:title="Style Preferences">
+        android:title="@string/playback_title">
+        <ListPreference
+            android:key="pref_disconnect_behavior"
+            android:title="@string/headphone_disconnect_behavior"
+            android:dialogTitle="@string/headphone_disconnect_behavior"
+            android:entries="@array/headphone_disconnect_options"
+            android:entryValues="@array/headphone_disconnect_options"
+            android:defaultValue="@string/pause_immediately"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/style_preference_title">
 	    <ListPreference
 	        android:key="pref_theme"
-	        android:title="Theme"
-	        android:dialogTitle="Pick the theme for the Music Player"
+	        android:title="@string/theme_title"
+	        android:dialogTitle="@string/theme_select_prompt"
 	        android:entries="@array/themeoptions"
 	        android:entryValues="@array/themeoptions"
 	        android:defaultValue="light" />
 	    <ListPreference
             android:key="accent_color"
-            android:title="Accent Color"
+            android:title="@string/accent_color_title"
             android:entries="@array/accentcoloroptions"
             android:entryValues="@array/accentcoloroptions"
         />
 	    <EditTextPreference
 	        android:key="custom_accent_color"
-            android:title="Custom Accent Color (aarrggbb)"
+            android:title="@string/custom_accent_color_title"
             android:defaultValue="FF555533"/>
 	   	<ListPreference
 	        android:key="pref_text_size"
-	        android:title="Text Size"
-	        android:dialogTitle="Pick the text size for the Music Player"
+	        android:title="@string/text_size_title"
+	        android:dialogTitle="@string/text_size_prompt"
 	        android:entries="@array/textsizeoptions"
 	        android:entryValues="@array/textsizeoptions"
 	        android:defaultValue="medium" />
 	   	<CheckBoxPreference
 	   	    android:key="pref_full_screen_now_playing"
-	   	    android:title="Full Screen Now Playing"
+	   	    android:title="@string/full_screen_now_playing_title"
 	   	    android:defaultValue="false"/>
 	   	<CheckBoxPreference
 	   	    android:key="ignore_leading_the_in_artist"
-	   	    android:title="Ignore Leading 'The' in Artist Names"
+	   	    android:title="@string/ignore_leading_the_title"
 	   	    android:defaultValue="false"/>
     </PreferenceCategory>
 </PreferenceScreen>

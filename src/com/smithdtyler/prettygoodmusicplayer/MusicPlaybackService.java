@@ -70,7 +70,8 @@ public class MusicPlaybackService extends Service {
 	static final int MSG_TOGGLE_SHUFFLE = 10;
 	static final int MSG_SEEK_TO = 11;
 	static final int MSG_JUMPBACK = 12;
-
+	static final int MSG_PLAY = 13;
+	
 	// State management
 	static final int MSG_REQUEST_STATE = 17;
 	static final int MSG_SERVICE_STATUS = 18;
@@ -259,6 +260,9 @@ public class MusicPlaybackService extends Service {
 			} else if (command == MSG_PAUSE) {
 				Log.i(TAG, "I got a pause message");
 				pause();
+			} else if (command == MSG_PLAY) {
+				Log.i(TAG, "I got a play message");
+				play();
 			} else if (command == MSG_NEXT) {
 				Log.i(TAG, "I got a next message");
 				next();
@@ -575,13 +579,13 @@ public class MusicPlaybackService extends Service {
 		if (mp.isPlaying()) {
 			pause();
 		} else {
-			pauseTime = Long.MAX_VALUE;
 			play();
 		}
 	}
 	
 
 	private synchronized void play() {
+		pauseTime = Long.MAX_VALUE;
 		if (mp.isPlaying()) {
 			// do nothing
 		} else {

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Pretty Good Music Player</string>
     <string name="action_settings">Nastavení</string>
     <string name="title_activity_album_list">Alba</string>
@@ -14,15 +13,44 @@
 	<string name="pause">Pozastavit</string>
 	<string name="play">Hrát</string>
 	<string name="previous">Předchozí</string>
-	<string name="directorydialogprompt">Kde jsou umístěny adresáře s hudbou?</string>
+    <string name="resume">Pokračovat</string>
+    <string name="jumpback">Jump Back</string>
+    <string name="shuffle">Shuffle</string>
+
+	<!-- *********** -->
+    <!-- Preferences -->
+    <!-- *********** -->
+    
+    <!-- File Preferences -->
+    <string name="file_preferences_title">File Preferences</string>
+    <string name="choose_music_directory_prompt">Choose Music Directory</string>
+    <string name="choose_music_directory_summary">Pick the Directory Containing Your Artists</string>
+    <string name="directorydialogprompt">Kde jsou umístěny adresáře s hudbou?</string>
     <string name="directorydialoghere">Tady jsou!</string>
     <string name="directorydialogup">Nadřazený adresář</string>
-    <string name="resume">Pokračovat</string>
+
+    <!-- Theme Preferences -->
+    <string name="theme_title">Theme</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
     <string name="small">Small</string>
     <string name="medium">Medium</string>
     <string name="large">Large</string>
-    <string name="jumpback">Jump Back</string>
-    <string name="shuffle">Shuffle</string>
+    <string name="style_preference_title">Style Preferences</string>
+    <string name="theme_select_prompt">Pick the theme for the Music Player</string>
+    <string name="accent_color_title">Accent Color</string>
+    <string name="custom_accent_color_title">Custom Accent Color (aarrggbb)</string>
+    <string name="text_size_title">Text Size</string>
+    <string name="text_size_prompt">Pick the text size for the Music Player</string>
+    <string name="full_screen_now_playing_title">Full Screen Now Playing</string>
+    <string name="ignore_leading_the_title">Ignore Leading \'The\' in Artist Names</string>
+
+    <!-- Playback Preferences -->
+    <string name="headphone_disconnect_behavior">Headphone Disconnect Behavior</string>
+    <string name="playback_title">Playback</string>
+    <string name="pause_immediately">Pause Immediately</string>
+    <string name="pause_after_one_sec">Pause After One Second</string>
+    <string name="resume_on_quick_reconnect">Resume on Quick Reconnect</string>
+    <string name="podcasts_and_audiobooks_title">Podcasts and Audiobooks</string>
+    <string name="audiobook_mode">Audiobook Mode</string>
 </resources>

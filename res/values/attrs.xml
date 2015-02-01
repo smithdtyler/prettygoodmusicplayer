@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-       <attr name="multiListItem" format="reference" />
-       <attr name="backgroundColor" format="reference" />
-       <attr name="dividerColor" format="reference" />
-       <attr name="backgroundAccentColor" format="reference" />
-       <attr name="nowPlayingText" format="reference" />
-       <attr name="nowPlayingSongTextSize" format="reference" />
-       <attr name="nowPlayingSongInfoTextSize" format="reference" />
+    <attr name="multiListItem" format="reference" />
+    <attr name="backgroundColor" format="reference" />
+    <attr name="dividerColor" format="reference" />
+    <attr name="backgroundAccentColor" format="reference" />
+    <attr name="nowPlayingText" format="reference" />
+    <attr name="nowPlayingSongTextSize" format="reference" />
+    <attr name="nowPlayingSongInfoTextSize" format="reference" />
+
+    <string-array name="headphone_disconnect_options">
+        <item>@string/pause_immediately</item>
+        <item>@string/pause_after_one_sec</item>
+        <item>@string/resume_on_quick_reconnect</item>
+    </string-array>
   </resources>
