@@ -67,6 +67,23 @@ public class MusicBroadcastReceiver extends BroadcastReceiver {
 						context.startService(msgIntent);
 					}
 				}
+			} else if(disconnectBehavior.equals(context.getString(R.string.resume_on_reconnect))){
+					if (intent.getIntExtra("state", -1) == 0) {
+						Log.i(TAG, "headphones disconnected, pausing");
+						Intent msgIntent = new Intent(context, MusicPlaybackService.class);
+						msgIntent.putExtra("Message", MusicPlaybackService.MSG_PAUSE);
+						context.startService(msgIntent);
+						resumeOnQuickReconnectDisconnectTime = System.currentTimeMillis();
+					} else if (intent.getIntExtra("state", -1) == 1) {
+						// check to make sure we were playing at one point.
+						if(resumeOnQuickReconnectDisconnectTime > 0){
+							// Resume
+							Log.i(TAG, "headphones plugged back in, resuming");
+							Intent msgIntent = new Intent(context, MusicPlaybackService.class);
+							msgIntent.putExtra("Message", MusicPlaybackService.MSG_PLAY);
+							context.startService(msgIntent);
+						}
+					}
 			} else if(disconnectBehavior.equals(context.getString(R.string.pause_after_one_sec))){
 				if (intent.getIntExtra("state", -1) == 0) {
 					Log.i(TAG, "headphones disconnected, pausing in 1 seconds");

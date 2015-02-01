@@ -51,6 +51,7 @@
     <string name="pause_immediately">Pause Immediately</string>
     <string name="pause_after_one_sec">Pause After One Second</string>
     <string name="resume_on_quick_reconnect">Resume on Quick Reconnect</string>
+    <string name="resume_on_reconnect">Resume on Reconnect</string>
     <string name="podcasts_and_audiobooks_title">Podcasts and Audiobooks</string>
     <string name="audiobook_mode">Audiobook Mode</string>
 </resources>

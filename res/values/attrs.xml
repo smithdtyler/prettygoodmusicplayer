@@ -12,5 +12,6 @@
         <item>@string/pause_immediately</item>
         <item>@string/pause_after_one_sec</item>
         <item>@string/resume_on_quick_reconnect</item>
+        <item>@string/resume_on_reconnect</item>
     </string-array>
   </resources>
