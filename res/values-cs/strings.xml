@@ -18,11 +18,11 @@
     <string name="directorydialoghere">Tady jsou!</string>
     <string name="directorydialogup">Nadřazený adresář</string>
     <string name="resume">Pokračovat</string>
-    <string name="light">Light</string>
-    <string name="dark">Dark</string>
-    <string name="small">Small</string>
-    <string name="medium">Medium</string>
-    <string name="large">Large</string>
-    <string name="jumpback">Jump Back</string>
-    <string name="shuffle">Shuffle</string>
+    <string name="light">Světlý</string>
+    <string name="dark">Tmavý</string>
+    <string name="small">Malý</string>
+    <string name="medium">Střední</string>
+    <string name="large">Velký</string>
+    <string name="jumpback">Skočit zpět</string>
+    <string name="shuffle">Náhodně</string>
 </resources>
