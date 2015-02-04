@@ -51,7 +51,7 @@
 	        android:dialogTitle="@string/text_size_prompt"
 	        android:entries="@array/textsizeoptions"
 	        android:entryValues="@array/textsizeoptions"
-	        android:defaultValue="medium" />
+	        android:defaultValue="@string/medium" />
 	   	<CheckBoxPreference
 	   	    android:key="pref_full_screen_now_playing"
 	   	    android:title="@string/full_screen_now_playing_title"
