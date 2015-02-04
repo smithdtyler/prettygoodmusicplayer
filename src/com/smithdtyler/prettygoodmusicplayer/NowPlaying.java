@@ -117,25 +117,27 @@ public class NowPlaying extends Activity {
 		String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
 		Log.i(TAG, "got configured theme " + theme);
 		Log.i(TAG, "got configured size " + size);
-		if(theme.equalsIgnoreCase(getString(R.string.dark))){
-			Log.i(TAG, "setting theme to " + theme);
-			if(size.equalsIgnoreCase(getString(R.string.small))){
-				setTheme(R.style.PGMPDarkSmall);
-			} else if (size.equalsIgnoreCase(getString(R.string.medium))){
-				setTheme(R.style.PGMPDarkMedium);
-			} else {
-				setTheme(R.style.PGMPDarkLarge);
-			}
-		} else if (theme.equalsIgnoreCase(getString(R.string.light))){
-			Log.i(TAG, "setting theme to " + theme);
-			if(size.equalsIgnoreCase(getString(R.string.small))){
-				setTheme(R.style.PGMPLightSmall);
-			} else if (size.equalsIgnoreCase(getString(R.string.medium))){
-				setTheme(R.style.PGMPLightMedium);
-			} else {
-				setTheme(R.style.PGMPLightLarge);
-			}
-		}
+		
+        // These settings were fixed in english for a while, so check for old style settings as well as language specific ones.
+        if(theme.equalsIgnoreCase(getString(R.string.dark)) || theme.equalsIgnoreCase("dark")){
+        	Log.i(TAG, "setting theme to " + theme);
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
+        		setTheme(R.style.PGMPDarkSmall);
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
+        		setTheme(R.style.PGMPDarkMedium);
+        	} else {
+        		setTheme(R.style.PGMPDarkLarge);
+        	}
+        } else if (theme.equalsIgnoreCase(getString(R.string.light)) || theme.equalsIgnoreCase("light")){
+        	Log.i(TAG, "setting theme to " + theme);
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
+        		setTheme(R.style.PGMPLightSmall);
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
+        		setTheme(R.style.PGMPLightMedium);
+        	} else {
+        		setTheme(R.style.PGMPLightLarge);
+        	}
+        }
 
 		boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", false);
 		currentFullScreen = fullScreen;

@@ -193,20 +193,21 @@ import android.widget.TextView;
         Log.i(TAG, "got configured size " + size);
         currentTheme = theme;
         currentSize = size;
-        if(theme.equalsIgnoreCase(getString(R.string.dark))){
+        // These settings were fixed in english for a while, so check for old style settings as well as language specific ones.
+        if(theme.equalsIgnoreCase(getString(R.string.dark)) || theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase(getString(R.string.small))){
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
         		setTheme(R.style.PGMPDarkSmall);
-        	} else if (size.equalsIgnoreCase(getString(R.string.medium))){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
         		setTheme(R.style.PGMPDarkMedium);
         	} else {
         		setTheme(R.style.PGMPDarkLarge);
         	}
-        } else if (theme.equalsIgnoreCase(getString(R.string.light))){
+        } else if (theme.equalsIgnoreCase(getString(R.string.light)) || theme.equalsIgnoreCase("light")){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase(getString(R.string.small))){
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
         		setTheme(R.style.PGMPLightSmall);
-        	} else if (size.equalsIgnoreCase(getString(R.string.medium))){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
         		setTheme(R.style.PGMPLightMedium);
         	} else {
         		setTheme(R.style.PGMPLightLarge);
