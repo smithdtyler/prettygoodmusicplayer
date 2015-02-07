@@ -54,5 +54,8 @@
     <string name="resume_on_reconnect">Resume on Reconnect</string>
     <string name="podcasts_and_audiobooks_title">Podcasts and Audiobooks</string>
     <string name="audiobook_mode">Audiobook Mode</string>
-    
+ 
+    <!-- General Preferences -->
+    <string name="exit">Exit</string>
+    <string name="close_application">Close App</string>
 </resources>
