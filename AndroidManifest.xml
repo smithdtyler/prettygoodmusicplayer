@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.smithdtyler.prettygoodmusicplayer"
-    android:versionCode="53"
-    android:versionName="3.2.2" xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="54"
+    android:versionName="3.2.3" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk
@@ -61,9 +61,6 @@
             android:enabled="true">
             <intent-filter android:priority="2147483647" >
                <action android:name="android.intent.action.MEDIA_BUTTON" />
-            </intent-filter>
-            <intent-filter android:priority="2147483647" >
-               <action android:name="android.intent.action.HEADSET_PLUG" />
             </intent-filter>
         </receiver>
     </application>
