@@ -61,12 +61,4 @@
 	   	    android:title="@string/ignore_leading_the_title"
 	   	    android:defaultValue="false"/>
     </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/app_name">
-        <Preference 
-            android:key="pref_exit"
-            android:title="@string/exit" 
-            android:summary="@string/close_application"
-        />
-    </PreferenceCategory>
 </PreferenceScreen>

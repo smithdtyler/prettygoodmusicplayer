@@ -112,13 +112,6 @@ public class SettingsActivity extends PreferenceActivity {
 			Log.i(TAG, "User selected " + picker.path);
 			return true;
 		}
-		if(preference.getKey().equals("pref_exit")){
-			Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
-			msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
-			startService(msgIntent);
-			this.finish();
-			return true;
-		}
 		return super.onPreferenceTreeClick(preferenceScreen, preference);
 	}
 

@@ -16,6 +16,7 @@
     <string name="resume">Kontynuuj</string>
     <string name="jumpback">Skocz w tył</string>
     <string name="shuffle">Losowo</string>
+    <string name="exit">Exit</string>
     
     <!-- *********** -->
     <!-- Preferences -->
@@ -55,7 +56,4 @@
     <string name="podcasts_and_audiobooks_title">Podkasty i Audiobooki</string>
     <string name="audiobook_mode">Tryb Audiobook</string>
     
-    <!-- General Preferences -->
-    <string name="exit">Exit</string>
-    <string name="close_application">Close App</string>
 </resources>

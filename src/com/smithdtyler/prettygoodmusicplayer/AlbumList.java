@@ -210,6 +210,13 @@ public class AlbumList extends Activity {
         	startActivity(intent);
             return true;
         }
+        if (id == R.id.action_exit) {
+			Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+			msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
+			startService(msgIntent);
+			finish();
+            return true;
+        }
         if(id == android.R.id.home){
         	onBackPressed();
         	return true;

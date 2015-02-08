@@ -16,6 +16,7 @@
     <string name="resume">Hervat afspelen</string>	
     <string name="jumpback">Spring Terug</string>
     <string name="shuffle">Shuffle</string>
+    <string name="exit">Exit</string>
 	
     <!-- *********** -->
     <!-- Preferences -->
@@ -55,7 +56,4 @@
     <string name="podcasts_and_audiobooks_title">Podcasts and Audiobooks</string>
     <string name="audiobook_mode">Audiobook Mode</string>
  
-    <!-- General Preferences -->
-    <string name="exit">Exit</string>
-    <string name="close_application">Close App</string>
 </resources>
