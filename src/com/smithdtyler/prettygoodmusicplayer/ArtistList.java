@@ -29,9 +29,12 @@ import java.util.Map;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
@@ -59,6 +62,7 @@ import android.widget.TextView;
 	private String baseDir;
 	private Object currentTheme;
 	private String currentSize;
+	private BroadcastReceiver exitReceiver;
 	
 	private void populateArtists(String baseDir){
 		artists = new ArrayList<Map<String,String>>();
@@ -244,6 +248,22 @@ import android.widget.TextView;
             	 }
              }
         });
+        
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
+        exitReceiver = new BroadcastReceiver(){
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.i(TAG, "Received exit request, shutting down...");
+				Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
+				startService(msgIntent);
+				finish();
+			}
+        	
+        };
+        registerReceiver(exitReceiver, intentFilter);
     }
 
 
@@ -275,7 +295,13 @@ import android.widget.TextView;
         return super.onOptionsItemSelected(item);
     }
     
-    // If the back key is pressed, ask if they really want to quit
+    @Override
+	protected void onDestroy() {
+    	unregisterReceiver(exitReceiver);
+    	super.onDestroy();
+	}
+
+	// If the back key is pressed, ask if they really want to quit
     // if they do, pass the key press along. If they don't,
     // eat it.
     @Override

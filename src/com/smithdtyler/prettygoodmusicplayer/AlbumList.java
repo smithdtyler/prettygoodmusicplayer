@@ -28,7 +28,10 @@ import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -52,6 +55,8 @@ public class AlbumList extends Activity {
 
 	private String currentTheme;
 	private String currentSize;
+
+	private BroadcastReceiver exitReceiver;
 	
 	private void populateAlbums(String artistName, String artistPath){
 		albums = new ArrayList<Map<String,String>>();
@@ -168,7 +173,28 @@ public class AlbumList extends Activity {
             	 startActivity(intent);
              }
         });
+        
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
+        exitReceiver = new BroadcastReceiver(){
 
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.i(TAG, "Received exit request, shutting down...");
+				Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
+				startService(msgIntent);
+				finish();
+			}
+        	
+        };
+        registerReceiver(exitReceiver, intentFilter);
+	}
+    
+	@Override
+	protected void onDestroy() {
+    	unregisterReceiver(exitReceiver);
+    	super.onDestroy();
 	}
 	
     @Override
@@ -211,9 +237,9 @@ public class AlbumList extends Activity {
             return true;
         }
         if (id == R.id.action_exit) {
-			Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
-			msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
-			startService(msgIntent);
+			Intent broadcastIntent = new Intent();
+			broadcastIntent.setAction("com.smithdtyler.ACTION_EXIT");
+			sendBroadcast(broadcastIntent);
 			finish();
             return true;
         }

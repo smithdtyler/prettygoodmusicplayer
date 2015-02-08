@@ -23,9 +23,11 @@ import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -75,6 +77,7 @@ public class NowPlaying extends Activity {
 	private String currentSize;
 	private boolean currentFullScreen;
 	private int desiredSongProgress;
+	private BroadcastReceiver exitReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -271,11 +274,28 @@ public class NowPlaying extends Activity {
 			}
 
 		});
+		
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
+        exitReceiver = new BroadcastReceiver(){
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.i(TAG, "Received exit request, shutting down...");
+				Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
+				startService(msgIntent);
+				finish();
+			}
+        	
+        };
+        registerReceiver(exitReceiver, intentFilter);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		unregisterReceiver(exitReceiver);
 		unbindService(mConnection);
 	}
 
@@ -524,6 +544,13 @@ public class NowPlaying extends Activity {
 			startActivity(intent);
 			return true;
 		}
+		if (id == R.id.action_exit) {
+			Intent broadcastIntent = new Intent();
+			broadcastIntent.setAction("com.smithdtyler.ACTION_EXIT");
+			sendBroadcast(broadcastIntent);
+			finish();
+            return true;
+        }
         if(id == android.R.id.home){
         	onBackPressed();
         	return true;
