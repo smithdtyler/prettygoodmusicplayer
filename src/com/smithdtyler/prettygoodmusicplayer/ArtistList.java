@@ -289,6 +289,10 @@ import android.widget.TextView;
 			Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
 			msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
 			startService(msgIntent);
+			Intent startMain = new Intent(Intent.ACTION_MAIN);
+		    startMain.addCategory(Intent.CATEGORY_HOME);
+		    startMain.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		    startActivity(startMain);
 			finish();
             return true;
         }
