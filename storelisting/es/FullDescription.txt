@@ -1,0 +1,113 @@
+¿Cansado de reproductores de audio que tardan una eternidad en abrir debido a que cargan anuncios o tratan de descargas cosas? ¿Cansado de reproductores que ignoran los controles Bluetooth, o dejan de responder después de algunos minutos? Yo también lo estaba, así que escribí esta aplicación!
+
+El Pretty Good Music Player (Muy buen Reproductor de Música) es un programa de fuente abierta, que muestra tu música justo como la tienes acomodada en folders, no contiene extras innecesarios. Es un reproductor pequeño, que responde, y toca la música. 
+
+Especificaciones:
+-Este reproductor te protege de pausas hechas por accidente cuando tus audífonos se salen. Agregué esta opción porque es molesto cuando el teléfono lo tengo en mi bolsillo y se auto-pausa porque los audífonos fueron desconectados.
+- Toca .mp3, .m4p, .m4a, .aac, y muchos más tipos de archivos de audio.
+- Acepta play, pausa, atrás, and siguiente comandos usados con Audífonos Bluetooth
+- Cuando seleccionas, “todas las canciones” de cierto artista, las canciones son ordenadas por album y no alfabéticamente.
+- Automáticamente pausa y resume cuando otra app necesita audio. (ejemplo: cuando el GPS necesita usar audio).
+- Si alguna otra app, necesita usar el audio por más de 30 segundos, (por ejemplo: una llamada telefónica), no resume automáticamente la música
+- "Repetir todo" siempre esta encendido.
+- Si pulsas en “atrás” muy rápido, hace un chequeo doble para verificar que te quieres salir de la aplicación.
+
+Forma en la que se ordenan los Archivos en folders:
+Está diseñado para trabajar con folders de artistas copiados de Itunes. Esto significa que busca esta estructura:
+
+musica/
+   artista/
+      /album1
+          /01 - Primera Canción.mp3
+          /02 - Segunda Canción.mp3
+          /03 - Tercera Canción.mp3
+          /04 - Cuarta Canción.mp3
+      /album2
+          /01 - Otra Canción.mp3
+      ....
+
+Nota:
+He notado que si pauso una canción por un periodo largo, necesito mantener presionado el botón de “pausa” en mis Audífonos Bluetooth  para lograr que resuma la canción.
+
+El código completo de esta app se encuentra disponible aquí: https://github.com/smithdtyler/prettygoodmusicplayer
+
+El fantástico icono fue diseñado por Emily Krueger de Vine Creative: http://www.vinecreativemn.com/
+
+¿Cansado de reproductores de audio que tardan una eternidad en abrir debido a que cargan anuncios o tratan de descargas cosas? ¿Cansado de reproductores que ignoran los controles Bluetooth, o dejan de responder después de algunos minutos? Yo también lo estaba, así que escribí esta aplicación!
+
+El Pretty Good Music Player (Muy buen Reproductor de Música) es un programa de fuente abierta, que muestra tu música justo como la tienes acomodada en folders, no contiene extras innecesarios. Es un reproductor pequeño, que responde, y toca la música. 
+
+Especificaciones:
+-Este reproductor te protege de pausas hechas por accidente cuando tus audífonos se salen. Agregué esta opción porque es molesto cuando el teléfono lo tengo en mi bolsillo y se auto-pausa porque los audífonos fueron desconectados.
+- Toca .mp3, .m4p, .m4a, .aac, y muchos más tipos de archivos de audio.
+- Acepta play, pausa, atrás, and siguiente comandos usados con Audífonos Bluetooth
+- Cuando seleccionas, “todas las canciones” de cierto artista, las canciones son ordenadas por album y no alfabéticamente.
+- Automáticamente pausa y resume cuando otra app necesita audio. (ejemplo: cuando el GPS necesita usar audio).
+- Si alguna otra app, necesita usar el audio por más de 30 segundos, (por ejemplo: una llamada telefónica), no resume automáticamente la música
+- "Repetir todo" siempre esta encendido.
+- Si pulsas en “atrás” muy rápido, hace un chequeo doble para verificar que te quieres salir de la aplicación.
+
+Forma en la que se ordenan los Archivos en folders:
+Está diseñado para trabajar con folders de artistas copiados de Itunes. Esto significa que busca esta estructura:
+
+musica/
+   artista/
+      /album1
+          /01 - Primera Canción.mp3
+          /02 - Segunda Canción.mp3
+          /03 - Tercera Canción.mp3
+          /04 - Cuarta Canción.mp3
+      /album2
+          /01 - Otra Canción.mp3
+      ....
+
+Nota:
+He notado que si pauso una canción por un periodo largo, necesito mantener presionado el botón de “pausa” en mis Audífonos Bluetooth  para lograr que resuma la canción.
+
+El código completo de esta app se encuentra disponible aquí: https://github.com/smithdtyler/prettygoodmusicplayer
+
+El fantástico icono fue diseñado por Emily Krueger de Vine Creative: http://www.vinecreativemn.com/
+
+Traducción española por Jesús Alberto Guzmán Inzunza
+
+Si tienes cualquier problema, por favor deja un mensaje con toda la información posible y trataré de resolverlo lo antes posible.
+ 
+Compatibilidad:
+    Bluetooth control probado con un LG Electronics Tone+ HBS-730 Bluetooth Headset
+
+Legalidad:
+
+    Pretty Good Music Player
+    Derechos Reservados Tyler Smith 2014
+
+    
+Este programa es software libre: puedes redistribuirlo y modificarlo bajo los términos de la licencia pública GNU publicada por la Fundación de Software Libre, ya sea la versión 3 de la Licencia, o cualquier posterior a tu favor.
+
+
+Este programa es distribuido con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA; sin implicar garantía de mercantibilidad o para cierto propósito, vea la licencia Pública General de GNU para más detalles.
+
+Vea http://www.gnu.org/licenses/  para una copia completa de la licencia Pública General de GNU
+
+Reddit:
+Yo escribo en Reddit como https://www.reddit.com/user/MythsBusted
+
+Si tienes cualquier problema, por favor deja un mensaje con toda la información posible y trataré de resolverlo lo antes posible.
+ 
+Compatibilidad:
+    Bluetooth control probado con un LG Electronics Tone+ HBS-730 Bluetooth Headset
+
+Legalidad:
+
+    Pretty Good Music Player
+    Derechos Reservados Tyler Smith 2014
+
+    
+Este programa es software libre: puedes redistribuirlo y modificarlo bajo los términos de la licencia pública GNU publicada por la Fundación de Software Libre, ya sea la versión 3 de la Licencia, o cualquier posterior a tu favor.
+
+
+Este programa es distribuido con la esperanza de que sea útil, pero SIN NINGUNA GARANTÍA; sin implicar garantía de mercantibilidad o para cierto propósito, vea la licencia Pública General de GNU para más detalles.
+
+Vea http://www.gnu.org/licenses/  para una copia completa de la licencia Pública General de GNU
+
+Reddit:
+Yo escribo en Reddit como https://www.reddit.com/user/MythsBusted
