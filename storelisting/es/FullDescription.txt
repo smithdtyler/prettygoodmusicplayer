@@ -33,7 +33,7 @@ El código completo de esta app se encuentra disponible aquí: https://github.com/
 
 El fantástico icono fue diseñado por Emily Krueger de Vine Creative: http://www.vinecreativemn.com/
 
-Traducción española por Jesús Alberto Guzmán Inzunza.
+Traducción al español por Jesús Alberto Guzmán Inzunza
 
 Si tienes cualquier problema, por favor deja un mensaje con toda la información posible y trataré de resolverlo lo antes posible.
  
