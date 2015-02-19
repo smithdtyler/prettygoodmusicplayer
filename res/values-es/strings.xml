@@ -8,7 +8,7 @@
     <string name="title_activity_settings">Ajustes</string>
     <string name="notification_title">Pretty Good Music Player</string>
     <string name="notification_message">Tocando</string>
-	<string name="ticker_text">Servicio de Musica</string>
+	<string name="ticker_text">Servicio de MÃºsica</string>
 	<string name="next">Siguiente</string>
 	<string name="pause">Pausa</string>
 	<string name="play">Tocar</string>
@@ -26,23 +26,23 @@
     <string name="file_preferences_title">Opciones de Archivo</string>
     <string name="choose_music_directory_prompt">Escoge directorio musical</string>
     <string name="choose_music_directory_summary">Escoge el directorio que contiene a tus artistas</string>
-	<string name="directorydialogprompt">Donde estan los folders para tus artistas?</string>
-    <string name="directorydialoghere">Aqui mero!</string>
+	<string name="directorydialogprompt">Donde estÃ¡n los folders para tus artistas?</string>
+    <string name="directorydialoghere">AquÃ­ mero!</string>
     <string name="directorydialogup">Subir un directorio</string>
     
     <!-- Theme Preferences -->
     <string name="theme_title">Tema</string>
     <string name="light">claro</string>
     <string name="dark">Obscuro</string>
-    <string name="small">Pequeño</string>
+    <string name="small">pequeÃ±o</string>
     <string name="medium">Mediano</string>
     <string name="large">Grande</string>
     <string name="style_preference_title">Opciones de estilo</string>
     <string name="theme_select_prompt">Escoje tema para el Reproductor musical</string>
     <string name="accent_color_title">Color</string>
     <string name="custom_accent_color_title">Personaliza el color (aarrggbb)</string>
-    <string name="text_size_title">Tamaño del texto</string>
-    <string name="text_size_prompt">Escoge el tamaño del texto para el Reproductor de musical</string>
+    <string name="text_size_title">Tamaï¿½o del texto</string>
+    <string name="text_size_prompt">Escoge el tamaï¿½o del texto para el Reproductor de musical</string>
     <string name="full_screen_now_playing_title">Titulo de tocando ahora en pantalla completa</string>
     <string name="ignore_leading_the_title">Ignorar prefijo \'The\' en el nombre de los artistas</string>
     
@@ -50,8 +50,8 @@
     <string name="playback_title">Playback</string>
     <string name="headphone_disconnect_behavior">Comportamiento al desconectar audifonos</string>
     <string name="pause_immediately">Pausa Immediata</string>
-    <string name="pause_after_one_sec">Pausa después de un segundo</string>
-    <string name="resume_on_quick_reconnect">Resumir en reconectado rápido</string>
+    <string name="pause_after_one_sec">Pausa despuï¿½s de un segundo</string>
+    <string name="resume_on_quick_reconnect">Resumir en reconectado rï¿½pido</string>
     <string name="resume_on_reconnect">Resumir al reconectar</string>
     <string name="podcasts_and_audiobooks_title">Podcasts y Audiobooks</string>
     <string name="audiobook_mode">Modo de audiobook</string>

@@ -7,7 +7,7 @@
     </string-array>
     <string-array
         name="textsizeoptions">
-        <item>Pequeño</item>
+        <item>pequeÃ±o</item>
         <item>Mediano</item>
         <item>Grande</item>
     </string-array>
@@ -20,7 +20,7 @@
         <item>Verde Esmeralda</item>
         <item>Marfil</item>
         <item>Azul Cielo</item>
-        <item>Verde Tráfico</item>
+        <item>Verde Trï¿½fico</item>
         <item>Agua Azul</item>
         <item>Personalizado</item>
     </string-array>
