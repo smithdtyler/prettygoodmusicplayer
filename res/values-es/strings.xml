@@ -32,9 +32,9 @@
     
     <!-- Theme Preferences -->
     <string name="theme_title">Tema</string>
-    <string name="light">claro</string>
+    <string name="light">Claro</string>
     <string name="dark">Obscuro</string>
-    <string name="small">pequeño</string>
+    <string name="small">Pequeño</string>
     <string name="medium">Mediano</string>
     <string name="large">Grande</string>
     <string name="style_preference_title">Opciones de estilo</string>
