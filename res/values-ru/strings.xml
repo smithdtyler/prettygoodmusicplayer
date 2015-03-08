@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pretty Good Music Player</string>
+    <string name="action_settings">Настройки</string>
+    <string name="title_activity_album_list">Албомы</string>
+    <string name="title_activity_song_list">Песни</string>
+    <string name="title_activity_now_playing">Сейчас Играет</string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="notification_title">Pretty Good Music Player</string>
+    <string name="notification_message">Музыка Воспроизводится</string>
+	<string name="ticker_text">Music Playback Service</string>
+	<string name="next">Следующаяя</string>
+	<string name="pause">Пауза</string>
+	<string name="play">Воспроизвести</string>
+	<string name="previous">Предыдущая</string>
+    <string name="resume">Возобновить</string>
+    <string name="jumpback">Прыжок назад</string>
+    <string name="shuffle">Перемешивать</string>
+    <string name="exit">Выход</string>
+    
+    <!-- *********** -->
+    <!-- Preferences -->
+    <!-- *********** -->
+    
+    <!-- File Preferences -->
+    <string name="file_preferences_title">Файловые Параметры</string>
+    <string name="choose_music_directory_prompt">Папка с Музыкой</string>
+    <string name="choose_music_directory_summary">Выбирете папку с Музыкой</string>
+	<string name="directorydialogprompt">Где находится музыка?</string>
+    <string name="directorydialoghere">Здесь!</string>
+    <string name="directorydialogup">На директорию выше</string>
+    
+    <!-- Theme Preferences -->
+    <string name="theme_title">Стиль</string>
+    <string name="light">Светлая</string>
+    <string name="dark">Темная</string>
+    <string name="small">Мелкий</string>
+    <string name="medium">Средний</string>
+    <string name="large">Крупный</string>
+    <string name="style_preference_title">Параметры стилей</string>
+    <string name="theme_select_prompt">Выберите тему</string>
+    <string name="accent_color_title">Цвет</string>
+    <string name="custom_accent_color_title">Пользовательский цвет (aarrggbb)</string>
+    <string name="text_size_title">Размер Шрифта</string>
+    <string name="text_size_prompt">Выбирите размер текста</string>
+    <string name="full_screen_now_playing_title">Во весь экран</string>
+    <string name="ignore_leading_the_title">Игно-вать \'The\' в названиях</string>
+    
+    <!-- Playback Preferences -->
+    <string name="playback_title">Воспроизведение</string>
+    <string name="headphone_disconnect_behavior">Инго-вать дребезг контактов наушников</string>
+    <string name="pause_immediately">Пауза без задержки</string>
+    <string name="pause_after_one_sec">Пауза после одной секунды</string>
+    <string name="resume_on_quick_reconnect">Возобновление при быстром переподключениии</string>
+    <string name="resume_on_reconnect">Возобновление при переподключении</string>
+    <string name="podcasts_and_audiobooks_title">Подкасты и Аудиокниги</string>
+    <string name="audiobook_mode">Режим Аудиокниг</string>
+    
+</resources>

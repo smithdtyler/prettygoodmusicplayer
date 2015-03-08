@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="themeoptions">
+        <item>Claro</item>
+        <item>Obscuro</item>
+    </string-array>
+    <string-array
+        name="textsizeoptions">
+        <item>Pequeño</item>
+        <item>Mediano</item>
+        <item>Grande</item>
+    </string-array>
+    <string-array
+        name="accentcoloroptions">
+        <item>Gris</item>
+        <item>Verde Obscuro</item>
+        <item>Azul Brillante</item>
+        <item>Naranja Brillante</item>
+        <item>Verde Esmeralda</item>
+        <item>Marfil</item>
+        <item>Azul Cielo</item>
+        <item>Verde Tráfico</item>
+        <item>Agua Azul</item>
+        <item>Personalizado</item>
+    </string-array>
+</resources>

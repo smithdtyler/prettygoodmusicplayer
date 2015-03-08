@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pretty Good Music Player</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="title_activity_album_list">Albums</string>
+    <string name="title_activity_song_list">Canciones</string>
+    <string name="title_activity_now_playing">Sonando</string>
+    <string name="title_activity_settings">Ajustes</string>
+    <string name="notification_title">Pretty Good Music Player</string>
+    <string name="notification_message">Tocando</string>
+	<string name="ticker_text">Servicio de Música</string>
+	<string name="next">Siguiente</string>
+	<string name="pause">Pausa</string>
+	<string name="play">Tocar</string>
+	<string name="previous">Previo</string>
+    <string name="resume">Resumir</string>
+    <string name="jumpback">Salto atras</string>
+    <string name="shuffle">Al azar</string>
+    <string name="exit">Salir</string>
+    
+    <!-- *********** -->
+    <!-- Preferences -->
+    <!-- *********** -->
+    
+    <!-- File Preferences -->
+    <string name="file_preferences_title">Opciones de Archivo</string>
+    <string name="choose_music_directory_prompt">Escoge directorio musical</string>
+    <string name="choose_music_directory_summary">Escoge el directorio que contiene a tus artistas</string>
+	<string name="directorydialogprompt">Donde están los folders para tus artistas?</string>
+    <string name="directorydialoghere">Aquí mero!</string>
+    <string name="directorydialogup">Subir un directorio</string>
+    
+    <!-- Theme Preferences -->
+    <string name="theme_title">Tema</string>
+    <string name="light">Claro</string>
+    <string name="dark">Obscuro</string>
+    <string name="small">Pequeño</string>
+    <string name="medium">Mediano</string>
+    <string name="large">Grande</string>
+    <string name="style_preference_title">Opciones de estilo</string>
+    <string name="theme_select_prompt">Escoje tema para el Reproductor musical</string>
+    <string name="accent_color_title">Color</string>
+    <string name="custom_accent_color_title">Personaliza el color (aarrggbb)</string>
+    <string name="text_size_title">Tama�o del texto</string>
+    <string name="text_size_prompt">Escoge el tama�o del texto para el Reproductor de musical</string>
+    <string name="full_screen_now_playing_title">Titulo de tocando ahora en pantalla completa</string>
+    <string name="ignore_leading_the_title">Ignorar prefijo \'The\' en el nombre de los artistas</string>
+    
+    <!-- Playback Preferences -->    
+    <string name="playback_title">Playback</string>
+    <string name="headphone_disconnect_behavior">Comportamiento al desconectar audifonos</string>
+    <string name="pause_immediately">Pausa Immediata</string>
+    <string name="pause_after_one_sec">Pausa despu�s de un segundo</string>
+    <string name="resume_on_quick_reconnect">Resumir en reconectado r�pido</string>
+    <string name="resume_on_reconnect">Resumir al reconectar</string>
+    <string name="podcasts_and_audiobooks_title">Podcasts y Audiobooks</string>
+    <string name="audiobook_mode">Modo de audiobook</string>
+    
+</resources>
