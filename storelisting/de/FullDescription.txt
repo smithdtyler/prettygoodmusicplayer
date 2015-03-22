@@ -25,8 +25,8 @@ musik/
          01 - Erstes Lied.mp3
          02 - Zweites Lied.mp3
 
-The full source code is available here: https://github.com/smithdtyler/prettygoodmusicplayer
-The awesome icon was designed by Emily Krueger of Vine Creative: http://www.vinecreativemn.com/
+Der vollständige Quellcode ist hier verfügbar: https://github.com/smithdtyler/prettygoodmusicplayer
+Das schöne Icon ist von Emily Krueger bei Vine Creative gestaltet worden : http://www.vinecreativemn.com/
 
 Copyright (C) 2014  Tyler Smith
 Dieses Programm ist freie Software. Sie können es unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation veröffentlicht, weitergeben und/oder modifizieren, entweder gemäß Version 3 der Lizenz oder (nach Ihrer Option) jeder späteren Version.

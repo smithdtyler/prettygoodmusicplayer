@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Pretty Good Music Player Launcher Mode</string>
-    <string name="action_settings">Nastavení</string>
-    <string name="title_activity_album_list">Alba</string>
-    <string name="title_activity_song_list">Skladby</string>
-    <string name="title_activity_now_playing">Právě hraje</string>
-    <string name="title_activity_settings">Nastavení</string>
+    <string name="action_settings">Instellingen</string>
+    <string name="title_activity_album_list">Albums</string>
+    <string name="title_activity_song_list">Nummers</string>
+    <string name="title_activity_now_playing">Speelt Nu</string>
+    <string name="title_activity_settings">Instellingen</string>
     <string name="notification_title">Pretty Good Music Player</string>
-    <string name="notification_message">Přehrávání hudby</string>
-	<string name="ticker_text">Služba přehrávání hudby</string>
-	<string name="next">Další</string>
-	<string name="pause">Pozastavit</string>
-	<string name="play">Hrát</string>
-	<string name="previous">Předchozí</string>
-    <string name="resume">Pokračovat</string>
-    <string name="jumpback">Skočit zpět</string>
-    <string name="shuffle">Náhodně</string>
+    <string name="notification_message">Spelende Muziek</string>
+	<string name="ticker_text">Muziek-afspelingsservice</string>
+	<string name="next">Volgende</string>
+	<string name="pause">Pauzeer</string>
+	<string name="play">Speel af</string>
+	<string name="previous">Vorige</string>
+    <string name="resume">Hervat afspelen</string>	
+    <string name="jumpback">Spring Terug</string>
+    <string name="shuffle">Shuffle</string>
     <string name="exit">Exit</string>
-
-	<!-- *********** -->
+	
+    <!-- *********** -->
     <!-- Preferences -->
     <!-- *********** -->
     
@@ -26,17 +26,17 @@
     <string name="file_preferences_title">File Preferences</string>
     <string name="choose_music_directory_prompt">Choose Music Directory</string>
     <string name="choose_music_directory_summary">Pick the Directory Containing Your Artists</string>
-    <string name="directorydialogprompt">Kde jsou umístěny adresáře s hudbou?</string>
-    <string name="directorydialoghere">Tady jsou!</string>
-    <string name="directorydialogup">Nadřazený adresář</string>
-
+	<string name="directorydialogprompt">Waar zijn de mappen met je artiesten?</string>
+    <string name="directorydialoghere">Hierzo!</string>
+    <string name="directorydialogup">Ga een map omhoog</string>
+    
     <!-- Theme Preferences -->
     <string name="theme_title">Theme</string>
-    <string name="light">Světlý</string>
-    <string name="dark">Tmavý</string>
-    <string name="small">Malý</string>
-    <string name="medium">Střední</string>
-    <string name="large">Velký</string>
+    <string name="light">Licht</string>
+    <string name="dark">Donker</string>
+    <string name="small">Klein</string>
+    <string name="medium">Middelgroot</string>
+    <string name="large">Groot</string>
     <string name="style_preference_title">Style Preferences</string>
     <string name="theme_select_prompt">Pick the theme for the Music Player</string>
     <string name="accent_color_title">Accent Color</string>
@@ -45,7 +45,7 @@
     <string name="text_size_prompt">Pick the text size for the Music Player</string>
     <string name="full_screen_now_playing_title">Full Screen Now Playing</string>
     <string name="ignore_leading_the_title">Ignore Leading \'The\' in Artist Names</string>
-
+    
     <!-- Playback Preferences -->
     <string name="headphone_disconnect_behavior">Headphone Disconnect Behavior</string>
     <string name="playback_title">Playback</string>
@@ -55,5 +55,5 @@
     <string name="resume_on_reconnect">Resume on Reconnect</string>
     <string name="podcasts_and_audiobooks_title">Podcasts and Audiobooks</string>
     <string name="audiobook_mode">Audiobook Mode</string>
-    
+ 
 </resources>

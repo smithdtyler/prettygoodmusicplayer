@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="themeoptions">
+        <item>Светлая</item>
+        <item>Темная</item>
+    </string-array>
+    <string-array
+        name="textsizeoptions">
+        <item>Мелкий</item>
+        <item>Средний</item>
+        <item>Крупный</item>
+    </string-array>
+    <string-array
+        name="accentcoloroptions">
+        <item>Агатовый серый</item>
+        <item>Темно-зеленый</item>
+        <item>Брилиантовый синий</item>
+        <item>Брилиантовый оранжевый</item>
+        <item>Изумрудно-зеленый</item>
+        <item>Слоновая кость</item>
+        <item>Небесно голубой</item>
+        <item>Зеленый</item>
+        <item>Голубой</item>
+        <item>Выборочно</item>
+    </string-array>
+</resources>

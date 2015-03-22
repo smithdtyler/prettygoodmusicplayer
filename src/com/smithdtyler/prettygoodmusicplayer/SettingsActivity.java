@@ -102,7 +102,7 @@ public class SettingsActivity extends PreferenceActivity {
 			Preference preference) {
 		// TODO clean this up a bunch.
 		Log.i(TAG, "User clicked " + preference.getTitle());
-		if (preference.getTitle().equals("Choose Music Directory")) {
+		if (preference.getKey().equals("choose_music_directory_prompt")) {
 			final File path = Utils.getRootStorageDirectory();
 			DirectoryPickerOnClickListener picker = new DirectoryPickerOnClickListener(
 					this, path);
@@ -132,9 +132,6 @@ public class SettingsActivity extends PreferenceActivity {
 		public void onClick(DialogInterface dialog, int which) {
 			if (which == 0) {
 				dialog.dismiss();
-				// TODO generally fix this up so the displayed path updates
-//				SharedPreferences prefs = activity.getPreferenceManager()
-//						.getSharedPreferences();
 		        SharedPreferences prefs = activity.getSharedPreferences("PrettyGoodMusicPlayer", MODE_PRIVATE);
 
 				Log.i(TAG,

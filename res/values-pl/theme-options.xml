@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="themeoptions">
+        <item>Jasny</item>
+        <item>Ciemny</item>
+    </string-array>
+    <string-array
+        name="textsizeoptions">
+        <item>Mały</item>
+        <item>Średni</item>
+        <item>Duży</item>
+    </string-array>
+    <string-array
+        name="accentcoloroptions">
+        <item>Jasny Szary</item>
+        <item>Ciemny Szary</item>
+        <item>Niebieski</item>
+        <item>Pomarańczowy</item>
+        <item>Zielony</item>
+        <item>Żółty</item>
+        <item>Błękitny</item>
+        <item>Zielony 2</item>
+        <item>Niebieski 2</item>
+        <item>Niestandardowy</item>
+    </string-array>
+</resources>

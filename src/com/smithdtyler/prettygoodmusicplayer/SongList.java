@@ -27,7 +27,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -57,6 +60,7 @@ public class SongList extends Activity {
 	private String artistDir;
 	private File albumDir;
 	private boolean audiobookMode;
+	private BroadcastReceiver exitReceiver;
 	
 	private void populateSongs(String artistName, String albumDirName, String artistAbsDirName){
 		
@@ -140,6 +144,8 @@ public class SongList extends Activity {
 			songs.add(map);
 		}
 		
+		// If there is a value set to resume to, and audiobook mode is enabled
+		// add an option to start where they left off
 		if(resume != null && audiobookMode){
 			try{
 				String resumeSongName = resume.substring(0, resume.lastIndexOf('~'));
@@ -154,7 +160,7 @@ public class SongList extends Activity {
 					int seconds = (prog % (1000 * 60)) / 1000;
 					String time = String.format(Locale.getDefault(), "%d:%02d", minutes, seconds);
 					Map<String, String> map = new HashMap<String, String>();
-					map.put("song", "Resume: " + resumeSongName + " (" + time + ")");
+					map.put("song", getResources().getString(R.string.resume) + ": " + resumeSongName + " (" + time + ")");
 					songs.add(0, map);
 					// loop over the available songs, make sure we still have it
 					for(int i = 0; i< songFiles.size(); i++){
@@ -193,27 +199,28 @@ public class SongList extends Activity {
 	    artistDir = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
 	    
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         audiobookMode = sharedPref.getBoolean("pref_audiobook_mode", false);
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "got configured size " + size);
         currentTheme = theme;
         currentSize = size;
-        if(theme.equalsIgnoreCase("dark")){
+        // These settings were fixed in english for a while, so check for old style settings as well as language specific ones.
+        if(theme.equalsIgnoreCase(getString(R.string.dark)) || theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
         		setTheme(R.style.PGMPDarkSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
         		setTheme(R.style.PGMPDarkMedium);
         	} else {
         		setTheme(R.style.PGMPDarkLarge);
         	}
-        } else if (theme.equalsIgnoreCase("light")){
+        } else if (theme.equalsIgnoreCase(getString(R.string.light)) || theme.equalsIgnoreCase("light")){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
         		setTheme(R.style.PGMPLightSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
         		setTheme(R.style.PGMPLightMedium);
         	} else {
         		setTheme(R.style.PGMPLightLarge);
@@ -236,45 +243,52 @@ public class SongList extends Activity {
              public void onItemClick(AdapterView<?> parentAdapter, View view, int position,
                                      long id) {
             	 
+            	 Intent intent = new Intent(SongList.this, NowPlaying.class);
+            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
+            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
+            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
+            	 songAbsFileNameList.toArray(songNamesArr);
+            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
+            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
+            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
+
             	 if(hasResume){
             		 if(position == 0){
-            			 Intent intent = new Intent(SongList.this, NowPlaying.class);
-    	            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
-    	            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
-    	            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
-    	            	 songAbsFileNameList.toArray(songNamesArr);
-    	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
    	            		 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, resumeFilePos);
    	            		 intent.putExtra(MusicPlaybackService.TRACK_POSITION, resumeProgress);
-   	            		 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
-    	            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
-    	            	 startActivity(intent);
             		 } else {
-    	            	 Intent intent = new Intent(SongList.this, NowPlaying.class);
-    	            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
-    	            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
-    	            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
-    	            	 songAbsFileNameList.toArray(songNamesArr);
-    	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
+            			 // a 'resume' option has been added to the beginning of the list
+            			 // so adjust the selection to compensate
     	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, position - 1);
-    	            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
-    	            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
-    	            	 startActivity(intent);
             		 }
             	 } else {
-	            	 Intent intent = new Intent(SongList.this, NowPlaying.class);
-	            	 intent.putExtra(AlbumList.ALBUM_NAME, album);
-	            	 intent.putExtra(ArtistList.ARTIST_NAME, artistName);
-	            	 String[] songNamesArr = new String[songAbsFileNameList.size()];
-	            	 songAbsFileNameList.toArray(songNamesArr);
-	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST, songNamesArr);
 	            	 intent.putExtra(SONG_ABS_FILE_NAME_LIST_POSITION, position);
-	            	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistDir);
-	            	 intent.putExtra(NowPlaying.KICKOFF_SONG, true);
-	            	 startActivity(intent);
             	 }
+            	 startActivity(intent);
              }
         });
+        
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
+        exitReceiver = new BroadcastReceiver(){
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.i(TAG, "Received exit request, shutting down...");
+				Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
+				startService(msgIntent);
+				finish();
+			}
+        	
+        };
+        registerReceiver(exitReceiver, intentFilter);
+	}
+	
+    @Override
+	protected void onDestroy() {
+    	unregisterReceiver(exitReceiver);
+    	super.onDestroy();
 	}
 	
     @Override
@@ -295,6 +309,17 @@ public class SongList extends Activity {
         	startActivity(intent);
             return true;
         }
+        if (id == R.id.action_exit) {
+			Intent broadcastIntent = new Intent();
+			broadcastIntent.setAction("com.smithdtyler.ACTION_EXIT");
+			sendBroadcast(broadcastIntent);
+			Intent startMain = new Intent(Intent.ACTION_MAIN);
+		    startMain.addCategory(Intent.CATEGORY_HOME);
+		    startMain.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		    startActivity(startMain);
+			finish();
+            return true;
+        }
         if(id == android.R.id.home){
         	onBackPressed();
         	return true;
@@ -306,8 +331,8 @@ public class SongList extends Activity {
 	protected void onResume() {
 		super.onResume();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         boolean audiobookModePref = sharedPref.getBoolean("pref_audiobook_mode", false);
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "Got configured size " + size);
@@ -330,7 +355,9 @@ public class SongList extends Activity {
         }else if(resume == null && newResume != null){
         	resetResume = true;
         }
+        
         if(!currentTheme.equals(theme) || !currentSize.equals(size) || resetResume){
+        	// Calling finish and startActivity will re-launch this activity, applying the new settings
         	finish();
         	startActivity(getIntent());
         }
