@@ -123,19 +123,17 @@ public class SongList extends Activity {
 					songFiles.addAll(songFilesInAlbumList);
 				}
 			}
-			
-			if(songFiles.isEmpty()){
-				// if there aren't any albums, check directly under the artist directory
-				File[] songFilesInArtist = artistDir.listFiles();
-				List<File> songFilesInArtistList = new ArrayList<File>();
-				for(File songFile : songFilesInArtist){
-					if(Utils.isValidSongFile(songFile)){
-						songFilesInArtistList.add(songFile);
-					}
+
+			// In addition to the albums, check directly under the artist directory
+			File[] songFilesInArtist = artistDir.listFiles();
+			List<File> songFilesInArtistList = new ArrayList<File>();
+			for(File songFile : songFilesInArtist){
+				if(Utils.isValidSongFile(songFile)){
+					songFilesInArtistList.add(songFile);
 				}
-				Collections.sort(songFilesInArtistList, Utils.songFileComparator);
-				songFiles.addAll(songFilesInArtistList);
 			}
+			Collections.sort(songFilesInArtistList, Utils.songFileComparator);
+			songFiles.addAll(songFilesInArtistList);
 		}
 		
 		for(File song : songFiles){
