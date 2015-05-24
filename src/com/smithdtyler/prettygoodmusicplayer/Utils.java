@@ -18,14 +18,17 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
+import android.os.Environment;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import android.os.Environment;
-
+/**
+ * Utility functions for the Pretty Good Music Player
+ */
 public class Utils {
 	public static final Comparator<File> songFileComparator = new SongFileComparator();
 	public static final Comparator<File> albumFileComparator = new AlbumFileComparator();
@@ -48,6 +51,11 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Checks whether the provided directory is a legal artist directory.
+	 * @param dir
+	 * @return
+	 */
 	static boolean isValidArtistDirectory(File dir) {
 		if (dir == null) {
 			return false;
@@ -60,6 +68,11 @@ public class Utils {
 		return true;
 	}
 
+	/**
+	 * Checks whether the provided directory is a legal album directory.
+	 * @param dir
+	 * @return
+	 */
 	static boolean isValidAlbumDirectory(File dir) {
 		if (dir == null) {
 			return false;
@@ -72,12 +85,21 @@ public class Utils {
 		return true;
 	}
 
+	/**
+	 * Checks whether this file is a song.
+	 * @param song
+	 * @return True if the song ends with a music file extension and is not hidden.
+	 */
 	static boolean isValidSongFile(File song) {
 		if (song == null) {
 			return false;
 		}
 
 		if (!song.isFile()) {
+			return false;
+		}
+
+		if(song.isHidden()){
 			return false;
 		}
 
@@ -93,10 +115,20 @@ public class Utils {
 		return false;
 	}
 
+	/**
+	 * Gets the display name for the song file.
+	 * @param songFile
+	 * @return
+	 */
 	static String getPrettySongName(File songFile) {
 		return getPrettySongName(songFile.getName());
 	}
 
+	/**
+	 * Gets the display name for the song file name.
+	 * @param songName
+	 * @return
+	 */
 	static String getPrettySongName(String songName) {
 		if (songName.matches("^\\d+\\s.*")) {
 			return songName.replaceAll("^\\d+\\s", "").replaceAll(
@@ -105,6 +137,12 @@ public class Utils {
 		return songName.replaceAll(mediaFileEndingRegex, "");
 	}
 
+	/**
+	 * Gets the artist name to display for a given song.
+	 * @param songFile
+	 * @param musicRoot
+	 * @return
+	 */
 	static String getArtistName(File songFile, String musicRoot) {
 		File albumDir = songFile.getParentFile().getParentFile();
 		if (albumDir.getAbsolutePath().equals(musicRoot)) {
@@ -113,6 +151,9 @@ public class Utils {
 		return songFile.getParentFile().getParentFile().getName();
 	}
 
+	/**
+	 * Comparator for ordering song files.
+	 */
 	private static class SongFileComparator implements Comparator<File> {
 
 		@Override
@@ -134,7 +175,11 @@ public class Utils {
 		}
 
 	}
-	
+
+	/**
+	 * Get the best guess as to where music is stored on the device.
+	 * @return
+	 */
 	static File getBestGuessMusicDirectory() {
 		File ext = Environment.getExternalStorageDirectory();
 		if(ext != null && (ext.listFiles() != null)){
@@ -148,6 +193,10 @@ public class Utils {
 		return new File("music");
 	}
 
+	/**
+	 * Gets the root storage directory of this device.
+	 * @return
+	 */
 	static File getRootStorageDirectory() {
 		File ext = Environment.getExternalStorageDirectory();
 		if(ext == null){
