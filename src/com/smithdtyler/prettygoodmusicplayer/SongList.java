@@ -18,18 +18,12 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -42,6 +36,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class SongList extends Activity {
 	public static final String SONG_ABS_FILE_NAME_LIST = "SONG_LIST";
@@ -270,6 +272,14 @@ public class SongList extends Activity {
             	 startActivity(intent);
              }
         });
+
+		lv.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				showSongSettingsDialog();
+				return true;
+			}
+		});
         
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
@@ -286,6 +296,16 @@ public class SongList extends Activity {
         	
         };
         registerReceiver(exitReceiver, intentFilter);
+	}
+
+	private void showSongSettingsDialog(){
+		new AlertDialog.Builder(this).setTitle("Song Details")
+				.setItems(new String[]{"enabled"}, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+					}
+				});
 	}
 	
     @Override
