@@ -45,7 +45,7 @@ public class Utils {
 			if (!first) {
 				mediaFileEndingRegex += "|" + "(\\." + ending + ")";
 			} else {
-				mediaFileEndingRegex += "(\\." + ending + ")";
+				mediaFileEndingRegex += "(?i)(\\." + ending + ")";
 				first = false;
 			}
 		}
@@ -107,7 +107,7 @@ public class Utils {
 
 		// Needs to end with one of the legal formats
 		for (String ending : legalFormatExtensions) {
-			if (name.endsWith("." + ending)) {
+			if (name.toLowerCase().endsWith("." + ending)) {
 				return true;
 			}
 		}
