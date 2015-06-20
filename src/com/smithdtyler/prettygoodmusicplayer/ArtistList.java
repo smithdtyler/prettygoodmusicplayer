@@ -18,21 +18,13 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -48,6 +40,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressLint("DefaultLocale") public class ArtistList extends Activity {
 	private static final String TAG = "Artist List";
@@ -67,7 +67,7 @@ import android.widget.TextView;
 	private void populateArtists(String baseDir){
 		artists = new ArrayList<Map<String,String>>();
 		File f = new File(baseDir);
-		if(!f.exists()){
+		if(!f.exists() || !f.isDirectory()){
 			Log.e(TAG, "Storage directory " + f + " does not exist!");
 			return;
 		}
