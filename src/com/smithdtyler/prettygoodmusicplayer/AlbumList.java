@@ -18,14 +18,6 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -45,6 +37,14 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AlbumList extends Activity {
 	public static final String ALBUM_NAME = "ALBUM_NAME";
@@ -231,7 +231,17 @@ public class AlbumList extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+		if (id == R.id.action_now_playing) {
+			if (MusicPlaybackService.isRunning()) {
+				Intent intent = new Intent(AlbumList.this, NowPlaying.class);
+				intent.putExtra("From_Notification", true);
+				startActivity(intent);
+			} else {
+				Toast.makeText(AlbumList.this, R.string.nothing_playing, Toast.LENGTH_SHORT).show();
+			}
+			return true;
+		}
+		if (id == R.id.action_settings) {
         	Intent intent = new Intent(AlbumList.this, SettingsActivity.class);
         	startActivity(intent);
             return true;

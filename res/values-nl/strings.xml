@@ -16,6 +16,7 @@
     <string name="resume">Hervat afspelen</string>	
     <string name="jumpback">Spring Terug</string>
     <string name="shuffle">Shuffle</string>
+    <string name="nothing_playing">Nothing Playing</string>
     <string name="exit">Exit</string>
 	
     <!-- *********** -->
