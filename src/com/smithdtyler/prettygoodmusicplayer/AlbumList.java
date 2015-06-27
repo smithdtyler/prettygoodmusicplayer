@@ -19,17 +19,11 @@
 package com.smithdtyler.prettygoodmusicplayer;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -46,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AlbumList extends Activity {
+public class AlbumList extends AbstractMusicList {
 	public static final String ALBUM_NAME = "ALBUM_NAME";
 
 	private static final String TAG = "AlbumList";
@@ -56,8 +50,7 @@ public class AlbumList extends Activity {
 	private String currentTheme;
 	private String currentSize;
 
-	private BroadcastReceiver exitReceiver;
-	
+
 	private void populateAlbums(String artistName, String artistPath){
 		albums = new ArrayList<Map<String,String>>();
 		
@@ -174,27 +167,7 @@ public class AlbumList extends Activity {
              }
         });
         
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
-        exitReceiver = new BroadcastReceiver(){
 
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				Log.i(TAG, "Received exit request, shutting down...");
-				Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
-				msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
-				startService(msgIntent);
-				finish();
-			}
-        	
-        };
-        registerReceiver(exitReceiver, intentFilter);
-	}
-    
-	@Override
-	protected void onDestroy() {
-    	unregisterReceiver(exitReceiver);
-    	super.onDestroy();
 	}
 	
     @Override
@@ -217,51 +190,5 @@ public class AlbumList extends Activity {
         	startActivity(getIntent());
         }
 	}
-
-	@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.album_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-		if (id == R.id.action_now_playing) {
-			if (MusicPlaybackService.isRunning()) {
-				Intent intent = new Intent(AlbumList.this, NowPlaying.class);
-				intent.putExtra("From_Notification", true);
-				startActivity(intent);
-			} else {
-				Toast.makeText(AlbumList.this, R.string.nothing_playing, Toast.LENGTH_SHORT).show();
-			}
-			return true;
-		}
-		if (id == R.id.action_settings) {
-        	Intent intent = new Intent(AlbumList.this, SettingsActivity.class);
-        	startActivity(intent);
-            return true;
-        }
-        if (id == R.id.action_exit) {
-			Intent broadcastIntent = new Intent();
-			broadcastIntent.setAction("com.smithdtyler.ACTION_EXIT");
-			sendBroadcast(broadcastIntent);
-			Intent startMain = new Intent(Intent.ACTION_MAIN);
-		    startMain.addCategory(Intent.CATEGORY_HOME);
-		    startMain.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		    startActivity(startMain);
-			finish();
-            return true;
-        }
-        if(id == android.R.id.home){
-        	onBackPressed();
-        	return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 }

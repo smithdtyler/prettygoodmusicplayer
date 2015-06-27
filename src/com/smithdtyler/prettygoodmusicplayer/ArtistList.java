@@ -19,28 +19,21 @@
 package com.smithdtyler.prettygoodmusicplayer;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,7 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@SuppressLint("DefaultLocale") public class ArtistList extends Activity {
+@SuppressLint("DefaultLocale") public class ArtistList extends AbstractMusicList {
 	private static final String TAG = "Artist List";
 	public static final String ARTIST_NAME = "ARTIST_NAME";
 	public static final String ARTISTS_DIR = "ARTIST_DIRECTORY";
@@ -63,8 +56,7 @@ import java.util.Map;
 	private String baseDir;
 	private Object currentTheme;
 	private String currentSize;
-	private BroadcastReceiver exitReceiver;
-	
+
 	private void populateArtists(String baseDir){
 		artists = new ArrayList<Map<String,String>>();
 		File f = new File(baseDir);
@@ -80,23 +72,23 @@ import java.util.Map;
 			}
 		}
 		
-		Collections.sort(artistDirs, new Comparator<String>(){
+		Collections.sort(artistDirs, new Comparator<String>() {
 
 			@Override
 			public int compare(String arg0, String arg1) {
-		        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ArtistList.this);
-		        boolean ignoreleadingthe = sharedPref.getBoolean("ignore_leading_the_in_artist", false);
-				if(ignoreleadingthe){
-					if(arg0.toLowerCase().startsWith("the ")){
+				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(ArtistList.this);
+				boolean ignoreleadingthe = sharedPref.getBoolean("ignore_leading_the_in_artist", false);
+				if (ignoreleadingthe) {
+					if (arg0.toLowerCase().startsWith("the ")) {
 						arg0 = arg0.substring(4);
 					}
-					if(arg1.toLowerCase().startsWith("the ")){
+					if (arg1.toLowerCase().startsWith("the ")) {
 						arg1 = arg1.substring(4);
 					}
 				}
-		        return(arg0.toUpperCase().compareTo(arg1.toUpperCase()));
+				return (arg0.toUpperCase().compareTo(arg1.toUpperCase()));
 			}
-			
+
 		});
 		
 		for(String artist : artistDirs){
@@ -151,11 +143,10 @@ import java.util.Map;
         if(currentSize == null){
         	currentSize = size;
         }
-        if(!currentTheme.equals(theme) || !currentSize.equals(size)){
-        	finish();
-        	startActivity(getIntent());
-        }
-        
+        if(!currentTheme.equals(theme) || !currentSize.equals(size)) {
+			finish();
+			startActivity(getIntent());
+		}
 	}
 
 	@Override
@@ -249,72 +240,8 @@ import java.util.Map;
             	 }
              }
         });
-        
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
-        exitReceiver = new BroadcastReceiver(){
-
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				Log.i(TAG, "Received exit request, shutting down...");
-				Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
-				msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
-				startService(msgIntent);
-				finish();
-			}
-        	
-        };
-        registerReceiver(exitReceiver, intentFilter);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.artist_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-		if (id == R.id.action_now_playing) {
-			if (MusicPlaybackService.isRunning()) {
-				Intent intent = new Intent(ArtistList.this, NowPlaying.class);
-				intent.putExtra("From_Notification", true);
-				startActivity(intent);
-			} else {
-				Toast.makeText(ArtistList.this, R.string.nothing_playing, Toast.LENGTH_SHORT).show();
-			}
-			return true;
-		}
-        if (id == R.id.action_settings) {
-        	Intent intent = new Intent(ArtistList.this, SettingsActivity.class);
-        	startActivity(intent);
-            return true;
-        }
-        if (id == R.id.action_exit) {
-			Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
-			msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
-			startService(msgIntent);
-			Intent startMain = new Intent(Intent.ACTION_MAIN);
-		    startMain.addCategory(Intent.CATEGORY_HOME);
-		    startMain.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		    startActivity(startMain);
-			finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    
-    @Override
-	protected void onDestroy() {
-    	unregisterReceiver(exitReceiver);
-    	super.onDestroy();
-	}
 
 	// If the back key is pressed, ask if they really want to quit
     // if they do, pass the key press along. If they don't,
