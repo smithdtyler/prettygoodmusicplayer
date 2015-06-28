@@ -28,31 +28,12 @@ import android.view.KeyEvent;
 // Still trying to figure out how to receive bluetooth button presses...
 public class MusicBroadcastReceiver extends BroadcastReceiver {
 	private static final String TAG = "MusicBroadcastReceiver";
-
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.i(TAG, "got a thingy!");
-		if (Intent.ACTION_HEADSET_PLUG.equals(intent.getAction())) {
-			Log.i(TAG, "Got headset plug action");
-			/*
-			 * state - 0 for unplugged, 1 for plugged. name - Headset type,
-			 * human readable string microphone - 1 if headset has a microphone,
-			 * 0 otherwise
-			 */
-			if (intent.getIntExtra("state", -1) == 0) {
-				Log.i(TAG, "headphones disconnected, pausing in 1 seconds");
-				Intent msgIntent = new Intent(context, MusicPlaybackService.class);
-				msgIntent.putExtra("Message", MusicPlaybackService.MSG_PAUSE_IN_ONE_SEC);
-				context.startService(msgIntent);
-				// If the headphone is plugged back in quickly after being
-				// unplugged, keep playing
-			} else if (intent.getIntExtra("state", -1) == 1) {
-				Log.i(TAG, "headphones plugged back in, cancelling disconnect");
-				Intent msgIntent = new Intent(context, MusicPlaybackService.class);
-				msgIntent.putExtra("Message", MusicPlaybackService.MSG_CANCEL_PAUSE_IN_ONE_SEC);
-				context.startService(msgIntent);
-			}
-		} else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED
+
+		if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED
 				.equals(intent.getAction())
 				|| BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(intent
 						.getAction())) {

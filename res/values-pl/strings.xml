@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pretty Good Music Player</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="title_activity_album_list">Albumy</string>
+    <string name="title_activity_song_list">Utwory</string>
+    <string name="title_activity_now_playing">Teraz Odtwarzane</string>
+    <string name="title_activity_settings">Ustawienia</string>
+    <string name="notification_title">Pretty Good Music Player</string>
+    <string name="notification_message">Odtwarzane</string>
+	<string name="ticker_text">Usługa Odtwarzania Muzyki</string>
+	<string name="next">Następny</string>
+	<string name="pause">Pauza</string>
+	<string name="play">Odtwórz</string>
+	<string name="previous">Poprzedni</string>
+    <string name="resume">Kontynuuj</string>
+    <string name="jumpback">Skocz w tył</string>
+    <string name="shuffle">Losowo</string>
+    <string name="exit">Exit</string>
+    
+    <!-- *********** -->
+    <!-- Preferences -->
+    <!-- *********** -->
+    
+    <!-- File Preferences -->
+    <string name="file_preferences_title">Ustawienia Plików</string>
+    <string name="choose_music_directory_prompt">Folder z Muzyką</string>
+    <string name="choose_music_directory_summary">Wybierz Folder Zawierający Artystów</string>
+	<string name="directorydialogprompt">Ścieżka do Folderu z Muzyką</string>
+    <string name="directorydialoghere">Tutaj!</string>
+    <string name="directorydialogup">Folder Wyżej</string>
+    
+    <!-- Theme Preferences -->
+    <string name="theme_title">Motyw</string>
+    <string name="light">Jasny</string>
+    <string name="dark">Ciemny</string>
+    <string name="small">Mały</string>
+    <string name="medium">Średni</string>
+    <string name="large">Duży</string>
+    <string name="style_preference_title">Ustawienia Stylów</string>
+    <string name="theme_select_prompt">Wybierz Motyw Odtwarzacza</string>
+    <string name="accent_color_title">Kolor</string>
+    <string name="custom_accent_color_title">Niestandardowy Kolor (aarrggbb)</string>
+    <string name="text_size_title">Rozmiar Tekstu</string>
+    <string name="text_size_prompt">Wybierz Rozmiar Tekstu Odtwarzacza</string>
+    <string name="full_screen_now_playing_title">Pełnoekranowe Teraz Odtwarzane</string>
+    <string name="ignore_leading_the_title">Pomiń \'The\' w Nazwie Artysty</string>
+    
+    <!-- Playback Preferences -->    
+    <string name="playback_title">Odtwarzanie</string>
+    <string name="headphone_disconnect_behavior">Zachowanie po Odłączeniu Słuchawek</string>
+    <string name="pause_immediately">Natychmiastowa Pauza</string>
+    <string name="pause_after_one_sec">Pauza po Jednej Sekundzie</string>
+    <string name="resume_on_quick_reconnect">Kontynuuj po Szybkim Ponownym Podłączeniu</string>
+    <string name="resume_on_reconnect">Kontynuuj po Ponownym Podłączeniu</string>
+    <string name="podcasts_and_audiobooks_title">Podkasty i Audiobooki</string>
+    <string name="audiobook_mode">Tryb Audiobook</string>
+    
+</resources>

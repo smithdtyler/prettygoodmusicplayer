@@ -18,20 +18,15 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
@@ -46,6 +41,14 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @SuppressLint("DefaultLocale") public class ArtistList extends Activity {
 	private static final String TAG = "Artist List";
 	public static final String ARTIST_NAME = "ARTIST_NAME";
@@ -59,11 +62,12 @@ import android.widget.TextView;
 	private String baseDir;
 	private Object currentTheme;
 	private String currentSize;
+	private BroadcastReceiver exitReceiver;
 	
 	private void populateArtists(String baseDir){
 		artists = new ArrayList<Map<String,String>>();
 		File f = new File(baseDir);
-		if(!f.exists()){
+		if(!f.exists() || !f.isDirectory()){
 			Log.e(TAG, "Storage directory " + f + " does not exist!");
 			return;
 		}
@@ -135,8 +139,8 @@ import android.widget.TextView;
         }
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "Got configured size " + size);
         if(currentTheme == null){
@@ -187,26 +191,27 @@ import android.widget.TextView;
 
         PreferenceManager.setDefaultValues(this, R.xml.pretty_good_preferences, false);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "got configured size " + size);
         currentTheme = theme;
         currentSize = size;
-        if(theme.equalsIgnoreCase("dark")){
+        // These settings were fixed in english for a while, so check for old style settings as well as language specific ones.
+        if(theme.equalsIgnoreCase(getString(R.string.dark)) || theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
         		setTheme(R.style.PGMPDarkSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
         		setTheme(R.style.PGMPDarkMedium);
         	} else {
         		setTheme(R.style.PGMPDarkLarge);
         	}
-        } else if (theme.equalsIgnoreCase("light")){
+        } else if (theme.equalsIgnoreCase(getString(R.string.light)) || theme.equalsIgnoreCase("light")){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
         		setTheme(R.style.PGMPLightSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
         		setTheme(R.style.PGMPLightMedium);
         	} else {
         		setTheme(R.style.PGMPLightLarge);
@@ -243,6 +248,22 @@ import android.widget.TextView;
             	 }
              }
         });
+        
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
+        exitReceiver = new BroadcastReceiver(){
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.i(TAG, "Received exit request, shutting down...");
+				Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
+				startService(msgIntent);
+				finish();
+			}
+        	
+        };
+        registerReceiver(exitReceiver, intentFilter);
     }
 
 
@@ -264,10 +285,27 @@ import android.widget.TextView;
         	startActivity(intent);
             return true;
         }
+        if (id == R.id.action_exit) {
+			Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+			msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
+			startService(msgIntent);
+			Intent startMain = new Intent(Intent.ACTION_MAIN);
+		    startMain.addCategory(Intent.CATEGORY_HOME);
+		    startMain.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		    startActivity(startMain);
+			finish();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
     
-    // If the back key is pressed, ask if they really want to quit
+    @Override
+	protected void onDestroy() {
+    	unregisterReceiver(exitReceiver);
+    	super.onDestroy();
+	}
+
+	// If the back key is pressed, ask if they really want to quit
     // if they do, pass the key press along. If they don't,
     // eat it.
     @Override

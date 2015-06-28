@@ -18,17 +18,14 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -39,6 +36,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class SongList extends Activity {
 	public static final String SONG_ABS_FILE_NAME_LIST = "SONG_LIST";
@@ -56,6 +61,7 @@ public class SongList extends Activity {
 	private String artistDir;
 	private File albumDir;
 	private boolean audiobookMode;
+	private BroadcastReceiver exitReceiver;
 	
 	private void populateSongs(String artistName, String albumDirName, String artistAbsDirName){
 		
@@ -117,19 +123,17 @@ public class SongList extends Activity {
 					songFiles.addAll(songFilesInAlbumList);
 				}
 			}
-			
-			if(songFiles.isEmpty()){
-				// if there aren't any albums, check directly under the artist directory
-				File[] songFilesInArtist = artistDir.listFiles();
-				List<File> songFilesInArtistList = new ArrayList<File>();
-				for(File songFile : songFilesInArtist){
-					if(Utils.isValidSongFile(songFile)){
-						songFilesInArtistList.add(songFile);
-					}
+
+			// In addition to the albums, check directly under the artist directory
+			File[] songFilesInArtist = artistDir.listFiles();
+			List<File> songFilesInArtistList = new ArrayList<File>();
+			for(File songFile : songFilesInArtist){
+				if(Utils.isValidSongFile(songFile)){
+					songFilesInArtistList.add(songFile);
 				}
-				Collections.sort(songFilesInArtistList, Utils.songFileComparator);
-				songFiles.addAll(songFilesInArtistList);
 			}
+			Collections.sort(songFilesInArtistList, Utils.songFileComparator);
+			songFiles.addAll(songFilesInArtistList);
 		}
 		
 		for(File song : songFiles){
@@ -198,27 +202,28 @@ public class SongList extends Activity {
 		actionBar.setTitle(artistName + ": " + album);
 		
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         audiobookMode = sharedPref.getBoolean("pref_audiobook_mode", false);
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "got configured size " + size);
         currentTheme = theme;
         currentSize = size;
-        if(theme.equalsIgnoreCase("dark")){
+        // These settings were fixed in english for a while, so check for old style settings as well as language specific ones.
+        if(theme.equalsIgnoreCase(getString(R.string.dark)) || theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
         		setTheme(R.style.PGMPDarkSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
         		setTheme(R.style.PGMPDarkMedium);
         	} else {
         		setTheme(R.style.PGMPDarkLarge);
         	}
-        } else if (theme.equalsIgnoreCase("light")){
+        } else if (theme.equalsIgnoreCase(getString(R.string.light)) || theme.equalsIgnoreCase("light")){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
         		setTheme(R.style.PGMPLightSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
         		setTheme(R.style.PGMPLightMedium);
         	} else {
         		setTheme(R.style.PGMPLightLarge);
@@ -265,6 +270,46 @@ public class SongList extends Activity {
             	 startActivity(intent);
              }
         });
+
+		lv.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				showSongSettingsDialog();
+				return true;
+			}
+		});
+        
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
+        exitReceiver = new BroadcastReceiver(){
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.i(TAG, "Received exit request, shutting down...");
+				Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
+				startService(msgIntent);
+				finish();
+			}
+        	
+        };
+        registerReceiver(exitReceiver, intentFilter);
+	}
+
+	private void showSongSettingsDialog(){
+		new AlertDialog.Builder(this).setTitle("Song Details")
+				.setItems(new String[]{"enabled"}, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+					}
+				});
+	}
+	
+    @Override
+	protected void onDestroy() {
+    	unregisterReceiver(exitReceiver);
+    	super.onDestroy();
 	}
 	
     @Override
@@ -285,6 +330,17 @@ public class SongList extends Activity {
         	startActivity(intent);
             return true;
         }
+        if (id == R.id.action_exit) {
+			Intent broadcastIntent = new Intent();
+			broadcastIntent.setAction("com.smithdtyler.ACTION_EXIT");
+			sendBroadcast(broadcastIntent);
+			Intent startMain = new Intent(Intent.ACTION_MAIN);
+		    startMain.addCategory(Intent.CATEGORY_HOME);
+		    startMain.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		    startActivity(startMain);
+			finish();
+            return true;
+        }
         if(id == android.R.id.home){
         	onBackPressed();
         	return true;
@@ -296,8 +352,8 @@ public class SongList extends Activity {
 	protected void onResume() {
 		super.onResume();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         boolean audiobookModePref = sharedPref.getBoolean("pref_audiobook_mode", false);
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "Got configured size " + size);

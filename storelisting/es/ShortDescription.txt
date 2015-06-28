@@ -1,0 +1,3 @@
+Un reproductor musical sin anuncios, sin requerir conexion a la red, y con control por Bluetooth.
+
+Un reproductor musical sin anuncios y sin requerir conexion a la red.

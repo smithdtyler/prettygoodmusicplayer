@@ -23,9 +23,11 @@ import java.util.Locale;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -42,6 +44,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -74,6 +77,7 @@ public class NowPlaying extends Activity {
 	private String currentSize;
 	private boolean currentFullScreen;
 	private int desiredSongProgress;
+	private BroadcastReceiver exitReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,29 +116,31 @@ public class NowPlaying extends Activity {
 		}
 
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-		String theme = sharedPref.getString("pref_theme", "light");
-		String size = sharedPref.getString("pref_text_size", "medium");
+		String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+		String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
 		Log.i(TAG, "got configured theme " + theme);
 		Log.i(TAG, "got configured size " + size);
-		if(theme.equalsIgnoreCase("dark")){
-			Log.i(TAG, "setting theme to " + theme);
-			if(size.equalsIgnoreCase("small")){
-				setTheme(R.style.PGMPDarkSmall);
-			} else if (size.equalsIgnoreCase("medium")){
-				setTheme(R.style.PGMPDarkMedium);
-			} else {
-				setTheme(R.style.PGMPDarkLarge);
-			}
-		} else if (theme.equalsIgnoreCase("light")){
-			Log.i(TAG, "setting theme to " + theme);
-			if(size.equalsIgnoreCase("small")){
-				setTheme(R.style.PGMPLightSmall);
-			} else if (size.equalsIgnoreCase("medium")){
-				setTheme(R.style.PGMPLightMedium);
-			} else {
-				setTheme(R.style.PGMPLightLarge);
-			}
-		}
+		
+        // These settings were fixed in english for a while, so check for old style settings as well as language specific ones.
+        if(theme.equalsIgnoreCase(getString(R.string.dark)) || theme.equalsIgnoreCase("dark")){
+        	Log.i(TAG, "setting theme to " + theme);
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
+        		setTheme(R.style.PGMPDarkSmall);
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
+        		setTheme(R.style.PGMPDarkMedium);
+        	} else {
+        		setTheme(R.style.PGMPDarkLarge);
+        	}
+        } else if (theme.equalsIgnoreCase(getString(R.string.light)) || theme.equalsIgnoreCase("light")){
+        	Log.i(TAG, "setting theme to " + theme);
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
+        		setTheme(R.style.PGMPLightSmall);
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
+        		setTheme(R.style.PGMPLightMedium);
+        	} else {
+        		setTheme(R.style.PGMPLightLarge);
+        	}
+        }
 
 		boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", false);
 		currentFullScreen = fullScreen;
@@ -197,6 +203,15 @@ public class NowPlaying extends Activity {
 			}
 
 		});
+		
+		previous.setOnLongClickListener(new OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				jumpBack();
+				return true;
+			}
+		});
 
 		ImageButton next = (ImageButton) findViewById(R.id.next);
 		next.setOnClickListener(new OnClickListener() {
@@ -212,6 +227,14 @@ public class NowPlaying extends Activity {
 			@Override
 			public void onClick(View v) {
 				toggleShuffle();
+			}
+		});
+		
+		final ImageButton jumpback = (ImageButton) findViewById(R.id.jumpback);
+		jumpback.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				jumpBack();
 			}
 		});
 
@@ -251,11 +274,28 @@ public class NowPlaying extends Activity {
 			}
 
 		});
+		
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
+        exitReceiver = new BroadcastReceiver(){
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.i(TAG, "Received exit request, shutting down...");
+				Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
+				startService(msgIntent);
+				finish();
+			}
+        	
+        };
+        registerReceiver(exitReceiver, intentFilter);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		unregisterReceiver(exitReceiver);
 		unbindService(mConnection);
 	}
 
@@ -301,6 +341,17 @@ public class NowPlaying extends Activity {
 		}
 	}
 
+	public void jumpBack(){
+		Log.d(TAG, "JumpBack clicked...");
+		Message msg = Message.obtain(null, MusicPlaybackService.MSG_JUMPBACK);
+		try {
+			Log.i(TAG, "Sending a request to jump back!");
+			mService.send(msg);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void toggleShuffle(){
 		Log.d(TAG, "Shuffle clicked...");
 		Message msg = Message.obtain(null, MusicPlaybackService.MSG_TOGGLE_SHUFFLE);
@@ -493,6 +544,17 @@ public class NowPlaying extends Activity {
 			startActivity(intent);
 			return true;
 		}
+		if (id == R.id.action_exit) {
+			Intent broadcastIntent = new Intent();
+			broadcastIntent.setAction("com.smithdtyler.ACTION_EXIT");
+			sendBroadcast(broadcastIntent);
+			Intent startMain = new Intent(Intent.ACTION_MAIN);
+		    startMain.addCategory(Intent.CATEGORY_HOME);
+		    startMain.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		    startActivity(startMain);
+			finish();
+            return true;
+        }
         if(id == android.R.id.home){
         	onBackPressed();
         	return true;
@@ -571,8 +633,8 @@ public class NowPlaying extends Activity {
 			}
 		}
 		
-		String theme = sharedPref.getString("pref_theme", "light");
-		String size = sharedPref.getString("pref_text_size", "medium");
+		String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+		String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
 		boolean fullScreen = sharedPref.getBoolean("pref_full_screen_now_playing", false);
 		Log.i(TAG, "got configured theme " + theme);
 		Log.i(TAG, "Got configured size " + size);

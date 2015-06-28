@@ -28,7 +28,10 @@ import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -52,6 +55,8 @@ public class AlbumList extends Activity {
 
 	private String currentTheme;
 	private String currentSize;
+
+	private BroadcastReceiver exitReceiver;
 	
 	private void populateAlbums(String artistName, String artistPath){
 		albums = new ArrayList<Map<String,String>>();
@@ -97,7 +102,7 @@ public class AlbumList extends Activity {
 		if(albums.size() == 1){
        	 Intent intent = new Intent(AlbumList.this, SongList.class);
 		 intent.putExtra(ALBUM_NAME, "All");
-       	 intent.putExtra(ArtistList.ARTIST_NAME, artist);
+       	 intent.putExtra(ArtistList.ARTIST_NAME, artist.getName());
        	 intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artistPath);
        	 startActivity(intent);
        	 // In this case we don't want to add the AlbumList to the back stack
@@ -117,26 +122,27 @@ public class AlbumList extends Activity {
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setTitle(artist);
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "got configured size " + size);
         currentTheme = theme;
         currentSize = size;
-        if(theme.equalsIgnoreCase("dark")){
+        // These settings were fixed in english for a while, so check for old style settings as well as language specific ones.
+        if(theme.equalsIgnoreCase(getString(R.string.dark)) || theme.equalsIgnoreCase("dark")){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
         		setTheme(R.style.PGMPDarkSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
         		setTheme(R.style.PGMPDarkMedium);
         	} else {
         		setTheme(R.style.PGMPDarkLarge);
         	}
-        } else if (theme.equalsIgnoreCase("light")){
+        } else if (theme.equalsIgnoreCase(getString(R.string.light)) || theme.equalsIgnoreCase("light")){
         	Log.i(TAG, "setting theme to " + theme);
-        	if(size.equalsIgnoreCase("small")){
+        	if(size.equalsIgnoreCase(getString(R.string.small)) || size.equalsIgnoreCase("small")){
         		setTheme(R.style.PGMPLightSmall);
-        	} else if (size.equalsIgnoreCase("medium")){
+        	} else if (size.equalsIgnoreCase(getString(R.string.medium)) || size.equalsIgnoreCase("medium")){
         		setTheme(R.style.PGMPLightMedium);
         	} else {
         		setTheme(R.style.PGMPLightLarge);
@@ -167,15 +173,36 @@ public class AlbumList extends Activity {
             	 startActivity(intent);
              }
         });
+        
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.smithdtyler.ACTION_EXIT");
+        exitReceiver = new BroadcastReceiver(){
 
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.i(TAG, "Received exit request, shutting down...");
+				Intent msgIntent = new Intent(getBaseContext(), MusicPlaybackService.class);
+				msgIntent.putExtra("Message", MusicPlaybackService.MSG_STOP_SERVICE);
+				startService(msgIntent);
+				finish();
+			}
+        	
+        };
+        registerReceiver(exitReceiver, intentFilter);
+	}
+    
+	@Override
+	protected void onDestroy() {
+    	unregisterReceiver(exitReceiver);
+    	super.onDestroy();
 	}
 	
     @Override
 	protected void onResume() {
 		super.onResume();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String theme = sharedPref.getString("pref_theme", "light");
-        String size = sharedPref.getString("pref_text_size", "medium");
+        String theme = sharedPref.getString("pref_theme", getString(R.string.light));
+        String size = sharedPref.getString("pref_text_size", getString(R.string.medium));
         Log.i(TAG, "got configured theme " + theme);
         Log.i(TAG, "Got configured size " + size);
         if(currentTheme == null){
@@ -207,6 +234,17 @@ public class AlbumList extends Activity {
         if (id == R.id.action_settings) {
         	Intent intent = new Intent(AlbumList.this, SettingsActivity.class);
         	startActivity(intent);
+            return true;
+        }
+        if (id == R.id.action_exit) {
+			Intent broadcastIntent = new Intent();
+			broadcastIntent.setAction("com.smithdtyler.ACTION_EXIT");
+			sendBroadcast(broadcastIntent);
+			Intent startMain = new Intent(Intent.ACTION_MAIN);
+		    startMain.addCategory(Intent.CATEGORY_HOME);
+		    startMain.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		    startActivity(startMain);
+			finish();
             return true;
         }
         if(id == android.R.id.home){

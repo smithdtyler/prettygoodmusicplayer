@@ -2,19 +2,58 @@
 <resources>
     <string name="app_name">Pretty Good Music Player</string>
     <string name="action_settings">Konfiguration</string>
-    <string name="title_activity_album_list">Albums</string>
-    <string name="title_activity_song_list">Lieden</string>
-    <string name="title_activity_now_playing">Jetzt Spielt</string>
+    <string name="title_activity_album_list">Alben</string>
+    <string name="title_activity_song_list">Lieder</string>
+    <string name="title_activity_now_playing">Jetzt spielt</string>
     <string name="title_activity_settings">Konfiguration</string>
     <string name="notification_title">Pretty Good Music Player</string>
-    <string name="notification_message">Music Playing</string>
+    <string name="notification_message">Musik spielt</string>
 	<string name="ticker_text">Music Playback Service</string>
 	<string name="next">Nächster</string>
 	<string name="pause">Pause</string>
 	<string name="play">Play</string>
 	<string name="previous">Vorheriger</string>
-	<string name="directorydialogprompt">Wo sind Ihren Artistverzeichnissen?</string>
-    <string name="directorydialoghere">Hier!</string>
-    <string name="directorydialogup">Verzeichniss nach oben</string>
     <string name="resume">Fortsetzen</string>
+    <string name="jumpback">Jump Back</string>
+    <string name="shuffle">Shuffle</string>
+	<string name="exit">Exit</string>
+	
+    <!-- *********** -->
+    <!-- Preferences -->
+    <!-- *********** -->
+    
+    <!-- File Preferences -->
+    <string name="file_preferences_title">File Preferences</string>
+    <string name="choose_music_directory_prompt">Choose Music Directory</string>
+    <string name="choose_music_directory_summary">Pick the Directory Containing Your Artists</string>
+	<string name="directorydialogprompt">Wo sind Ihre Künstlerverzeichnisse?</string>
+    <string name="directorydialoghere">Hier!</string>
+    <string name="directorydialogup">Übergeordnetes Verzeichnis</string>
+    
+    <!-- Theme Preferences -->
+    <string name="theme_title">Theme</string>
+    <string name="light">Hell</string>
+    <string name="dark">Dunkel</string>
+    <string name="small">Klein</string>
+    <string name="medium">Mittel</string>
+    <string name="large">Groß</string>
+    <string name="style_preference_title">Style Preferences</string>
+    <string name="theme_select_prompt">Pick the theme for the Music Player</string>
+    <string name="accent_color_title">Accent Color</string>
+    <string name="custom_accent_color_title">Custom Accent Color (aarrggbb)</string>
+    <string name="text_size_title">Text Size</string>
+    <string name="text_size_prompt">Pick the text size for the Music Player</string>
+    <string name="full_screen_now_playing_title">Full Screen Now Playing</string>
+    <string name="ignore_leading_the_title">Ignore Leading \'The\' in Artist Names</string>
+    
+    <!-- Playback Preferences -->
+    <string name="headphone_disconnect_behavior">Headphone Disconnect Behavior</string>
+    <string name="playback_title">Playback</string>
+    <string name="pause_immediately">Pause Immediately</string>
+    <string name="pause_after_one_sec">Pause After One Second</string>
+    <string name="resume_on_quick_reconnect">Resume on Quick Reconnect</string>
+    <string name="resume_on_reconnect">Resume on Reconnect</string>
+    <string name="podcasts_and_audiobooks_title">Podcasts and Audiobooks</string>
+    <string name="audiobook_mode">Audiobook Mode</string>
+
 </resources>
