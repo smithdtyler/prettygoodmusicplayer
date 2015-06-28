@@ -16,6 +16,7 @@
     <string name="resume">Возобновить</string>
     <string name="jumpback">Прыжок назад</string>
     <string name="shuffle">Перемешивать</string>
+    <string name="nothing_playing">Nothing Playing</string>
     <string name="exit">Выход</string>
     
     <!-- *********** -->
