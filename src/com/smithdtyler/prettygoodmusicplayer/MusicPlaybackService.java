@@ -18,16 +18,6 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -55,6 +45,16 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MusicPlaybackService extends Service {
 	static final int MSG_REGISTER_CLIENT = 1;
@@ -618,15 +618,33 @@ public class MusicPlaybackService extends Service {
 		}
 	}
 
+	/**
+	 * Pause the currently playing song.
+	 */
 	private synchronized void pause() {
-		if (mp.isPlaying()) {
+		// Sometimes the call to isPlaying can throw an error "internal/external state mismatch corrected"
+		// When this happens, I think the player moves itself to "paused" even though it's still playing.
+		//if (mp.isPlaying()) {
+		//	mp.pause();
+		//} else {
+		//	Log.w(TAG, "Odd condition - pause was called but the media player reported that it is already paused");
+		try{
+			// this is a hack, but it seems to be the most consistent way to address the problem
+			// this forces the media player to check its current state before trying to pause.
+			int position = mp.getCurrentPosition();
+			mp.seekTo(position);
+			mp.start();
 			mp.pause();
-		} else {
-			// do nothing
+		} catch (Exception e){
+			Log.w(TAG, "Caught exception while trying to pause ", e);
 		}
+		//}
 		updateNotification();
 	}
 
+	/**
+	 *
+	 */
 	private void resetShuffle(){
 		synchronized(shuffleFrontList){
 			shuffleFrontList.clear();
