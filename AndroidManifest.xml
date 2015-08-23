@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.smithdtyler.prettygoodmusicplayer"
-    android:versionCode="62"
-    android:versionName="3.2.11" xmlns:android="http://schemas.android.com/apk/res/android"
+    android:versionCode="63"
+    android:versionName="3.2.12" xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk
@@ -27,6 +27,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.CATEGORY_APP_MUSIC " />
             </intent-filter>
         </activity>
         <activity
