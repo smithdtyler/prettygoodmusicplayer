@@ -632,9 +632,9 @@ public class MusicPlaybackService extends Service {
 			// this is a hack, but it seems to be the most consistent way to address the problem
 			// this forces the media player to check its current state before trying to pause.
 			int position = mp.getCurrentPosition();
+			mp.stop();
+			mp.prepare();
 			mp.seekTo(position);
-			mp.start();
-			mp.pause();
 		} catch (Exception e){
 			Log.w(TAG, "Caught exception while trying to pause ", e);
 		}
