@@ -40,6 +40,8 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -146,6 +148,8 @@ public class MusicPlaybackService extends Service {
 	private long lastResumeUpdateTime;
 	private SharedPreferences sharedPref;
 	private HeadphoneBroadcastReceiver headphoneReceiver;
+	private PowerManager powerManager;
+	WakeLock wakeLock;
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -164,6 +168,10 @@ public class MusicPlaybackService extends Service {
 		Log.i(TAG, "Music Playback Service Created!");
 		isRunning = true;
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+		powerManager =(PowerManager) getSystemService(POWER_SERVICE);
+		wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+				"PGMPWakeLock");
 
 		random = new Random();
 
@@ -473,6 +481,7 @@ public class MusicPlaybackService extends Service {
 		mp.stop();
 		mp.reset();
 		mp.release();
+		wakeLock.release();
 		Log.i("MyService", "Service Stopped.");
 		isRunning = false;
 	}
@@ -559,6 +568,7 @@ public class MusicPlaybackService extends Service {
 			if(songProgress > 0){
 				mp.seekTo(songProgress);
 			}
+			wakeLock.acquire();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -612,6 +622,7 @@ public class MusicPlaybackService extends Service {
 				Log.d(TAG, "We got audio focus!");
 				mp.start();
 				updateNotification();
+				wakeLock.acquire();
 			} else {
 				Log.e(TAG, "Unable to get audio focus");
 			}
@@ -635,6 +646,7 @@ public class MusicPlaybackService extends Service {
 			mp.stop();
 			mp.prepare();
 			mp.seekTo(position);
+			wakeLock.release();
 		} catch (Exception e){
 			Log.w(TAG, "Caught exception while trying to pause ", e);
 		}
