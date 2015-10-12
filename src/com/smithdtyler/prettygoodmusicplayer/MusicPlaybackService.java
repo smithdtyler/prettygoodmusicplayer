@@ -481,7 +481,9 @@ public class MusicPlaybackService extends Service {
 		mp.stop();
 		mp.reset();
 		mp.release();
-		wakeLock.release();
+		if (wakeLock.isHeld()) {
+			wakeLock.release();
+		}
 		Log.i("MyService", "Service Stopped.");
 		isRunning = false;
 	}
