@@ -58,6 +58,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ch.blinkenlights.android.vanilla.ReadaheadThread;
+
 public class MusicPlaybackService extends Service {
 	static final int MSG_REGISTER_CLIENT = 1;
 	static final int MSG_UNREGISTER_CLIENT = 2;
@@ -150,6 +152,7 @@ public class MusicPlaybackService extends Service {
 	private HeadphoneBroadcastReceiver headphoneReceiver;
 	private PowerManager powerManager;
 	WakeLock wakeLock;
+	private ReadaheadThread mReadaheadThread;
 
 	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
@@ -176,6 +179,7 @@ public class MusicPlaybackService extends Service {
 		random = new Random();
 
 		mp = new MediaPlayer();
+		mReadaheadThread = new ReadaheadThread();
 
 		mp.setOnCompletionListener(new OnCompletionListener() {
 
@@ -543,6 +547,7 @@ public class MusicPlaybackService extends Service {
 			songFile = new File(next);
 			fis = new FileInputStream(songFile);
 			mp.setDataSource(fis.getFD());
+			mReadaheadThread.setSource(songFile.getAbsolutePath());
 			mp.prepare();
 			mp.start();
 		} catch (IOException e) {
@@ -566,6 +571,7 @@ public class MusicPlaybackService extends Service {
 		try {
 			fis = new FileInputStream(songFile);
 			mp.setDataSource(fis.getFD());
+			mReadaheadThread.setSource(songFile.getAbsolutePath());
 			mp.prepare();
 			if(songProgress > 0){
 				mp.seekTo(songProgress);
@@ -719,6 +725,7 @@ public class MusicPlaybackService extends Service {
 			songFile = new File(next);
 			fis = new FileInputStream(songFile);
 			mp.setDataSource(fis.getFD());
+			mReadaheadThread.setSource(songFile.getAbsolutePath());
 			mp.prepare();
 			mp.start();
 		} catch (IOException e) {
