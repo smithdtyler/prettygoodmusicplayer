@@ -16,45 +16,45 @@
     <string name="resume">Pokračovat</string>
     <string name="jumpback">Skočit zpět</string>
     <string name="shuffle">Náhodně</string>
-    <string name="nothing_playing">Nothing Playing</string>
-    <string name="exit">Exit</string>
-
-	<!-- *********** -->
+    <string name="nothing_playing">Nic nehraje</string>
+    <string name="exit">Ukončit</string>
+    
+    <!-- *********** -->
     <!-- Preferences -->
     <!-- *********** -->
     
     <!-- File Preferences -->
-    <string name="file_preferences_title">File Preferences</string>
-    <string name="choose_music_directory_prompt">Choose Music Directory</string>
-    <string name="choose_music_directory_summary">Pick the Directory Containing Your Artists</string>
-    <string name="directorydialogprompt">Kde jsou umístěny adresáře s hudbou?</string>
+    <string name="file_preferences_title">Nastavení souboru</string>
+    <string name="choose_music_directory_prompt">Vybrat adresář s hudbou</string>
+    <string name="choose_music_directory_summary">Vybrat adresář obsahující hudební umělce</string>
+	<string name="directorydialogprompt">Kde jsou umístěny adresáře s hudbou?</string>
     <string name="directorydialoghere">Tady jsou!</string>
     <string name="directorydialogup">Nadřazený adresář</string>
-
+    
     <!-- Theme Preferences -->
-    <string name="theme_title">Theme</string>
+    <string name="theme_title">Vzhled</string>
     <string name="light">Světlý</string>
     <string name="dark">Tmavý</string>
     <string name="small">Malý</string>
     <string name="medium">Střední</string>
     <string name="large">Velký</string>
-    <string name="style_preference_title">Style Preferences</string>
-    <string name="theme_select_prompt">Pick the theme for the Music Player</string>
-    <string name="accent_color_title">Accent Color</string>
-    <string name="custom_accent_color_title">Custom Accent Color (aarrggbb)</string>
-    <string name="text_size_title">Text Size</string>
-    <string name="text_size_prompt">Pick the text size for the Music Player</string>
-    <string name="full_screen_now_playing_title">Full Screen Now Playing</string>
-    <string name="ignore_leading_the_title">Ignore Leading \'The\' in Artist Names</string>
-
-    <!-- Playback Preferences -->
-    <string name="headphone_disconnect_behavior">Headphone Disconnect Behavior</string>
-    <string name="playback_title">Playback</string>
-    <string name="pause_immediately">Pause Immediately</string>
-    <string name="pause_after_one_sec">Pause After One Second</string>
-    <string name="resume_on_quick_reconnect">Resume on Quick Reconnect</string>
-    <string name="resume_on_reconnect">Resume on Reconnect</string>
-    <string name="podcasts_and_audiobooks_title">Podcasts and Audiobooks</string>
-    <string name="audiobook_mode">Audiobook Mode</string>
+    <string name="style_preference_title">Nastavení vzhledu</string>
+    <string name="theme_select_prompt">Vybrat vzhled pro Music Player</string>
+    <string name="accent_color_title">Barva zvýraznění</string>
+    <string name="custom_accent_color_title">Vlastní barva zvýraznění (aarrggbb)</string>
+    <string name="text_size_title">Velikost písma</string>
+    <string name="text_size_prompt">Vybrat velikost písma pro Music Player</string>
+    <string name="full_screen_now_playing_title">Celá obrazovka právě hraje</string>
+    <string name="ignore_leading_the_title">Vypustit \'The\' ze jmen umělců</string>
+    
+    <!-- Playback Preferences -->    
+    <string name="playback_title">Přehrávání</string>
+    <string name="headphone_disconnect_behavior">Akce při odpojení sluchátek</string>
+    <string name="pause_immediately">Okamžitě pozastavit</string>
+    <string name="pause_after_one_sec">Pozastavit po jedné sekundě</string>
+    <string name="resume_on_quick_reconnect">Pokračovat v přehrávání při rychlém připojení</string>
+    <string name="resume_on_reconnect">Pokračovat při připojení</string>
+    <string name="podcasts_and_audiobooks_title">Podcasty a audioknihy</string>
+    <string name="audiobook_mode">Mód audioknih</string>
     
 </resources>
