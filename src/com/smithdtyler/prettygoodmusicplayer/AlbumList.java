@@ -51,6 +51,11 @@ public class AlbumList extends AbstractMusicList {
 	private String currentSize;
 
 
+	/**
+	 *
+	 * @param artistName
+	 * @param artistPath
+	 */
 	private void populateAlbums(String artistName, String artistPath){
 		albums = new ArrayList<Map<String,String>>();
 		
@@ -103,6 +108,70 @@ public class AlbumList extends AbstractMusicList {
        	 finish();
 		}
 	}
+
+	private void populateAlbums(String allDir){
+		albums = new ArrayList<Map<String,String>>();
+
+		File artist = new File(allDir);
+		Log.d(TAG, "storage directory = " + artist);
+		if(!artist.isDirectory() || (artist.listFiles() == null)){
+			Log.e(TAG, "Invalid artist directory provided: " +  allDir);
+			Toast.makeText(getApplicationContext(), "The selected directory is empty", Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		List<File> albumFiles = new ArrayList<>();
+		albumFiles.add(new File("All"));
+		recursivePopulateAlbums(artist, albumFiles);
+
+		for(File albumFile : albumFiles){
+			String album = albumFile.getName();
+			Log.v(TAG, "Adding album " + album);
+			Map<String,String> map = new HashMap<String, String>();
+			map.put("album", album);
+			albums.add(map);
+		}
+
+		// If albums size is 1, then there were no directories in this folder.
+		// skip straight to listing songs.
+		if(albums.size() == 1){
+			Intent intent = new Intent(AlbumList.this, SongList.class);
+			intent.putExtra(ALBUM_NAME, "All");
+			intent.putExtra(ArtistList.ARTIST_NAME, artist.getName());
+			intent.putExtra(ArtistList.ARTIST_ABS_PATH_NAME, artist);
+			startActivity(intent);
+			// In this case we don't want to add the AlbumList to the back stack
+			// so call 'finish' immediately.
+			finish();
+		}
+	}
+
+	private void recursivePopulateAlbums(File dir, List<File> albumFiles){
+		List<File> dirFiles = new ArrayList<File>();
+		if(dir.listFiles() != null){
+			for(File f : dir.listFiles()){
+				recursivePopulateAlbums(f, albumFiles);
+				if(f.isDirectory()) {
+					dirFiles.add(f);
+				}
+			}
+
+			Collections.sort(dirFiles, new Comparator<File>(){
+
+				@Override
+				public int compare(File lhs, File rhs) {
+					return lhs.getName().compareTo(rhs.getName());
+				}
+
+			});
+
+			for(File f : dirFiles){
+				albumFiles.add(f);
+			}
+		}
+
+
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +214,13 @@ public class AlbumList extends AbstractMusicList {
 		
 		 // Get the message from the intent
 	    Log.i(TAG, "Getting albums for " + artist);
+
+		if(artist.equals("All")){
+			// Find all folders under the root directory.
+			// In this case, artist absolute path will be the root directory.
+			final String allPath = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
+			populateAlbums(allPath);
+		}
 	    
 	    final String artistPath = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
 	    populateAlbums(artist, artistPath);

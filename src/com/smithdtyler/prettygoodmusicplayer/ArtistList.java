@@ -66,6 +66,7 @@ import java.util.Map;
 		}
 		
 		List<String> artistDirs = new ArrayList<String>();
+		artistDirs.add("All");
 		for(File dir : f.listFiles()){
 			if(Utils.isValidArtistDirectory(dir)){
 				artistDirs.add(dir.getName());
@@ -232,8 +233,13 @@ import java.util.Map;
             	 if(!clickedView.getText().equals(PICK_DIR_TEXT)){
 	            	 Intent intent = new Intent(ArtistList.this, AlbumList.class);
 	            	 intent.putExtra(ARTIST_NAME, clickedView.getText());
-	            	 intent.putExtra(ARTIST_ABS_PATH_NAME, baseDir + File.separator + clickedView.getText());
-	            	 startActivity(intent);
+					 if(clickedView.getText().equals("All")){
+						 intent.putExtra(ARTIST_ABS_PATH_NAME, baseDir);
+						 startActivity(intent);
+					 } else {
+						 intent.putExtra(ARTIST_ABS_PATH_NAME, baseDir + File.separator + clickedView.getText());
+						 startActivity(intent);
+					 }
             	 } else {
             		 Intent intent = new Intent(ArtistList.this, SettingsActivity.class);
             		 startActivity(intent);
