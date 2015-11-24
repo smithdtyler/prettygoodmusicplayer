@@ -3,6 +3,10 @@ prettygoodmusicplayer
 
 A music player for Android that hits the basics hard
 
+I do my best to address issues when they arise, but I'm pretty busy, so it may take a long time for me to push updates.
+
+If you're having troubles with media button presses being ignored, check out Media Button Router: https://github.com/harleensahni/media-button-router
+
 Building: 
 I've been building this in Eclipse. For Android Studio do 'Import Project' -> select build.gradle -> click 'Yes' for the gradle wrapper (or choose your own gradle folder. Wrapper is recommended as AStudio is finicky about which version it uses)
 
