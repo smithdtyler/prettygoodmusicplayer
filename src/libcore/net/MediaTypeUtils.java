@@ -47,6 +47,7 @@ public final class MediaTypeUtils {
 
 		// not sure about this one
 		add("audio/dts", "ts");
+		add("audio/dts", "dts");
 
 		// no mkv/mka support for flac according to the docs :(
 		add("audio/flac", "flac");
@@ -72,6 +73,7 @@ public final class MediaTypeUtils {
 		add("audio/mp4a-latm", "aac");
 		add("audio/mp4a-latm", "mp4");
 		add("audio/mp4a-latm", "m4p");
+		add("audio/mp4a-latm", "m2t");
 
 		add("audio/opus", "opus");
 		add("audio/opus", "ogg");
