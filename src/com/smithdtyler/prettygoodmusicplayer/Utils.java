@@ -18,18 +18,29 @@
 
 package com.smithdtyler.prettygoodmusicplayer;
 
+import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.os.Environment;
+import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+
+import libcore.net.MediaTypeUtils;
 
 /**
  * Utility functions for the Pretty Good Music Player
  */
 public class Utils {
+	private static final String TAG = "Utils";
 	public static final Comparator<File> songFileComparator = new SongFileComparator();
 	public static final Comparator<File> albumFileComparator = new AlbumFileComparator();
 	
@@ -37,11 +48,13 @@ public class Utils {
 	// https://developer.android.com/guide/appendix/media-formats.html
 	private static final String[] legalFormatExtensions = { "mp3", "m4p",
 			"m4a", "wav", "ogg", "mkv", "3gp", "aac", "flac"};
+	private static final Set<String> decodeableMediaTypes = getSupportedTypes();
+	private static final String[] decodeableExtensions = getSupportedExtensions();
 
 	private static String mediaFileEndingRegex = "";
 	static {
 		boolean first = true;
-		for (String ending : legalFormatExtensions) {
+		for (String ending : decodeableExtensions) {
 			if (!first) {
 				mediaFileEndingRegex += "|" + "(\\." + ending + ")";
 			} else {
@@ -49,6 +62,61 @@ public class Utils {
 				first = false;
 			}
 		}
+		Log.d(TAG, "decodeableExtensions:");
+		Log.d(TAG, Arrays.toString(decodeableExtensions));
+
+		Log.d(TAG, "legalFormatExtensions:");
+		Log.d(TAG, Arrays.toString(legalFormatExtensions));
+	}
+	/**
+	 * Retrieve decodeable media types in the system
+	 * @return A set containing the supported media types
+	 */
+	private static Set<String> getSupportedTypes() {
+		// These MediaCodecList methods are deprecated in API 21, but the newer
+		// ones aren't supported in API < 21
+		int numCodecs = MediaCodecList.getCodecCount();
+		Set<String> supportedMediaTypes = new HashSet<>();
+
+		for (int codec = 0; codec < numCodecs; codec++) {
+			MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(codec);
+
+			if (codecInfo.isEncoder()) {
+				continue;
+			}
+
+			String[] codecTypes = codecInfo.getSupportedTypes();
+			for (int type = 0; type < codecTypes.length; type++) {
+				if (isMediaAudio(codecTypes[type]) && !supportedMediaTypes.contains(codecTypes[type])) {
+					Log.d(TAG, codecTypes[type] + " is decodeable by " + codecInfo.getName());
+					supportedMediaTypes.add(codecTypes[type]);
+				}
+			}
+		}
+		return supportedMediaTypes;
+	}
+
+	private static String[] getSupportedExtensions() {
+		Set<String> extensions = new HashSet<>();
+
+		for(String mediaType : decodeableMediaTypes) {
+			if(MediaTypeUtils.getExtensionsFromMimeType(mediaType) == null) {
+				Log.w(TAG, "Media type " + mediaType + " doesn't have any associated extension.");
+			} else {
+				extensions.addAll(MediaTypeUtils.getExtensionsFromMimeType(mediaType));
+			}
+		}
+
+		return extensions.toArray(new String[extensions.size()]);
+	}
+
+	/**
+	 * Return whether the media type is an audio subtype
+	 * @param mediaType the media type
+	 * @return is it an audio type?
+	 */
+	private static boolean isMediaAudio(String mediaType) {
+		return mediaType.startsWith("audio/");
 	}
 
 	/**
@@ -104,15 +172,14 @@ public class Utils {
 		}
 
 		String name = song.getName();
+		String extension = MimeTypeMap.getFileExtensionFromUrl(name);
 
-		// Needs to end with one of the legal formats
-		for (String ending : legalFormatExtensions) {
-			if (name.toLowerCase().endsWith("." + ending)) {
-				return true;
-			}
+		// Needs to have a decodeable media format
+		if(!MediaTypeUtils.hasExtension(extension)) {
+			return false;
 		}
-
-		return false;
+		// It's only valid if one or more of the media types is among the decodeable ones
+		return !Collections.disjoint(decodeableMediaTypes, MediaTypeUtils.getMimeTypesFromExtension(extension));
 	}
 
 	/**
