@@ -172,7 +172,7 @@ public class Utils {
 		}
 
 		String name = song.getName();
-		String extension = MimeTypeMap.getFileExtensionFromUrl(name);
+		String extension = getFileExtension(name);
 
 		// Needs to have a decodeable media format
 		if(!MediaTypeUtils.hasExtension(extension)) {
@@ -180,6 +180,14 @@ public class Utils {
 		}
 		// It's only valid if one or more of the media types is among the decodeable ones
 		return !Collections.disjoint(decodeableMediaTypes, MediaTypeUtils.getMimeTypesFromExtension(extension));
+	}
+
+	private static String getFileExtension(String name) {
+		int i = name.lastIndexOf('.');
+		if (i > 0) {
+			return name.substring(i + 1);
+		}
+		return "";
 	}
 
 	/**
