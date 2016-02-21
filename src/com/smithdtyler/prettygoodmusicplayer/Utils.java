@@ -182,6 +182,27 @@ public class Utils {
 		return !Collections.disjoint(decodeableMediaTypes, MediaTypeUtils.getMimeTypesFromExtension(extension));
 	}
 
+	static List<File> getAllSongsInDirRecursive(File directory){
+        List<File> songFiles = new ArrayList<>();
+        _getAllSongsInDirRecursive(directory, songFiles);
+        return songFiles;
+    }
+
+    static void _getAllSongsInDirRecursive(File target, List<File> songFiles){
+        if(target != null && target.isDirectory()) {
+            if (target.listFiles() != null) {
+                for (File f : target.listFiles()) {
+                    if (f.isFile() && isValidSongFile(target)) {
+                        songFiles.add(target);
+                    } else {
+                        _getAllSongsInDirRecursive(f, songFiles);
+                    }
+
+                }
+            }
+        }
+    }
+
 	private static String getFileExtension(String name) {
 		int i = name.lastIndexOf('.');
 		if (i > 0) {

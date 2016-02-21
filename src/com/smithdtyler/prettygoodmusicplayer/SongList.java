@@ -79,7 +79,7 @@ public class SongList extends AbstractMusicList {
 		if(albumDir.exists() && albumDir.isDirectory() && (albumDir.listFiles() != null)){
 			Log.d(TAG, "external storage directory = " + albumDir);
 			
-			for(File song : albumDir.listFiles()){
+			for(File song : Utils.getAllSongsInDirRecursive(albumDir)){
 				if(Utils.isValidSongFile(song)){
 					songFiles.add(song);
 				} else {
@@ -105,7 +105,8 @@ public class SongList extends AbstractMusicList {
 				if(Utils.isValidAlbumDirectory(albumFile)){
 					// get the songs in the album, sort them, then
 					// add them to the list
-					File[] songFilesInAlbum = albumFile.listFiles();
+					List<File> songFilesInAlbum = Utils.getAllSongsInDirRecursive(albumFile);
+
 					List<File> songFilesInAlbumList = new ArrayList<File>();
 					for(File songFile : songFilesInAlbum){
 						if(Utils.isValidSongFile(songFile)){
