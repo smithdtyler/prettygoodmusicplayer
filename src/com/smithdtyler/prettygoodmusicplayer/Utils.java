@@ -182,18 +182,48 @@ public class Utils {
 		return !Collections.disjoint(decodeableMediaTypes, MediaTypeUtils.getMimeTypesFromExtension(extension));
 	}
 
+	/**
+	 * Get all directories which contain music files
+	 * @param directory
+	 * @return
+	 */
+	static List<File> getAllAlbumsInDirRecursive(File directory){
+		List<File> albums = new ArrayList<>();
+		_getAllAlbumsInDirRecurive(directory, albums);
+		return albums;
+	}
+
+	private static void _getAllAlbumsInDirRecurive(File target, List<File> albums){
+		if(target.isDirectory() && target.listFiles() != null){
+			boolean hasSong = false;
+			for(File f : target.listFiles()){
+				if(Utils.isValidSongFile(f)){
+					hasSong = true;
+				}
+				if(f.isDirectory()){
+					_getAllAlbumsInDirRecurive(f, albums);
+				}
+			}
+			if(hasSong){
+				albums.add(target);
+			}
+		}
+	}
+
+
+
 	static List<File> getAllSongsInDirRecursive(File directory){
         List<File> songFiles = new ArrayList<>();
         _getAllSongsInDirRecursive(directory, songFiles);
         return songFiles;
     }
 
-    static void _getAllSongsInDirRecursive(File target, List<File> songFiles){
+    private static void _getAllSongsInDirRecursive(File target, List<File> songFiles){
         if(target != null && target.isDirectory()) {
             if (target.listFiles() != null) {
                 for (File f : target.listFiles()) {
-                    if (f.isFile() && isValidSongFile(target)) {
-                        songFiles.add(target);
+                    if (f.isFile() && isValidSongFile(f)) {
+                        songFiles.add(f);
                     } else {
                         _getAllSongsInDirRecursive(f, songFiles);
                     }

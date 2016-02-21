@@ -234,7 +234,7 @@ import java.util.Map;
 	            	 Intent intent = new Intent(ArtistList.this, AlbumList.class);
 	            	 intent.putExtra(ARTIST_NAME, clickedView.getText());
 					 if(clickedView.getText().equals("All")){
-						 intent.putExtra(ARTIST_ABS_PATH_NAME, baseDir);
+						 intent.putExtra(ARTIST_ABS_PATH_NAME, "All");
 						 startActivity(intent);
 					 } else {
 						 intent.putExtra(ARTIST_ABS_PATH_NAME, baseDir + File.separator + clickedView.getText());

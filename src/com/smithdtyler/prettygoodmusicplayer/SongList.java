@@ -56,13 +56,16 @@ public class SongList extends AbstractMusicList {
 	private File albumDir;
 	private boolean audiobookMode;
 
-	private void populateSongs(String artistName, String albumDirName, String artistAbsDirName){
+	private void populateSongs(String artistName, String albumDirName, String albumPath, String artistAbsDirName){
 		
 		songs = new ArrayList<Map<String,String>>();
 		
 		File artistDir = new File(artistAbsDirName);
 		if(albumDirName != null){
-			albumDir = new File(artistDir, albumDirName);
+			albumDir = new File(albumPath);
+			if(!albumDir.exists()) {
+				albumDir = new File(artistDir, albumDirName);
+			}
 		} else {
 			albumDir = artistDir; 
 		}
@@ -74,6 +77,8 @@ public class SongList extends AbstractMusicList {
 		} else {
 			Log.i(TAG, "Didn't find a resumable time");
 		}
+		Log.i(TAG, "Artist dir: " + artistDir);
+		Log.i(TAG, "Album dir: " + albumDir);
 
 		List<File> songFiles = new ArrayList<File>();
 		if(albumDir.exists() && albumDir.isDirectory() && (albumDir.listFiles() != null)){
@@ -89,16 +94,25 @@ public class SongList extends AbstractMusicList {
 			
 			// We assume that song files start with XX where XX is a number indicating the songs location within an album. 
 			Collections.sort(songFiles, Utils.songFileComparator);
+		} else if(artistDir.exists() && artistDir.listFiles() != null) {
+			for(File f : artistDir.listFiles()){
+				if(f.isDirectory()){
+					List<File> songs = Utils.getAllSongsInDirRecursive(f);
+					Collections.sort(songFiles, Utils.songFileComparator);
+					songFiles.addAll(songs);
+				} else if (Utils.isValidSongFile(f)){
+					songFiles.add(f);
+				}
+			}
 		} else {
 			// If the album didn't exist, just list all of the songs we can find.
 			// Assume we don't need full recursion
 			Log.d(TAG, "Adding all songs...");
-			File[] albumArray = artistDir.listFiles();
-			List<File> albums = new ArrayList<File>();
-			for(File alb : albumArray){
-				albums.add(alb);
-			}
-			
+			File bestGuessMusicDir = Utils.getBestGuessMusicDirectory();
+			String prefDir = prefs.getString("ARTIST_DIRECTORY", bestGuessMusicDir.getAbsolutePath());
+			File baseDir = new File(prefDir);
+			List<File> albums = Utils.getAllAlbumsInDirRecursive(baseDir);
+
 			Collections.sort(albums, Utils.albumFileComparator);
 			
 			for(File albumFile : albums){
@@ -117,17 +131,6 @@ public class SongList extends AbstractMusicList {
 					songFiles.addAll(songFilesInAlbumList);
 				}
 			}
-
-			// In addition to the albums, check directly under the artist directory
-			File[] songFilesInArtist = artistDir.listFiles();
-			List<File> songFilesInArtistList = new ArrayList<File>();
-			for(File songFile : songFilesInArtist){
-				if(Utils.isValidSongFile(songFile)){
-					songFilesInArtistList.add(songFile);
-				}
-			}
-			Collections.sort(songFilesInArtistList, Utils.songFileComparator);
-			songFiles.addAll(songFilesInArtistList);
 		}
 		
 		for(File song : songFiles){
@@ -189,6 +192,7 @@ public class SongList extends AbstractMusicList {
 	    Intent intent = getIntent();
 	    final String artistName = intent.getStringExtra(ArtistList.ARTIST_NAME);
 	    final String album = intent.getStringExtra(AlbumList.ALBUM_NAME);
+		final String albumPath = intent.getStringExtra(AlbumList.ALBUM_PATH);
 	    artistDir = intent.getStringExtra(ArtistList.ARTIST_ABS_PATH_NAME);
 	    
 		ActionBar actionBar = getActionBar();
@@ -228,7 +232,7 @@ public class SongList extends AbstractMusicList {
 		
 	    Log.i(TAG, "Getting songs for " + album);
 	    
-	    populateSongs(artistName, album, artistDir);
+	    populateSongs(artistName, album, albumPath, artistDir);
 	    
         simpleAdpt = new SimpleAdapter(this, songs, R.layout.pgmp_list_item, new String[] {"song"}, new int[] {R.id.PGMPListItemText});
         ListView lv = (ListView) findViewById(R.id.songListView);
