@@ -104,6 +104,10 @@ public abstract class AbstractMusicList extends Activity {
             finish();
             return true;
         }
+        if(id == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
