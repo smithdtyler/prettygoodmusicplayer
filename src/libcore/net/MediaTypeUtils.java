@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * Utilities for dealing with MIME types.
@@ -124,6 +125,10 @@ public final class MediaTypeUtils {
 		if (!extensionToMimeTypeMap.get(extension).contains(mimeType)) {
 			extensionToMimeTypeMap.get(extension).add(mimeType);
 		}
+	}
+
+	public static Set<String> getAllExtensions(){
+		return extensionToMimeTypeMap.keySet();
 	}
 
 	private static InputStream getContentTypesPropertiesStream() {

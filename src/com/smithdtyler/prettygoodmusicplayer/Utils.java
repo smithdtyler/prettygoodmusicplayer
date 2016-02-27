@@ -49,12 +49,12 @@ public class Utils {
 	private static final String[] legalFormatExtensions = { "mp3", "m4p",
 			"m4a", "wav", "ogg", "mkv", "3gp", "aac", "flac"};
 	private static final Set<String> decodeableMediaTypes = getSupportedTypes();
-	private static final String[] decodeableExtensions = getSupportedExtensions();
+	private static final Set<String> musicExtensions = MediaTypeUtils.getAllExtensions();
 
 	private static String mediaFileEndingRegex = "";
 	static {
 		boolean first = true;
-		for (String ending : decodeableExtensions) {
+		for (String ending : musicExtensions) {
 			if (!first) {
 				mediaFileEndingRegex += "|" + "(\\." + ending + ")";
 			} else {
@@ -62,8 +62,7 @@ public class Utils {
 				first = false;
 			}
 		}
-		Log.d(TAG, "decodeableExtensions:");
-		Log.d(TAG, Arrays.toString(decodeableExtensions));
+		Log.d(TAG,"mediaFileEndingRegex:" + mediaFileEndingRegex);
 
 		Log.d(TAG, "legalFormatExtensions:");
 		Log.d(TAG, Arrays.toString(legalFormatExtensions));
@@ -174,12 +173,7 @@ public class Utils {
 		String name = song.getName();
 		String extension = getFileExtension(name);
 
-		// Needs to have a decodeable media format
-		if(!MediaTypeUtils.hasExtension(extension)) {
-			return false;
-		}
-		// It's only valid if one or more of the media types is among the decodeable ones
-		return !Collections.disjoint(decodeableMediaTypes, MediaTypeUtils.getMimeTypesFromExtension(extension));
+		return MediaTypeUtils.hasExtension(extension);
 	}
 
 	/**
