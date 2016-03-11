@@ -98,7 +98,6 @@ public class SongList extends AbstractMusicList {
 			for(File f : artistDir.listFiles()){
 				if(f.isDirectory()){
 					List<File> songs = Utils.getAllSongsInDirRecursive(f);
-					Collections.sort(songFiles, Utils.songFileComparator);
 					songFiles.addAll(songs);
 				} else if (Utils.isValidSongFile(f)){
 					songFiles.add(f);
@@ -106,7 +105,6 @@ public class SongList extends AbstractMusicList {
 			}
 		} else {
 			// If the album didn't exist, just list all of the songs we can find.
-			// Assume we don't need full recursion
 			Log.d(TAG, "Adding all songs...");
 			File bestGuessMusicDir = Utils.getBestGuessMusicDirectory();
 			String prefDir = prefs.getString("ARTIST_DIRECTORY", bestGuessMusicDir.getAbsolutePath());
