@@ -61,7 +61,7 @@ public class SongList extends AbstractMusicList {
 		songs = new ArrayList<Map<String,String>>();
 		
 		File artistDir = new File(artistAbsDirName);
-		if(albumDirName != null){
+		if(albumDirName != null && albumPath != null){
 			albumDir = new File(albumPath);
 			if(!albumDir.exists()) {
 				albumDir = new File(artistDir, albumDirName);
@@ -81,6 +81,8 @@ public class SongList extends AbstractMusicList {
 		Log.i(TAG, "Album dir: " + albumDir);
 
 		List<File> songFiles = new ArrayList<File>();
+
+		// Did the user provide an exact path to the album?
 		if(albumDir.exists() && albumDir.isDirectory() && (albumDir.listFiles() != null)){
 			Log.d(TAG, "external storage directory = " + albumDir);
 			
@@ -94,15 +96,20 @@ public class SongList extends AbstractMusicList {
 			
 			// We assume that song files start with XX where XX is a number indicating the songs location within an album. 
 			Collections.sort(songFiles, Utils.songFileComparator);
+			// Did the user provide an artist, but no album?
 		} else if(artistDir.exists() && artistDir.listFiles() != null) {
-			for(File f : artistDir.listFiles()){
-				if(f.isDirectory()){
+			for (File f : artistDir.listFiles()) {
+				if (f.isDirectory()) {
 					List<File> songs = Utils.getAllSongsInDirRecursive(f);
 					songFiles.addAll(songs);
-				} else if (Utils.isValidSongFile(f)){
+				} else if (Utils.isValidSongFile(f)) {
 					songFiles.add(f);
 				}
 			}
+			// Did the user pick an album from 'All'?
+		}else if(albumDir.exists() && albumDir.isDirectory() && albumDir.listFiles() != null){
+			List<File> songs = Utils.getAllSongsInDirRecursive(albumDir);
+			songFiles.addAll(songs);
 		} else {
 			// If the album didn't exist, just list all of the songs we can find.
 			Log.d(TAG, "Adding all songs...");
