@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="themeoptions">
+        <item>Világos</item>
+        <item>Sötét</item>
+    </string-array>
+    <string-array
+        name="textsizeoptions">
+        <item>Kicsi</item>
+        <item>Közepes</item>
+        <item>Nagy</item>
+    </string-array>
+    <string-array
+        name="accentcoloroptions">
+        <item>Szürke</item>
+        <item>Zöld</item>
+        <item>Kék</item>
+        <item>Narancs</item>
+        <item>Smaragdzöld</item>
+        <item>Elefántcsont</item>
+        <item>Égszínkék</item>
+        <item>Levélzöld</item>
+        <item>Vízkék</item>
+        <item>Felhasználói</item>
+    </string-array>
+</resources>
