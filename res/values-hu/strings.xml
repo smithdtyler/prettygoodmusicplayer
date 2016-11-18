@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pretty Good Music Player</string>
+    <string name="action_settings">Beállítások</string>
+    <string name="title_activity_album_list">Albumok</string>
+    <string name="title_activity_song_list">Dalok</string>
+    <string name="title_activity_now_playing">Most játszott</string>
+    <string name="title_activity_settings">Beállítások</string>
+    <string name="notification_title">Pretty Good Music Player</string>
+    <string name="notification_message">Zenejátszás</string>
+	<string name="ticker_text">Zenelejátszási szolgáltatás</string>
+	<string name="next">Következő</string>
+	<string name="pause">Állj</string>
+	<string name="play">Lejátszás</string>
+	<string name="previous">Előző</string>
+    <string name="resume">Folytatás</string>
+    <string name="jumpback">Visszaugrás</string>
+    <string name="shuffle">Keverés</string>
+    <string name="nothing_playing">Nincs lejátszás</string>
+	<string name="exit">Kilépés</string>
+	
+    <!-- *********** -->
+    <!-- Preferences -->
+    <!-- *********** -->
+    
+    <!-- File Preferences -->
+    <string name="file_preferences_title">Fájlbeállítások</string>
+    <string name="choose_music_directory_prompt">Zenemappa választása</string>
+    <string name="choose_music_directory_summary">Válaszd ki a mappát, amiben a zenéid vannak</string>
+	<string name="directorydialogprompt">Hol vannak az előadói mappáid?</string>
+    <string name="directorydialoghere">Itt vannak!</string>
+    <string name="directorydialogup">Feljebb egy mappával</string>
+    
+    <!-- Theme Preferences -->
+    <string name="theme_title">Téma</string>
+    <string name="light">Világos</string>
+    <string name="dark">Sötét</string>
+    <string name="small">Kicsi</string>
+    <string name="medium">Közepes</string>
+    <string name="large">Nagy</string>
+    <string name="style_preference_title">Stílusbeállítások</string>
+    <string name="theme_select_prompt">Válaszd ki a zenelejátszó által használt témát</string>
+    <string name="accent_color_title">Hangsúly színe</string>
+    <string name="custom_accent_color_title">Saját hangsúlyszín megadása (aarrggbb)</string>
+    <string name="text_size_title">Betűméret</string>
+    <string name="text_size_prompt">Válassz betűméretet</string>
+    <string name="full_screen_now_playing_title">Teljes képernyős \"most játszott\" ablak</string>
+    <string name="ignore_leading_the_title">A \"The\" kezdet figyelmen kívül hagyása előadóneveknél</string>
+    
+    <!-- Playback Preferences -->
+    <string name="headphone_disconnect_behavior">Viselkedés fejhallgató-lecsatlakozáskor</string>
+    <string name="playback_title">Lejátszás</string>
+    <string name="pause_immediately">Azonnali leállítás</string>
+    <string name="pause_after_one_sec">Leállítás 1 másodperc múltán</string>
+    <string name="resume_on_quick_reconnect">Gyors újracsatlakozásnál folytatás</string>
+    <string name="resume_on_reconnect">Újracsatlakozásnál folytatás</string>
+    <string name="podcasts_and_audiobooks_title">Podcast-ok és hangoskönyvek</string>
+    <string name="audiobook_mode">Hangoskönyv mód</string>
+
+</resources>

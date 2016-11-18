@@ -1,0 +1,60 @@
+Belefáradtál abba, hogy a zenelejátszódnak évekig tart elindulnia, mert reklámokat szednek le, vagy letöltögetnek mindenféle dolgot? Vagy az olyan lejátszókból van eleged, amik Bluetooth-on keresztüli vezérlést nem tudnak, vagy néhány perc után leállnak? Én is így voltam ezzel, ezért írtam ezt az alkalmazást!
+
+A "Pretty Good Music Player" egy nyíltforrású (GPL), mappa-alapú zenelejátszó minden spéci cucc nélkül. Kicsi, gyors, és zenét tud lejátszani.
+
+Részletes funkciók:
+- Új beállítás! A színséma és a betűméret most már beállítható!
+- Véd a hibás leállások ellen, például amikor fejhallgatód megrándul, és a dugó megmozdul a dugaljban. Ezt azért adtam hozzá, mert zavart, amikor a telefonom a zsebemben volt, és automatikusan leállt, mert a fejhallgatóm vezetéke kontaktos volt.
+- Támogatott fájltípusok: .mp3, .m4p, .m4a, .aac, és még sok mást hangfájlt is!
+- Végrehajtja a lejátszás, megállítás, előző, következő parancsokat Bluetooth fejhallgatóktól.
+- Amikor az "Összes szám" menüpontot választod egy előadónál, a számok album szerint lesznek rendezve, nem ABC-sorrendben.
+- Automatikusan leáll és folytat, amikor egy másik alkalmazás (pl. GPS) hangot ad ki.
+- Ha egy másik alkalmazás 30 másodpercnél több ideig ad ki hangot (pl. telefonhívás), nem folytat automatikusan.
+- Az "Összes ismétlése" funkció mindig be van kapcsolva.
+- Ha túl gyorsan nyomsz rá a "vissza" gombra, megkérdezi hogy ki akarsz-e lépni.
+
+Elvárt mappafelépítés:
+Az iTunes-ról másolt előadói mappastruktúrákkal való működésre tervezett, tehát ilyesmire:
+
+zene/
+   előadó/
+      /album1
+          /01 - Elso Szam.mp3
+          /02 - Masodik Szam.mp3
+          /03 - Harmadik Szam.mp3
+          /04 - Negyedik Szam.mp3
+      /album2
+          /01 - Masik Szam.mp3
+      ....
+
+Vegyes:
+Észrevettem, hogy ha egy számot hosszú időre megállítok, meg kell nyomnom és lenyomva kell tartanom a "megállítás" gombot a Bluetooth fejhallgatómon hogy folytassa a lejátszást.
+
+A teljes forráskód elérhető itt: https://github.com/smithdtyler/prettygoodmusicplayer
+
+A gyönyörű ikont Emily Krueger tervezte, a Vine Creative-tól: http://www.vinecreativemn.com/
+
+Ha bármi problémád van, hagyj egy kommentet annyi információval, amennyivel csak lehet, és megpróbálom a lehető leggyorsabban kijavítani.
+
+Kompatibilitás:
+	A Bluetooth-on keresztüli irányítás egy LG Electronics Tone+ HBS-730 Bluetooth Headset-tel volt tesztelve.
+
+Jogi dolgok:
+
+    Pretty Good Music Player
+    Copyright Tyler Smith 2014
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    See http://www.gnu.org/licenses/ for a full copy of the  GNU General Public License.
+
+Reddit:
+    Fent vagyok redditen, a felhasználói fiókom: https://www.reddit.com/user/MythsBusted
