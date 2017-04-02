@@ -1,6 +1,10 @@
 prettygoodmusicplayer
 =====================
 
+Update: As of 2017.04.01 I am no longer actively maintaining this app. 
+
+=====================
+
 A music player for Android that hits the basics hard
 
 I do my best to address issues when they arise, but I'm pretty busy, so it may take a long time for me to push updates.
