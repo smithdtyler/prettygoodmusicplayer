@@ -1,7 +1,7 @@
 prettygoodmusicplayer
 =====================
 
-Update: As of 2017.04.01 I am no longer actively maintaining this app. 
+Update: As of 2017.04.01 I am no longer actively maintaining this app. If you've created a fork and are actively maintaining it, feel free to submit a pull request adding a link to your version.
 
 =====================
 
